@@ -27,7 +27,11 @@ interface LayoutProps {
   onUserChange?: (role: "admin" | "team" | "client") => void;
 }
 
-export default function Layout({ children, currentUser, onUserChange }: LayoutProps) {
+export default function Layout({
+  children,
+  currentUser,
+  onUserChange,
+}: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
@@ -42,12 +46,19 @@ export default function Layout({ children, currentUser, onUserChange }: LayoutPr
     { label: "Search", href: "/search", icon: Search, admin: false },
     { label: "Calendar", href: "/calendar", icon: Calendar, admin: false },
     { label: "Chat", href: "/chat", icon: MessageSquare, admin: false },
-    { label: "Client View", href: "/client-summary", icon: Users, admin: false },
+    {
+      label: "Client View",
+      href: "/client-summary",
+      icon: Users,
+      admin: false,
+    },
     { label: "Audit Log", href: "/audit", icon: FileText, admin: true },
     { label: "Settings", href: "/settings", icon: Settings, admin: false },
   ];
 
-  const visibleItems = navItems.filter((item) => !item.admin || isAdmin(currentUser));
+  const visibleItems = navItems.filter(
+    (item) => !item.admin || isAdmin(currentUser),
+  );
 
   return (
     <div className={`flex h-screen ${darkMode ? "dark" : ""}`}>
@@ -91,19 +102,28 @@ export default function Layout({ children, currentUser, onUserChange }: LayoutPr
         <div className="border-t border-slate-700 p-4">
           <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-lg bg-slate-700/30">
             <img
-              src={currentUser?.avatar || "https://api.dicebear.com/7.x/avataaars/svg?seed=user"}
+              src={
+                currentUser?.avatar ||
+                "https://api.dicebear.com/7.x/avataaars/svg?seed=user"
+              }
               alt={currentUser?.name}
               className="w-8 h-8 rounded-full"
             />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{currentUser?.name}</p>
-              <p className="text-xs text-slate-300 truncate">{currentUser?.role}</p>
+              <p className="text-sm font-medium truncate">
+                {currentUser?.name}
+              </p>
+              <p className="text-xs text-slate-300 truncate">
+                {currentUser?.role}
+              </p>
             </div>
           </div>
 
           {/* User Switcher for Demo */}
           <div className="space-y-1 mb-4">
-            <p className="text-xs font-semibold text-slate-400 uppercase px-2">Demo Mode</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase px-2">
+              Demo Mode
+            </p>
             <button
               onClick={() => onUserChange?.("admin")}
               className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
@@ -165,7 +185,9 @@ export default function Layout({ children, currentUser, onUserChange }: LayoutPr
           >
             <Menu className="w-5 h-5" />
           </button>
-          <h1 className="text-xl font-semibold text-slate-900">Sales2Signoff</h1>
+          <h1 className="text-xl font-semibold text-slate-900">
+            Sales2Signoff
+          </h1>
           <div className="text-sm text-slate-600">{currentUser?.company}</div>
         </div>
 

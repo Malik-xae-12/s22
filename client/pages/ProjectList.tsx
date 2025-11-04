@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { User } from "@shared/api";
 import { isAdmin, isTeamMember } from "@/utils/auth";
-import { MOCK_PROJECTS, STAGE_COLORS, getStageLabel, getStatusLabel } from "@/utils/mockData";
+import {
+  MOCK_PROJECTS,
+  STAGE_COLORS,
+  getStageLabel,
+  getStatusLabel,
+} from "@/utils/mockData";
 import { Link } from "react-router-dom";
 import { Search, Filter, Plus } from "lucide-react";
 
@@ -33,7 +38,7 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
         (p) =>
           p.teamName.toLowerCase().includes(query) ||
           p.manager.toLowerCase().includes(query) ||
-          p.clientEmail.toLowerCase().includes(query)
+          p.clientEmail.toLowerCase().includes(query),
       );
     }
 
@@ -94,7 +99,9 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
       <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Search</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Search
+            </label>
             <div className="relative">
               <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
               <input
@@ -108,7 +115,9 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Stage</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Stage
+            </label>
             <select
               value={stageFilter}
               onChange={(e) => setStageFilter(e.target.value)}
@@ -124,7 +133,9 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Status
+            </label>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -158,33 +169,61 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
       <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
         {filteredProjects.length === 0 ? (
           <div className="px-6 py-12 text-center">
-            <p className="text-slate-600">No projects found matching your criteria.</p>
+            <p className="text-slate-600">
+              No projects found matching your criteria.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Team Name</th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Manager</th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Stage</th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Status</th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Estimation</th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Timeline</th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Approval</th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">Action</th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Team Name
+                  </th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Manager
+                  </th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Stage
+                  </th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Estimation
+                  </th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Timeline
+                  </th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Approval
+                  </th>
+                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
                 {filteredProjects.map((project) => {
-                  const stageColor = STAGE_COLORS[project.stage] || STAGE_COLORS.prospecting;
+                  const stageColor =
+                    STAGE_COLORS[project.stage] || STAGE_COLORS.prospecting;
                   return (
-                    <tr key={project.id} className="hover:bg-slate-50 transition-colors">
+                    <tr
+                      key={project.id}
+                      className="hover:bg-slate-50 transition-colors"
+                    >
                       <td className="px-6 py-4">
-                        <p className="font-medium text-slate-900">{project.teamName}</p>
-                        <p className="text-xs text-slate-500">{project.clientEmail}</p>
+                        <p className="font-medium text-slate-900">
+                          {project.teamName}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {project.clientEmail}
+                        </p>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">{project.manager}</td>
+                      <td className="px-6 py-4 text-slate-600">
+                        {project.manager}
+                      </td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${stageColor.bg} ${stageColor.text}`}
@@ -207,8 +246,12 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
                           {getStatusLabel(project.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-slate-600">{project.estimation}</td>
-                      <td className="px-6 py-4 text-slate-600">{project.timeline}</td>
+                      <td className="px-6 py-4 text-slate-600">
+                        {project.estimation}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600">
+                        {project.timeline}
+                      </td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
@@ -244,7 +287,9 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
           <p className="text-sm text-slate-600">Total Projects</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{filteredProjects.length}</p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">
+            {filteredProjects.length}
+          </p>
         </div>
         <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
           <p className="text-sm text-slate-600">Active</p>
@@ -261,7 +306,10 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
         <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
           <p className="text-sm text-slate-600">Pending Approval</p>
           <p className="text-2xl font-bold text-slate-900 mt-1">
-            {filteredProjects.filter((p) => p.approvalsStatus === "pending").length}
+            {
+              filteredProjects.filter((p) => p.approvalsStatus === "pending")
+                .length
+            }
           </p>
         </div>
       </div>

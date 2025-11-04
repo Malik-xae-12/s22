@@ -11,18 +11,28 @@ export default function Placeholder({ title }: PlaceholderProps) {
     title || (typeof params.page === "string" ? params.page : "This page");
 
   const pageDescriptions: Record<string, string> = {
-    "add-project": "Create a new project with all required details and timeline information.",
-    "project-detail": "View and edit project details, approvals status, and comments.",
-    workflow: "Track chronological updates and project progress with effort tracking.",
-    analytics: "Admin dashboard with charts, metrics, and performance analytics.",
-    documents: "Upload, manage, and access project-related documents with role-based access.",
-    search: "Search and filter projects by multiple criteria with saved presets.",
+    "add-project":
+      "Create a new project with all required details and timeline information.",
+    "project-detail":
+      "View and edit project details, approvals status, and comments.",
+    workflow:
+      "Track chronological updates and project progress with effort tracking.",
+    analytics:
+      "Admin dashboard with charts, metrics, and performance analytics.",
+    documents:
+      "Upload, manage, and access project-related documents with role-based access.",
+    search:
+      "Search and filter projects by multiple criteria with saved presets.",
     calendar: "Calendar and Gantt-style milestone view for project timelines.",
     chat: "Threaded team communication with @mentions, notifications, and file attachments.",
-    "client-summary": "Client-facing dashboard showing progress, updates, and approvals.",
-    audit: "Timestamped audit logs of user actions for compliance and tracking.",
-    settings: "User profile settings, password change, and notification preferences.",
-    "test-environment": "Sandbox for testing experimental features and components.",
+    "client-summary":
+      "Client-facing dashboard showing progress, updates, and approvals.",
+    audit:
+      "Timestamped audit logs of user actions for compliance and tracking.",
+    settings:
+      "User profile settings, password change, and notification preferences.",
+    "test-environment":
+      "Sandbox for testing experimental features and components.",
   };
 
   const description =
@@ -45,7 +55,10 @@ export default function Placeholder({ title }: PlaceholderProps) {
         <p className="text-slate-600 mb-6">{description}</p>
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-700">
           <p className="font-medium mb-2">💡 Feature Coming Soon</p>
-          <p>Provide feedback or request this feature by prompting the builder to continue.</p>
+          <p>
+            Provide feedback or request this feature by prompting the builder to
+            continue.
+          </p>
         </div>
       </div>
     </div>

@@ -93,7 +93,10 @@ export const MOCK_PROJECTS: Project[] = [
   },
 ];
 
-export const STAGE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+export const STAGE_COLORS: Record<
+  string,
+  { bg: string; text: string; border: string }
+> = {
   prospecting: {
     bg: "bg-blue-50",
     text: "text-blue-700",
