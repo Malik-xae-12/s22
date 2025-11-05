@@ -20,6 +20,7 @@ import {
   Sun,
 } from "lucide-react";
 import { isAdmin } from "@/utils/auth";
+import GlobalSearch from "./GlobalSearch";
 
 interface LayoutProps {
   children: React.ReactNode;
