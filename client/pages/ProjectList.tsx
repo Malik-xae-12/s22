@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { User } from "@shared/api";
+import { User, Project } from "@shared/api";
 import { isAdmin, isTeamMember } from "@/utils/auth";
+import AddProjectModal from "@/components/AddProjectModal";
 import {
   MOCK_PROJECTS,
   STAGE_COLORS,
