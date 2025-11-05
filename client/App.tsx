@@ -11,6 +11,7 @@ import Layout from "@/components/Layout";
 import Index from "@/pages/Index";
 import ProjectList from "@/pages/ProjectList";
 import ProjectDetail from "@/pages/ProjectDetail";
+import AddProject from "@/pages/AddProject";
 import Analytics from "@/pages/Analytics";
 import Documents from "@/pages/Documents";
 import AuditLog from "@/pages/AuditLog";
@@ -54,7 +55,7 @@ function AppContent() {
         />
         <Route
           path="/add-project"
-          element={<Placeholder title="Add Project" />}
+          element={<AddProject currentUser={currentUser} />}
         />
         <Route
           path="/workflow"

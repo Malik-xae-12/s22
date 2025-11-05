@@ -5,6 +5,7 @@ import {
   MOCK_PROJECTS,
   MOCK_MEETINGS,
   MOCK_DOCUMENTS,
+  MOCK_WORKFLOW_UPDATES,
   formatDate,
   formatBytes,
 } from "@/utils/mockData";
@@ -30,7 +31,7 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
   const { id } = useParams();
   const project = MOCK_PROJECTS.find((p) => p.id === id);
   const [activeTab, setActiveTab] = useState<
-    "overview" | "documents" | "meetings"
+    "overview" | "documents" | "meetings" | "workflow"
   >("overview");
   const [isEditing, setIsEditing] = useState(false);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
@@ -79,18 +80,44 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg p-4 border border-slate-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-slate-600 uppercase">
-                Stage
+                Client
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
-                {project.stage.replace(/_/g, " ").toUpperCase()}
+              <p className="text-sm font-bold text-slate-900 mt-1 truncate">
+                {project.clientEmail}
               </p>
             </div>
-            <Calendar className="w-6 h-6 text-blue-600" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-4 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-slate-600 uppercase">
+                Manager
+              </p>
+              <p className="text-sm font-bold text-slate-900 mt-1">
+                {project.manager}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-4 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-slate-600 uppercase">
+                Estimation
+              </p>
+              <p className="text-sm font-bold text-slate-900 mt-1">
+                {project.estimation}h
+              </p>
+            </div>
+            <Clock className="w-5 h-5 text-blue-600" />
           </div>
         </div>
 
@@ -100,12 +127,11 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
               <p className="text-xs font-medium text-slate-600 uppercase">
                 Status
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
-                {project.status.charAt(0).toUpperCase() +
-                  project.status.slice(1)}
+              <p className="text-sm font-bold text-slate-900 mt-1 capitalize">
+                {project.status}
               </p>
             </div>
-            <CheckCircle className="w-6 h-6 text-green-600" />
+            <CheckCircle className="w-5 h-5 text-green-600" />
           </div>
         </div>
 
@@ -115,11 +141,11 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
               <p className="text-xs font-medium text-slate-600 uppercase">
                 Progress
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
+              <p className="text-sm font-bold text-slate-900 mt-1">
                 {project.progress}%
               </p>
             </div>
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold">
               {project.progress}%
             </div>
           </div>
@@ -131,12 +157,11 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
               <p className="text-xs font-medium text-slate-600 uppercase">
                 Approval
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
-                {project.approvalsStatus.charAt(0).toUpperCase() +
-                  project.approvalsStatus.slice(1)}
+              <p className="text-sm font-bold text-slate-900 mt-1 capitalize">
+                {project.approvalsStatus}
               </p>
             </div>
-            <AlertCircle className="w-6 h-6 text-orange-600" />
+            <AlertCircle className="w-5 h-5 text-orange-600" />
           </div>
         </div>
       </div>
@@ -160,29 +185,40 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
       {/* Tabs */}
       <div className="border-b border-slate-200">
         <div className="flex gap-8">
-          {["overview", "documents", "meetings"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab as any)}
-              className={`px-2 py-4 font-medium border-b-2 transition-colors ${
-                activeTab === tab
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              {tab === "documents" && (
-                <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
-                  {documents.length}
-                </span>
-              )}
-              {tab === "meetings" && (
-                <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
-                  {meetings.length}
-                </span>
-              )}
-            </button>
-          ))}
+          {["overview", "workflow", "documents", "meetings"].map((tab) => {
+            const tabUpdates =
+              tab === "workflow"
+                ? MOCK_WORKFLOW_UPDATES.filter((u) => u.projectId === id)
+                : null;
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab as any)}
+                className={`px-2 py-4 font-medium border-b-2 transition-colors ${
+                  activeTab === tab
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab === "documents" && (
+                  <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
+                    {documents.length}
+                  </span>
+                )}
+                {tab === "meetings" && (
+                  <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
+                    {meetings.length}
+                  </span>
+                )}
+                {tab === "workflow" && (
+                  <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
+                    {tabUpdates?.length || 0}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -510,6 +546,101 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {activeTab === "workflow" && (
+        <div className="space-y-4">
+          {(() => {
+            const workflowUpdates = MOCK_WORKFLOW_UPDATES.filter(
+              (u) => u.projectId === id,
+            );
+
+            if (workflowUpdates.length === 0) {
+              return (
+                <div className="bg-white rounded-lg p-12 text-center border border-slate-200">
+                  <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                  <p className="text-slate-600 font-medium">
+                    No workflow updates yet
+                  </p>
+                </div>
+              );
+            }
+
+            return (
+              <>
+                <div className="bg-white rounded-lg p-6 border border-slate-200">
+                  <h3 className="text-lg font-bold text-slate-900 mb-4">
+                    Workflow Updates
+                  </h3>
+                  <div className="space-y-4">
+                    {workflowUpdates.map((update) => (
+                      <div
+                        key={update.id}
+                        className={`border-l-4 rounded-lg p-6 bg-white shadow-sm ${
+                          update.status === "completed"
+                            ? "border-l-green-500 bg-green-50"
+                            : update.status === "in_progress"
+                              ? "border-l-yellow-500 bg-yellow-50"
+                              : "border-l-blue-500 bg-blue-50"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h4 className="font-bold text-slate-900">
+                              {update.title}
+                            </h4>
+                            <p className="text-slate-700 text-sm mt-2">
+                              {update.notes}
+                            </p>
+                          </div>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 ${
+                              update.status === "completed"
+                                ? "bg-green-100 text-green-700"
+                                : update.status === "in_progress"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-blue-100 text-blue-700"
+                            }`}
+                          >
+                            {update.status.charAt(0).toUpperCase() +
+                              update.status.slice(1).replace(/_/g, " ")}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Effort
+                            </p>
+                            <p className="text-lg font-bold text-slate-900 mt-1">
+                              {update.effort}
+                            </p>
+                          </div>
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Deliverables
+                            </p>
+                            <p className="text-sm font-semibold text-slate-900 mt-1">
+                              {update.deliverables}
+                            </p>
+                          </div>
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Date
+                            </p>
+                            <p className="text-sm font-semibold text-slate-900 mt-1">
+                              {formatDate(update.date)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            );
+          })()}
         </div>
       )}
 

@@ -24,13 +24,8 @@ export default function Index({ currentUser }: IndexProps) {
   );
 
   const getRelevantProjects = () => {
-    if (isAdmin(currentUser)) {
-      return projects;
-    } else if (isTeamMember(currentUser)) {
-      return projects.filter((p) => p.manager === currentUser?.name);
-    } else {
-      return projects.filter((p) => p.clientEmail === currentUser?.email);
-    }
+    // For demo purposes, show all projects to all users
+    return projects;
   };
 
   const relevantProjects = getRelevantProjects();

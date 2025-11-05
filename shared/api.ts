@@ -104,9 +104,12 @@ export interface AuditLog {
 export interface WorkflowUpdate {
   id: string;
   projectId: string;
+  title: string;
   notes: string;
-  effortSpent: number;
-  dependencies: string;
+  status: "pending" | "in_progress" | "completed";
+  effort: string;
+  deliverables: string;
+  date: string;
   createdAt: string;
   createdBy: string;
 }

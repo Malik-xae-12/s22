@@ -38,13 +38,8 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
   const getRelevantProjects = () => {
     let filtered = projects;
 
-    if (!isAdmin(currentUser)) {
-      if (isTeamMember(currentUser)) {
-        filtered = filtered.filter((p) => p.manager === currentUser?.name);
-      } else {
-        filtered = filtered.filter((p) => p.clientEmail === currentUser?.email);
-      }
-    }
+    // For demo purposes, show all projects to all users
+    // In production, implement proper role-based filtering
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();

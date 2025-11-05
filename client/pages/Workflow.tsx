@@ -1,42 +1,58 @@
 import { useState } from "react";
 import { User } from "@shared/api";
-import { MOCK_PROJECTS, getStageLabel } from "@/utils/mockData";
-import { Plus, GripVertical, CheckCircle, AlertCircle } from "lucide-react";
+import { MOCK_PROJECTS, MOCK_WORKFLOW_UPDATES } from "@/utils/mockData";
+import { Plus, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { isTeamMember } from "@/utils/auth";
 
 interface WorkflowProps {
   currentUser: User | null;
 }
 
 export default function Workflow({ currentUser }: WorkflowProps) {
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null,
+  );
+
+  // Show all projects for demo purposes
   const projects = MOCK_PROJECTS;
 
-  const stages = [
-    "prospecting",
-    "planning",
-    "in_progress",
-    "review",
-    "signed_off",
-  ];
+  const currentProject = selectedProjectId
+    ? projects.find((p) => p.id === selectedProjectId)
+    : projects[0];
 
-  const getProjectsByStage = (stage: string) => {
-    return projects.filter((p) => p.stage === stage);
+  const projectUpdates = currentProject
+    ? MOCK_WORKFLOW_UPDATES.filter((u) => u.projectId === currentProject.id)
+    : [];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "completed":
+        return "bg-green-50 border-green-200 text-green-700";
+      case "in_progress":
+        return "bg-yellow-50 border-yellow-200 text-yellow-700";
+      case "pending":
+        return "bg-blue-50 border-blue-200 text-blue-700";
+      default:
+        return "bg-slate-50 border-slate-200 text-slate-700";
+    }
   };
 
-  const stageColors: Record<string, string> = {
-    prospecting: "border-blue-200 bg-blue-50",
-    planning: "border-purple-200 bg-purple-50",
-    in_progress: "border-yellow-200 bg-yellow-50",
-    review: "border-orange-200 bg-orange-50",
-    signed_off: "border-green-200 bg-green-50",
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case "in_progress":
+        return <Clock className="w-5 h-5 text-yellow-600" />;
+      case "pending":
+        return <AlertCircle className="w-5 h-5 text-blue-600" />;
+      default:
+        return null;
+    }
   };
 
-  const stageTextColors: Record<string, string> = {
-    prospecting: "text-blue-700",
-    planning: "text-purple-700",
-    in_progress: "text-yellow-700",
-    review: "text-orange-700",
-    signed_off: "text-green-700",
+  const getStatusLabel = (status: string) => {
+    return status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, " ");
   };
 
   return (
@@ -48,192 +64,219 @@ export default function Workflow({ currentUser }: WorkflowProps) {
             Workflow Tracker
           </h1>
           <p className="text-slate-600 mt-1">
-            Manage project stages and progress
+            Monitor project updates and progress
           </p>
         </div>
+        <Link
+          to="/add-project"
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center gap-2"
+        >
+          <Plus className="w-5 h-5" />
+          Add Update
+        </Link>
       </div>
 
-      {/* View Toggle */}
-      <div className="bg-white rounded-lg p-4 border border-slate-200 flex gap-4">
-        <p className="text-sm font-medium text-slate-700">View:</p>
-        <button className="px-4 py-1 bg-blue-600 text-white text-sm rounded font-medium">
-          Kanban Board
-        </button>
-        <button className="px-4 py-1 border border-slate-300 text-slate-700 text-sm rounded font-medium hover:bg-slate-50">
-          Timeline
-        </button>
-      </div>
-
-      {/* Kanban Board */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {stages.map((stage) => {
-          const stageProjects = getProjectsByStage(stage);
-          return (
-            <div
-              key={stage}
-              className="bg-slate-50 rounded-lg p-4 border border-slate-200 min-h-[600px] flex flex-col"
-            >
-              {/* Stage Header */}
-              <div className="mb-4">
-                <h3
-                  className={`font-bold text-sm mb-1 ${stageTextColors[stage]}`}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Project List Sidebar */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden sticky top-6">
+            <div className="p-4 border-b border-slate-200">
+              <h3 className="font-semibold text-slate-900">Projects</h3>
+            </div>
+            <div className="divide-y divide-slate-200 max-h-96 overflow-y-auto">
+              {projects.map((project) => (
+                <button
+                  key={project.id}
+                  onClick={() => setSelectedProjectId(project.id)}
+                  className={`w-full text-left p-4 hover:bg-slate-50 transition-colors ${
+                    selectedProjectId === project.id
+                      ? "bg-blue-50 border-l-4 border-blue-600"
+                      : ""
+                  }`}
                 >
-                  {getStageLabel(stage)}
-                </h3>
-                <p className="text-xs text-slate-600">
-                  {stageProjects.length} projects
-                </p>
+                  <p className="font-medium text-slate-900 text-sm">
+                    {project.teamName}
+                  </p>
+                  <p className="text-xs text-slate-600 mt-1">
+                    {project.manager}
+                  </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="flex-1 bg-slate-200 rounded-full h-1.5">
+                      <div
+                        className="bg-blue-600 h-full rounded-full"
+                        style={{ width: `${project.progress}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-medium text-slate-600">
+                      {project.progress}%
+                    </span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Workflow Updates */}
+        <div className="lg:col-span-3">
+          {currentProject ? (
+            <div className="space-y-6">
+              {/* Project Header */}
+              <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900">
+                      {currentProject.name}
+                    </h2>
+                    <p className="text-slate-600 mt-2">
+                      {currentProject.description}
+                    </p>
+                  </div>
+                  <Link
+                    to={`/projects/${currentProject.id}`}
+                    className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                  >
+                    View Details →
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                  <div className="p-3 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-600 font-medium">
+                      Manager
+                    </p>
+                    <p className="text-sm font-semibold text-slate-900 mt-1">
+                      {currentProject.manager}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-600 font-medium">
+                      Estimation
+                    </p>
+                    <p className="text-sm font-semibold text-slate-900 mt-1">
+                      {currentProject.estimation}h
+                    </p>
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-600 font-medium">Status</p>
+                    <p className="text-sm font-semibold text-slate-900 mt-1 capitalize">
+                      {currentProject.status}
+                    </p>
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-600 font-medium">
+                      Progress
+                    </p>
+                    <p className="text-sm font-semibold text-slate-900 mt-1">
+                      {currentProject.progress}%
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              {/* Cards */}
-              <div className="flex-1 space-y-3 overflow-y-auto">
-                {stageProjects.map((project) => (
-                  <div
-                    key={project.id}
-                    className={`p-3 rounded-lg border-2 cursor-move hover:shadow-md transition-shadow ${stageColors[stage]}`}
-                    onClick={() =>
-                      setExpandedId(
-                        expandedId === project.id ? null : project.id,
-                      )
-                    }
-                  >
-                    <div className="flex items-start gap-2">
-                      <GripVertical className="w-4 h-4 flex-shrink-0 mt-0.5 opacity-50" />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-slate-900 text-sm leading-tight">
-                          {project.teamName}
-                        </p>
-                        <p className="text-xs text-slate-600 mt-1">
-                          {project.manager}
-                        </p>
+              {/* Updates Timeline */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 mb-4">
+                  Project Updates
+                </h3>
 
-                        {/* Progress Bar */}
-                        <div className="mt-2 w-full bg-slate-300 rounded-full h-1.5 overflow-hidden">
-                          <div
-                            className="bg-blue-600 h-full rounded-full transition-all"
-                            style={{ width: `${project.progress}%` }}
-                          />
-                        </div>
-                        <p className="text-xs text-slate-600 mt-1">
-                          {project.progress}%
-                        </p>
-
-                        {/* Expanded Details */}
-                        {expandedId === project.id && (
-                          <div className="mt-3 pt-3 border-t border-slate-300 space-y-2 text-xs">
-                            <div>
-                              <p className="font-medium text-slate-900">
-                                {project.name}
-                              </p>
-                              <p className="text-slate-600 mt-1">
-                                {project.description}
-                              </p>
-                            </div>
-                            <div className="flex gap-2">
-                              <span className="px-2 py-1 bg-white rounded text-slate-600 font-medium">
-                                {project.estimation}h
-                              </span>
-                              <span className="px-2 py-1 bg-white rounded text-slate-600 font-medium">
-                                ${project.budget}
-                              </span>
-                            </div>
-                            {project.approvalsStatus === "pending" && (
-                              <div className="flex items-center gap-1 text-yellow-700 bg-yellow-50 p-2 rounded">
-                                <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                                <span>Pending approval</span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                {projectUpdates.length === 0 ? (
+                  <div className="bg-white rounded-lg p-12 text-center border border-slate-200">
+                    <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <p className="text-slate-600 font-medium">
+                      No workflow updates yet
+                    </p>
+                    <p className="text-slate-500 text-sm mt-1">
+                      Updates will appear here as the project progresses
+                    </p>
                   </div>
-                ))}
+                ) : (
+                  <div className="space-y-4">
+                    {projectUpdates.map((update) => (
+                      <div
+                        key={update.id}
+                        className={`border-l-4 rounded-lg p-6 bg-white shadow-sm ${
+                          update.status === "completed"
+                            ? "border-l-green-500 bg-green-50"
+                            : update.status === "in_progress"
+                              ? "border-l-yellow-500 bg-yellow-50"
+                              : "border-l-blue-500 bg-blue-50"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className="mt-0.5">
+                              {getStatusIcon(update.status)}
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-bold text-slate-900">
+                                {update.title}
+                              </h4>
+                              <p className="text-slate-700 text-sm mt-2">
+                                {update.notes}
+                              </p>
+                            </div>
+                          </div>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 ${getStatusColor(
+                              update.status,
+                            )}`}
+                          >
+                            {getStatusLabel(update.status)}
+                          </span>
+                        </div>
 
-                {/* Add Card Button */}
-                {stageProjects.length === 0 && (
-                  <div className="flex items-center justify-center h-32 text-slate-500">
-                    <p className="text-xs">No projects</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Effort
+                            </p>
+                            <p className="text-lg font-bold text-slate-900 mt-1">
+                              {update.effort}
+                            </p>
+                          </div>
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Deliverables
+                            </p>
+                            <p className="text-sm font-semibold text-slate-900 mt-1">
+                              {update.deliverables}
+                            </p>
+                          </div>
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Date
+                            </p>
+                            <p className="text-sm font-semibold text-slate-900 mt-1">
+                              {new Date(update.date).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                },
+                              )}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
-
-              {/* Add Button */}
-              <button className="mt-4 w-full py-2 border-2 border-dashed border-slate-300 rounded-lg text-slate-600 hover:bg-white text-sm font-medium flex items-center justify-center gap-1">
-                <Plus className="w-4 h-4" />
-                Add Project
-              </button>
             </div>
-          );
-        })}
-      </div>
-
-      {/* Summary Stats */}
-      <div className="bg-white rounded-lg p-6 border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">
-          Workflow Summary
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {stages.map((stage) => {
-            const count = getProjectsByStage(stage).length;
-            const avgProgress =
-              count > 0
-                ? Math.round(
-                    getProjectsByStage(stage).reduce(
-                      (sum, p) => sum + p.progress,
-                      0,
-                    ) / count,
-                  )
-                : 0;
-
-            return (
-              <div
-                key={stage}
-                className="text-center p-4 bg-slate-50 rounded-lg"
-              >
-                <p
-                  className={`font-medium text-sm mb-2 ${stageTextColors[stage]}`}
-                >
-                  {getStageLabel(stage)}
-                </p>
-                <p className="text-2xl font-bold text-slate-900 mb-1">
-                  {count}
-                </p>
-                <p className="text-xs text-slate-600">
-                  {count > 0 && `Avg: ${avgProgress}% complete`}
-                </p>
-              </div>
-            );
-          })}
+          ) : (
+            <div className="bg-white rounded-lg p-12 text-center border border-slate-200">
+              <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+              <p className="text-slate-600 font-medium">
+                No projects to display
+              </p>
+              <p className="text-slate-500 text-sm mt-1">
+                Select a project from the list to view updates
+              </p>
+            </div>
+          )}
         </div>
-      </div>
-
-      {/* Workflow Information */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="font-bold text-slate-900 mb-2">
-          💡 About Workflow Stages
-        </h3>
-        <ul className="space-y-2 text-sm text-slate-700">
-          <li>
-            <strong>Prospecting:</strong> Initial client outreach and
-            requirements gathering
-          </li>
-          <li>
-            <strong>Planning:</strong> Scope definition, timeline creation, and
-            resource allocation
-          </li>
-          <li>
-            <strong>In Progress:</strong> Active development and implementation
-            work
-          </li>
-          <li>
-            <strong>Review:</strong> QA testing, client review, and feedback
-            implementation
-          </li>
-          <li>
-            <strong>Signed Off:</strong> Client approval and project completion
-          </li>
-        </ul>
       </div>
     </div>
   );

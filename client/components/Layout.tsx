@@ -46,13 +46,6 @@ export default function Layout({
     { label: "Documents", href: "/documents", icon: FileText, admin: false },
     { label: "Search", href: "/search", icon: Search, admin: false },
     { label: "Calendar", href: "/calendar", icon: Calendar, admin: false },
-    { label: "Chat", href: "/chat", icon: MessageSquare, admin: false },
-    {
-      label: "Client View",
-      href: "/client-summary",
-      icon: Users,
-      admin: false,
-    },
     { label: "Audit Log", href: "/audit", icon: FileText, admin: true },
     { label: "Settings", href: "/settings", icon: Settings, admin: false },
   ];
@@ -120,43 +113,6 @@ export default function Layout({
             </div>
           </div>
 
-          {/* User Switcher for Demo */}
-          <div className="space-y-1 mb-4">
-            <p className="text-xs font-semibold text-slate-400 uppercase px-2">
-              Demo Mode
-            </p>
-            <button
-              onClick={() => onUserChange?.("admin")}
-              className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
-                currentUser?.role === "admin"
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-slate-700/50 text-slate-300"
-              }`}
-            >
-              Admin
-            </button>
-            <button
-              onClick={() => onUserChange?.("team")}
-              className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
-                currentUser?.role === "team"
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-slate-700/50 text-slate-300"
-              }`}
-            >
-              Team Member
-            </button>
-            <button
-              onClick={() => onUserChange?.("client")}
-              className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
-                currentUser?.role === "client"
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-slate-700/50 text-slate-300"
-              }`}
-            >
-              Client
-            </button>
-          </div>
-
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-700/50 transition-colors text-sm"
@@ -189,7 +145,29 @@ export default function Layout({
           <h1 className="text-xl font-semibold text-slate-900">
             Sales2Signoff
           </h1>
-          <div className="text-sm text-slate-600">{currentUser?.company}</div>
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-slate-600">{currentUser?.company}</div>
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100">
+              <span className="text-xs font-semibold text-slate-600 uppercase">
+                Role:
+              </span>
+              <span
+                className={`text-sm font-medium capitalize ${
+                  currentUser?.role === "admin"
+                    ? "text-red-600"
+                    : currentUser?.role === "team"
+                      ? "text-blue-600"
+                      : "text-green-600"
+                }`}
+              >
+                {currentUser?.role === "admin"
+                  ? "Administrator"
+                  : currentUser?.role === "team"
+                    ? "Manager"
+                    : "Member"}
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Page Content */}
