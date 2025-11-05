@@ -5,6 +5,7 @@ import {
   MOCK_PROJECTS,
   MOCK_MEETINGS,
   MOCK_DOCUMENTS,
+  MOCK_WORKFLOW_UPDATES,
   formatDate,
   formatBytes,
 } from "@/utils/mockData";
