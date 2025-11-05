@@ -11,10 +11,9 @@ interface WorkflowProps {
 
 export default function Workflow({ currentUser }: WorkflowProps) {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
-  
-  const projects = isTeamMember(currentUser) 
-    ? MOCK_PROJECTS.filter(p => p.manager === currentUser?.name)
-    : MOCK_PROJECTS;
+
+  // Show all projects for demo purposes
+  const projects = MOCK_PROJECTS;
 
   const currentProject = selectedProjectId 
     ? projects.find(p => p.id === selectedProjectId)
