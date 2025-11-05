@@ -46,13 +46,6 @@ export default function Layout({
     { label: "Documents", href: "/documents", icon: FileText, admin: false },
     { label: "Search", href: "/search", icon: Search, admin: false },
     { label: "Calendar", href: "/calendar", icon: Calendar, admin: false },
-    { label: "Chat", href: "/chat", icon: MessageSquare, admin: false },
-    {
-      label: "Client View",
-      href: "/client-summary",
-      icon: Users,
-      admin: false,
-    },
     { label: "Audit Log", href: "/audit", icon: FileText, admin: true },
     { label: "Settings", href: "/settings", icon: Settings, admin: false },
   ];
