@@ -18,8 +18,21 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [stageFilter, setStageFilter] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [projects, setProjects] = useState(MOCK_PROJECTS);
 
-  const projects = MOCK_PROJECTS;
+  const handleAddProject = (
+    newProject: Omit<Project, "id" | "createdAt" | "updatedAt" | "progress">
+  ) => {
+    const project: Project = {
+      ...newProject,
+      id: `proj-${Date.now()}`,
+      createdAt: new Date().toISOString().split("T")[0],
+      updatedAt: new Date().toISOString().split("T")[0],
+      progress: 0,
+    };
+    setProjects([...projects, project]);
+  };
 
   const getRelevantProjects = () => {
     let filtered = projects;
@@ -85,13 +98,13 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
           </p>
         </div>
         {(isAdmin(currentUser) || isTeamMember(currentUser)) && (
-          <Link
-            to="/add-project"
+          <button
+            onClick={() => setIsModalOpen(true)}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           >
             <Plus className="w-5 h-5" />
             New Project
-          </Link>
+          </button>
         )}
       </div>
 
