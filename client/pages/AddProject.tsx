@@ -9,7 +9,10 @@ interface AddProjectProps {
   onProjectAdd?: (project: Project) => void;
 }
 
-export default function AddProject({ currentUser, onProjectAdd }: AddProjectProps) {
+export default function AddProject({
+  currentUser,
+  onProjectAdd,
+}: AddProjectProps) {
   const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -47,7 +50,7 @@ export default function AddProject({ currentUser, onProjectAdd }: AddProjectProp
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.teamName || !formData.clientEmail || !formData.name) {
       alert("Please fill in all required fields");
       return;
@@ -99,7 +102,9 @@ export default function AddProject({ currentUser, onProjectAdd }: AddProjectProp
           <ArrowLeft className="w-4 h-4" />
           Back to Projects
         </button>
-        <h1 className="text-3xl font-bold text-slate-900">Create New Project</h1>
+        <h1 className="text-3xl font-bold text-slate-900">
+          Create New Project
+        </h1>
         <p className="text-slate-600 mt-1">
           Add a new project with all required details and timeline information.
         </p>
@@ -117,11 +122,15 @@ export default function AddProject({ currentUser, onProjectAdd }: AddProjectProp
                 Project Created!
               </h2>
               <p className="text-slate-600">
-                Your project has been successfully created. Redirecting to projects list...
+                Your project has been successfully created. Redirecting to
+                projects list...
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="bg-white rounded-lg p-8 shadow-sm border border-slate-200 space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              className="bg-white rounded-lg p-8 shadow-sm border border-slate-200 space-y-6"
+            >
               {/* Basic Information */}
               <div>
                 <h3 className="text-lg font-semibold text-slate-900 mb-4">
@@ -492,7 +501,8 @@ export default function AddProject({ currentUser, onProjectAdd }: AddProjectProp
                 💡 Pro Tip
               </p>
               <p className="text-xs text-blue-800">
-                Click on any sample project to quickly populate the form with realistic data.
+                Click on any sample project to quickly populate the form with
+                realistic data.
               </p>
             </div>
           </div>

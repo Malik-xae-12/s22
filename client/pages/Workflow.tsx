@@ -10,17 +10,19 @@ interface WorkflowProps {
 }
 
 export default function Workflow({ currentUser }: WorkflowProps) {
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null,
+  );
 
   // Show all projects for demo purposes
   const projects = MOCK_PROJECTS;
 
-  const currentProject = selectedProjectId 
-    ? projects.find(p => p.id === selectedProjectId)
+  const currentProject = selectedProjectId
+    ? projects.find((p) => p.id === selectedProjectId)
     : projects[0];
 
   const projectUpdates = currentProject
-    ? MOCK_WORKFLOW_UPDATES.filter(u => u.projectId === currentProject.id)
+    ? MOCK_WORKFLOW_UPDATES.filter((u) => u.projectId === currentProject.id)
     : [];
 
   const getStatusColor = (status: string) => {

@@ -186,9 +186,10 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
       <div className="border-b border-slate-200">
         <div className="flex gap-8">
           {["overview", "workflow", "documents", "meetings"].map((tab) => {
-            const tabUpdates = tab === "workflow"
-              ? MOCK_WORKFLOW_UPDATES.filter(u => u.projectId === id)
-              : null;
+            const tabUpdates =
+              tab === "workflow"
+                ? MOCK_WORKFLOW_UPDATES.filter((u) => u.projectId === id)
+                : null;
             return (
               <button
                 key={tab}
@@ -602,12 +603,8 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
                                   : "bg-blue-100 text-blue-700"
                             }`}
                           >
-                            {update.status
-                              .charAt(0)
-                              .toUpperCase() +
-                              update.status
-                                .slice(1)
-                                .replace(/_/g, " ")}
+                            {update.status.charAt(0).toUpperCase() +
+                              update.status.slice(1).replace(/_/g, " ")}
                           </span>
                         </div>
 

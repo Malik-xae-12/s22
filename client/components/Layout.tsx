@@ -113,7 +113,6 @@ export default function Layout({
             </div>
           </div>
 
-
           <button
             onClick={() => setDarkMode(!darkMode)}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg hover:bg-slate-700/50 transition-colors text-sm"
@@ -149,15 +148,23 @@ export default function Layout({
           <div className="flex items-center gap-4">
             <div className="text-sm text-slate-600">{currentUser?.company}</div>
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100">
-              <span className="text-xs font-semibold text-slate-600 uppercase">Role:</span>
-              <span className={`text-sm font-medium capitalize ${
-                currentUser?.role === 'admin' ? 'text-red-600' :
-                currentUser?.role === 'team' ? 'text-blue-600' :
-                'text-green-600'
-              }`}>
-                {currentUser?.role === 'admin' ? 'Administrator' :
-                 currentUser?.role === 'team' ? 'Manager' :
-                 'Member'}
+              <span className="text-xs font-semibold text-slate-600 uppercase">
+                Role:
+              </span>
+              <span
+                className={`text-sm font-medium capitalize ${
+                  currentUser?.role === "admin"
+                    ? "text-red-600"
+                    : currentUser?.role === "team"
+                      ? "text-blue-600"
+                      : "text-green-600"
+                }`}
+              >
+                {currentUser?.role === "admin"
+                  ? "Administrator"
+                  : currentUser?.role === "team"
+                    ? "Manager"
+                    : "Member"}
               </span>
             </div>
           </div>

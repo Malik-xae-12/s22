@@ -1,4 +1,11 @@
-import { Project, Meeting, Document, AuditLog, User, WorkflowUpdate } from "@shared/api";
+import {
+  Project,
+  Meeting,
+  Document,
+  AuditLog,
+  User,
+  WorkflowUpdate,
+} from "@shared/api";
 
 // Mock Users
 export const MOCK_USERS: User[] = [
@@ -518,7 +525,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-1",
     projectId: "proj-1",
     title: "Payment gateway integration completed",
-    notes: "Successfully integrated Stripe payment gateway with webhook support for real-time transaction updates.",
+    notes:
+      "Successfully integrated Stripe payment gateway with webhook support for real-time transaction updates.",
     status: "completed",
     effort: "32h",
     deliverables: "API endpoints, testing documentation",
@@ -530,7 +538,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-2",
     projectId: "proj-1",
     title: "Shopping cart functionality in progress",
-    notes: "Currently working on cart state management and checkout flow. Backend API ready, frontend components 60% complete.",
+    notes:
+      "Currently working on cart state management and checkout flow. Backend API ready, frontend components 60% complete.",
     status: "in_progress",
     effort: "24h",
     deliverables: "Frontend components, state management",
@@ -542,7 +551,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-3",
     projectId: "proj-1",
     title: "User authentication system setup",
-    notes: "JWT-based authentication implemented. Email verification and password reset functionality completed.",
+    notes:
+      "JWT-based authentication implemented. Email verification and password reset functionality completed.",
     status: "completed",
     effort: "18h",
     deliverables: "Auth module, email templates",
@@ -554,7 +564,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-4",
     projectId: "proj-2",
     title: "Database schema migration",
-    notes: "Planning phase for migrating legacy data to new database schema. Initial assessment completed.",
+    notes:
+      "Planning phase for migrating legacy data to new database schema. Initial assessment completed.",
     status: "pending",
     effort: "40h",
     deliverables: "Migration scripts, data validation",
@@ -566,7 +577,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-5",
     projectId: "proj-2",
     title: "Mobile responsive design implementation",
-    notes: "Implementing mobile-first responsive design across all pages. Tablet and desktop versions also in scope.",
+    notes:
+      "Implementing mobile-first responsive design across all pages. Tablet and desktop versions also in scope.",
     status: "in_progress",
     effort: "35h",
     deliverables: "Responsive components, media queries",
@@ -578,7 +590,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-6",
     projectId: "proj-4",
     title: "Analytics dashboard KPI setup",
-    notes: "Configured all key performance indicators and data visualization for real-time tracking dashboard.",
+    notes:
+      "Configured all key performance indicators and data visualization for real-time tracking dashboard.",
     status: "completed",
     effort: "28h",
     deliverables: "Dashboard components, KPI calculations",
@@ -590,7 +603,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-7",
     projectId: "proj-4",
     title: "Real-time data sync implementation",
-    notes: "Implementing WebSocket-based real-time data synchronization for live tracking updates.",
+    notes:
+      "Implementing WebSocket-based real-time data synchronization for live tracking updates.",
     status: "in_progress",
     effort: "32h",
     deliverables: "WebSocket server, client integration",
@@ -602,7 +616,8 @@ export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
     id: "wf-8",
     projectId: "proj-5",
     title: "Security audit and compliance check",
-    notes: "Completed comprehensive security audit covering encryption, data protection, and regulatory compliance.",
+    notes:
+      "Completed comprehensive security audit covering encryption, data protection, and regulatory compliance.",
     status: "completed",
     effort: "45h",
     deliverables: "Audit report, security recommendations",
