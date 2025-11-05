@@ -55,7 +55,7 @@ function AppContent() {
         />
         <Route
           path="/add-project"
-          element={<Placeholder title="Add Project" />}
+          element={<AddProject currentUser={currentUser} />}
         />
         <Route
           path="/workflow"
