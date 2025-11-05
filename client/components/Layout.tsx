@@ -113,42 +113,6 @@ export default function Layout({
             </div>
           </div>
 
-          {/* User Switcher for Demo */}
-          <div className="space-y-1 mb-4">
-            <p className="text-xs font-semibold text-slate-400 uppercase px-2">
-              Demo Mode
-            </p>
-            <button
-              onClick={() => onUserChange?.("admin")}
-              className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
-                currentUser?.role === "admin"
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-slate-700/50 text-slate-300"
-              }`}
-            >
-              Admin
-            </button>
-            <button
-              onClick={() => onUserChange?.("team")}
-              className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
-                currentUser?.role === "team"
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-slate-700/50 text-slate-300"
-              }`}
-            >
-              Team Member
-            </button>
-            <button
-              onClick={() => onUserChange?.("client")}
-              className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition-colors ${
-                currentUser?.role === "client"
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-slate-700/50 text-slate-300"
-              }`}
-            >
-              Client
-            </button>
-          </div>
 
           <button
             onClick={() => setDarkMode(!darkMode)}
