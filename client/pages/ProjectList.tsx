@@ -327,6 +327,13 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
           </p>
         </div>
       </div>
+
+      {/* Add Project Modal */}
+      <AddProjectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleAddProject}
+      />
     </div>
   );
 }
