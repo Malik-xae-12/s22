@@ -1,4 +1,4 @@
-import { Project, Meeting, Document, AuditLog, User } from "@shared/api";
+import { Project, Meeting, Document, AuditLog, User, WorkflowUpdate } from "@shared/api";
 
 // Mock Users
 export const MOCK_USERS: User[] = [
