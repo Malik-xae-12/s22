@@ -161,29 +161,39 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
       {/* Tabs */}
       <div className="border-b border-slate-200">
         <div className="flex gap-8">
-          {["overview", "documents", "meetings"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab as any)}
-              className={`px-2 py-4 font-medium border-b-2 transition-colors ${
-                activeTab === tab
-                  ? "border-blue-600 text-blue-600"
-                  : "border-transparent text-slate-600 hover:text-slate-900"
-              }`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              {tab === "documents" && (
-                <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
-                  {documents.length}
-                </span>
-              )}
-              {tab === "meetings" && (
-                <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
-                  {meetings.length}
-                </span>
-              )}
-            </button>
-          ))}
+          {["overview", "workflow", "documents", "meetings"].map((tab) => {
+            const tabUpdates = tab === "workflow"
+              ? MOCK_WORKFLOW_UPDATES.filter(u => u.projectId === id)
+              : null;
+            return (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab as any)}
+                className={`px-2 py-4 font-medium border-b-2 transition-colors ${
+                  activeTab === tab
+                    ? "border-blue-600 text-blue-600"
+                    : "border-transparent text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab === "documents" && (
+                  <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
+                    {documents.length}
+                  </span>
+                )}
+                {tab === "meetings" && (
+                  <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
+                    {meetings.length}
+                  </span>
+                )}
+                {tab === "workflow" && (
+                  <span className="ml-2 text-xs bg-slate-100 text-slate-700 px-2 py-1 rounded-full">
+                    {tabUpdates?.length || 0}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
