@@ -524,6 +524,105 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
         </div>
       )}
 
+      {activeTab === "workflow" && (
+        <div className="space-y-4">
+          {(() => {
+            const workflowUpdates = MOCK_WORKFLOW_UPDATES.filter(
+              (u) => u.projectId === id,
+            );
+
+            if (workflowUpdates.length === 0) {
+              return (
+                <div className="bg-white rounded-lg p-12 text-center border border-slate-200">
+                  <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                  <p className="text-slate-600 font-medium">
+                    No workflow updates yet
+                  </p>
+                </div>
+              );
+            }
+
+            return (
+              <>
+                <div className="bg-white rounded-lg p-6 border border-slate-200">
+                  <h3 className="text-lg font-bold text-slate-900 mb-4">
+                    Workflow Updates
+                  </h3>
+                  <div className="space-y-4">
+                    {workflowUpdates.map((update) => (
+                      <div
+                        key={update.id}
+                        className={`border-l-4 rounded-lg p-6 bg-white shadow-sm ${
+                          update.status === "completed"
+                            ? "border-l-green-500 bg-green-50"
+                            : update.status === "in_progress"
+                              ? "border-l-yellow-500 bg-yellow-50"
+                              : "border-l-blue-500 bg-blue-50"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <h4 className="font-bold text-slate-900">
+                              {update.title}
+                            </h4>
+                            <p className="text-slate-700 text-sm mt-2">
+                              {update.notes}
+                            </p>
+                          </div>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ml-4 ${
+                              update.status === "completed"
+                                ? "bg-green-100 text-green-700"
+                                : update.status === "in_progress"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-blue-100 text-blue-700"
+                            }`}
+                          >
+                            {update.status
+                              .charAt(0)
+                              .toUpperCase() +
+                              update.status
+                                .slice(1)
+                                .replace(/_/g, " ")}
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Effort
+                            </p>
+                            <p className="text-lg font-bold text-slate-900 mt-1">
+                              {update.effort}
+                            </p>
+                          </div>
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Deliverables
+                            </p>
+                            <p className="text-sm font-semibold text-slate-900 mt-1">
+                              {update.deliverables}
+                            </p>
+                          </div>
+                          <div className="bg-white bg-opacity-50 rounded p-3">
+                            <p className="text-xs text-slate-600 font-medium uppercase">
+                              Date
+                            </p>
+                            <p className="text-sm font-semibold text-slate-900 mt-1">
+                              {formatDate(update.date)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+        </div>
+      )}
+
       {/* Meeting Scheduling Modal */}
       <ScheduleMeetingModal
         isOpen={isMeetingModalOpen}
