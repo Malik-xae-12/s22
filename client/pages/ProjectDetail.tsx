@@ -31,7 +31,7 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
   const { id } = useParams();
   const project = MOCK_PROJECTS.find((p) => p.id === id);
   const [activeTab, setActiveTab] = useState<
-    "overview" | "documents" | "meetings"
+    "overview" | "documents" | "meetings" | "workflow"
   >("overview");
   const [isEditing, setIsEditing] = useState(false);
   const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
