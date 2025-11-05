@@ -29,7 +29,7 @@ export default function ScheduleMeetingModal({
   const [newAction, setNewAction] = useState("");
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -92,7 +92,11 @@ export default function ScheduleMeetingModal({
         <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900">
             Schedule Meeting
-            {projectName && <span className="text-slate-600 font-normal ml-2">({projectName})</span>}
+            {projectName && (
+              <span className="text-slate-600 font-normal ml-2">
+                ({projectName})
+              </span>
+            )}
           </h2>
           <button
             onClick={() => {

@@ -1,14 +1,25 @@
 import { useState } from "react";
 import { User } from "@shared/api";
 import { MOCK_USERS } from "@/utils/mockData";
-import { Save, Mail, Phone, MapPin, Bell, Lock, Eye, EyeOff } from "lucide-react";
+import {
+  Save,
+  Mail,
+  Phone,
+  MapPin,
+  Bell,
+  Lock,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 
 interface SettingsProps {
   currentUser: User | null;
 }
 
 export default function Settings({ currentUser }: SettingsProps) {
-  const [activeTab, setActiveTab] = useState<"profile" | "security" | "notifications">("profile");
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "security" | "notifications"
+  >("profile");
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: currentUser?.name || "",
@@ -31,7 +42,9 @@ export default function Settings({ currentUser }: SettingsProps) {
     sms: false,
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -59,7 +72,9 @@ export default function Settings({ currentUser }: SettingsProps) {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-        <p className="text-slate-600 mt-1">Manage your profile and preferences</p>
+        <p className="text-slate-600 mt-1">
+          Manage your profile and preferences
+        </p>
       </div>
 
       {/* Tabs */}
@@ -92,9 +107,15 @@ export default function Settings({ currentUser }: SettingsProps) {
                 alt={currentUser?.name}
                 className="w-24 h-24 rounded-full mx-auto mb-4"
               />
-              <h3 className="text-lg font-bold text-slate-900">{currentUser?.name}</h3>
-              <p className="text-sm text-slate-600 mt-1 capitalize">{currentUser?.role}</p>
-              <p className="text-sm text-slate-600 mt-1">{currentUser?.company}</p>
+              <h3 className="text-lg font-bold text-slate-900">
+                {currentUser?.name}
+              </h3>
+              <p className="text-sm text-slate-600 mt-1 capitalize">
+                {currentUser?.role}
+              </p>
+              <p className="text-sm text-slate-600 mt-1">
+                {currentUser?.company}
+              </p>
 
               <div className="mt-4 pt-4 border-t border-slate-200 text-left space-y-2 text-xs text-slate-600">
                 <p>
@@ -109,11 +130,15 @@ export default function Settings({ currentUser }: SettingsProps) {
 
           {/* Form */}
           <div className="lg:col-span-2 bg-white rounded-lg p-6 border border-slate-200">
-            <h3 className="text-lg font-bold text-slate-900 mb-4">Profile Information</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-4">
+              Profile Information
+            </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Full Name
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -124,7 +149,9 @@ export default function Settings({ currentUser }: SettingsProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Email Address
+                </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                   <input
@@ -138,7 +165,9 @@ export default function Settings({ currentUser }: SettingsProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Phone Number
+                </label>
                 <div className="relative">
                   <Phone className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
                   <input
@@ -152,7 +181,9 @@ export default function Settings({ currentUser }: SettingsProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Company</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Company
+                </label>
                 <input
                   type="text"
                   name="company"
@@ -163,7 +194,9 @@ export default function Settings({ currentUser }: SettingsProps) {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Bio</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Bio
+                </label>
                 <textarea
                   name="bio"
                   value={formData.bio}
@@ -209,13 +242,19 @@ export default function Settings({ currentUser }: SettingsProps) {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
                   </button>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">New Password</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  New Password
+                </label>
                 <input
                   type={showPassword ? "text" : "password"}
                   name="new"
@@ -244,7 +283,9 @@ export default function Settings({ currentUser }: SettingsProps) {
             </div>
 
             <div className="mt-8 pt-6 border-t border-slate-200">
-              <h4 className="font-bold text-slate-900 mb-3">Two-Factor Authentication</h4>
+              <h4 className="font-bold text-slate-900 mb-3">
+                Two-Factor Authentication
+              </h4>
               <p className="text-sm text-slate-600 mb-4">
                 Add an extra layer of security to your account
               </p>
@@ -288,10 +329,14 @@ export default function Settings({ currentUser }: SettingsProps) {
                       className="w-4 h-4 rounded border-slate-300"
                     />
                     <span className="flex-1">
-                      <p className="font-medium text-slate-900">{labels[key]}</p>
+                      <p className="font-medium text-slate-900">
+                        {labels[key]}
+                      </p>
                       <p className="text-xs text-slate-600 mt-0.5">
-                        {key === "projectUpdates" && "Get notified of project milestones"}
-                        {key === "meetings" && "Reminders for upcoming meetings"}
+                        {key === "projectUpdates" &&
+                          "Get notified of project milestones"}
+                        {key === "meetings" &&
+                          "Reminders for upcoming meetings"}
                         {key === "approvals" && "When approval is requested"}
                         {key === "chat" && "New messages in project channels"}
                         {key === "emails" && "Receive email notifications"}

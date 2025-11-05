@@ -23,7 +23,7 @@ export default function ProjectList({ currentUser }: ProjectListProps) {
   const [projects, setProjects] = useState(MOCK_PROJECTS);
 
   const handleAddProject = (
-    newProject: Omit<Project, "id" | "createdAt" | "updatedAt" | "progress">
+    newProject: Omit<Project, "id" | "createdAt" | "updatedAt" | "progress">,
   ) => {
     const project: Project = {
       ...newProject,

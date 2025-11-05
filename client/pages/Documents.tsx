@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { User } from "@shared/api";
-import { MOCK_DOCUMENTS, MOCK_PROJECTS, formatDate, formatBytes } from "@/utils/mockData";
+import {
+  MOCK_DOCUMENTS,
+  MOCK_PROJECTS,
+  formatDate,
+  formatBytes,
+} from "@/utils/mockData";
 import { FileText, Upload, Filter, Search, Download } from "lucide-react";
 
 interface DocumentsProps {
@@ -24,7 +29,8 @@ export default function Documents({ currentUser }: DocumentsProps) {
       searchQuery === "" ||
       doc.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesProject = selectedProject === "" || doc.projectId === selectedProject;
+    const matchesProject =
+      selectedProject === "" || doc.projectId === selectedProject;
 
     const matchesTag = selectedTag === "" || doc.tags.includes(selectedTag);
 
@@ -34,7 +40,9 @@ export default function Documents({ currentUser }: DocumentsProps) {
   // Group by project
   const grouped = projects.reduce(
     (acc, project) => {
-      const projectDocs = filteredDocs.filter((d) => d.projectId === project.id);
+      const projectDocs = filteredDocs.filter(
+        (d) => d.projectId === project.id,
+      );
       if (projectDocs.length > 0) {
         acc[project.id] = {
           project,
@@ -49,7 +57,7 @@ export default function Documents({ currentUser }: DocumentsProps) {
         project: (typeof projects)[0];
         documents: (typeof documents)[];
       }
-    >
+    >,
   );
 
   return (
@@ -57,8 +65,12 @@ export default function Documents({ currentUser }: DocumentsProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Document Repository</h1>
-          <p className="text-slate-600 mt-1">Manage and access project documents with version history</p>
+          <h1 className="text-3xl font-bold text-slate-900">
+            Document Repository
+          </h1>
+          <p className="text-slate-600 mt-1">
+            Manage and access project documents with version history
+          </p>
         </div>
         <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">
           <Upload className="w-4 h-4" />
@@ -69,7 +81,9 @@ export default function Documents({ currentUser }: DocumentsProps) {
       {/* Filters */}
       <div className="bg-white rounded-lg p-4 border border-slate-200 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Search Documents</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Search Documents
+          </label>
           <div className="relative">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
             <input
@@ -84,7 +98,9 @@ export default function Documents({ currentUser }: DocumentsProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Filter by Project</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Filter by Project
+            </label>
             <select
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
@@ -100,7 +116,9 @@ export default function Documents({ currentUser }: DocumentsProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Filter by Tag</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Filter by Tag
+            </label>
             <select
               value={selectedTag}
               onChange={(e) => setSelectedTag(e.target.value)}
@@ -137,26 +155,39 @@ export default function Documents({ currentUser }: DocumentsProps) {
       ) : (
         <div className="space-y-6">
           {Object.values(grouped).map(({ project, documents: projectDocs }) => (
-            <div key={project.id} className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+            <div
+              key={project.id}
+              className="bg-white rounded-lg border border-slate-200 overflow-hidden"
+            >
               {/* Project Header */}
               <div className="bg-gradient-to-r from-blue-50 to-blue-100 px-6 py-4 border-b border-slate-200">
                 <h3 className="font-bold text-slate-900">{project.teamName}</h3>
-                <p className="text-sm text-slate-600 mt-1">{projectDocs.length} documents</p>
+                <p className="text-sm text-slate-600 mt-1">
+                  {projectDocs.length} documents
+                </p>
               </div>
 
               {/* Documents List */}
               <div className="divide-y divide-slate-200">
                 {projectDocs.map((doc) => (
-                  <div key={doc.id} className="p-4 hover:bg-slate-50 transition-colors">
+                  <div
+                    key={doc.id}
+                    className="p-4 hover:bg-slate-50 transition-colors"
+                  >
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-start gap-3 flex-1">
                         <FileText className="w-5 h-5 text-blue-600 mt-1 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900">{doc.name}</p>
-                          <p className="text-sm text-slate-600 mt-0.5">
-                            {formatBytes(doc.size)} • {formatDate(doc.uploadedAt)}
+                          <p className="font-medium text-slate-900">
+                            {doc.name}
                           </p>
-                          <p className="text-xs text-slate-500 mt-0.5">Uploaded by {doc.uploadedBy}</p>
+                          <p className="text-sm text-slate-600 mt-0.5">
+                            {formatBytes(doc.size)} •{" "}
+                            {formatDate(doc.uploadedAt)}
+                          </p>
+                          <p className="text-xs text-slate-500 mt-0.5">
+                            Uploaded by {doc.uploadedBy}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">

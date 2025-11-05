@@ -1,6 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { MOCK_PROJECTS, MOCK_DOCUMENTS, MOCK_MEETINGS } from "@/utils/mockData";
-import { Search, FileText, Calendar, MessageSquare, FolderOpen } from "lucide-react";
+import {
+  Search,
+  FileText,
+  Calendar,
+  MessageSquare,
+  FolderOpen,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function GlobalSearch() {
@@ -28,7 +34,7 @@ export default function GlobalSearch() {
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.teamName.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
+        p.description.toLowerCase().includes(q),
     ).map((p) => ({
       type: "project" as const,
       id: p.id,
@@ -38,7 +44,7 @@ export default function GlobalSearch() {
     }));
 
     const documentResults = MOCK_DOCUMENTS.filter((d) =>
-      d.name.toLowerCase().includes(q)
+      d.name.toLowerCase().includes(q),
     ).map((d) => ({
       type: "document" as const,
       id: d.id,
@@ -48,7 +54,7 @@ export default function GlobalSearch() {
     }));
 
     const meetingResults = MOCK_MEETINGS.filter((m) =>
-      m.title.toLowerCase().includes(q)
+      m.title.toLowerCase().includes(q),
     ).map((m) => ({
       type: "meeting" as const,
       id: m.id,

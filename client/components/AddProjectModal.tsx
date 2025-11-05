@@ -6,10 +6,16 @@ import { MOCK_USERS } from "@/utils/mockData";
 interface AddProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (project: Omit<Project, "id" | "createdAt" | "updatedAt" | "progress">) => void;
+  onSubmit: (
+    project: Omit<Project, "id" | "createdAt" | "updatedAt" | "progress">,
+  ) => void;
 }
 
-export default function AddProjectModal({ isOpen, onClose, onSubmit }: AddProjectModalProps) {
+export default function AddProjectModal({
+  isOpen,
+  onClose,
+  onSubmit,
+}: AddProjectModalProps) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
@@ -36,7 +42,9 @@ export default function AddProjectModal({ isOpen, onClose, onSubmit }: AddProjec
   const managers = MOCK_USERS.filter((u) => u.role === "team");
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     if (name === "estimation" || name === "budget") {
@@ -99,7 +107,9 @@ export default function AddProjectModal({ isOpen, onClose, onSubmit }: AddProjec
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900">Create New Project</h2>
+          <h2 className="text-xl font-bold text-slate-900">
+            Create New Project
+          </h2>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 p-1"
@@ -340,14 +350,19 @@ export default function AddProjectModal({ isOpen, onClose, onSubmit }: AddProjec
                 </label>
                 <div className="space-y-2">
                   {MOCK_USERS.filter((u) => u.role === "team").map((user) => (
-                    <label key={user.id} className="flex items-center gap-2 cursor-pointer">
+                    <label
+                      key={user.id}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
                       <input
                         type="checkbox"
                         checked={formData.assignedTeam.includes(user.id)}
                         onChange={() => handleTeamToggle(user.id)}
                         className="w-4 h-4 rounded border-slate-300"
                       />
-                      <span className="text-sm text-slate-700">{user.name}</span>
+                      <span className="text-sm text-slate-700">
+                        {user.name}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -374,7 +389,9 @@ export default function AddProjectModal({ isOpen, onClose, onSubmit }: AddProjec
           {step === 4 && (
             <div className="space-y-4">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
-                <h3 className="font-semibold text-slate-900">Review Project Details</h3>
+                <h3 className="font-semibold text-slate-900">
+                  Review Project Details
+                </h3>
                 <div className="text-sm text-slate-700 space-y-1">
                   <p>
                     <strong>Name:</strong> {formData.name}
@@ -386,7 +403,8 @@ export default function AddProjectModal({ isOpen, onClose, onSubmit }: AddProjec
                     <strong>Manager:</strong> {formData.manager}
                   </p>
                   <p>
-                    <strong>Timeline:</strong> {formData.startDate} to {formData.endDate}
+                    <strong>Timeline:</strong> {formData.startDate} to{" "}
+                    {formData.endDate}
                   </p>
                   <p>
                     <strong>Estimation:</strong> {formData.estimation} hours
@@ -400,7 +418,9 @@ export default function AddProjectModal({ isOpen, onClose, onSubmit }: AddProjec
                   <p>
                     <strong>Assigned Team:</strong>{" "}
                     {formData.assignedTeam.length > 0
-                      ? MOCK_USERS.filter((u) => formData.assignedTeam.includes(u.id))
+                      ? MOCK_USERS.filter((u) =>
+                          formData.assignedTeam.includes(u.id),
+                        )
                           .map((u) => u.name)
                           .join(", ")
                       : "None"}

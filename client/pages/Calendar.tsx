@@ -15,8 +15,16 @@ export default function Calendar({ currentUser }: CalendarProps) {
   const meetings = MOCK_MEETINGS;
 
   // Get days in month
-  const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-  const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+  const daysInMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0,
+  ).getDate();
+  const firstDay = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    1,
+  ).getDay();
 
   // Get events for a date
   const getEventsForDate = (date: Date) => {
@@ -27,18 +35,27 @@ export default function Calendar({ currentUser }: CalendarProps) {
   // Get projects timeline events
   const getTimelineEventsForDate = (date: Date) => {
     const dateStr = date.toISOString().split("T")[0];
-    return projects.filter((p) => p.startDate === dateStr || p.endDate === dateStr);
+    return projects.filter(
+      (p) => p.startDate === dateStr || p.endDate === dateStr,
+    );
   };
 
   const handlePrevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1),
+    );
   };
 
   const handleNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1),
+    );
   };
 
-  const monthName = currentDate.toLocaleString("default", { month: "long", year: "numeric" });
+  const monthName = currentDate.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
 
   // Days of week
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -57,8 +74,12 @@ export default function Calendar({ currentUser }: CalendarProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Calendar & Milestones</h1>
-          <p className="text-slate-600 mt-1">Track project timelines and meetings</p>
+          <h1 className="text-3xl font-bold text-slate-900">
+            Calendar & Milestones
+          </h1>
+          <p className="text-slate-600 mt-1">
+            Track project timelines and meetings
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -108,7 +129,10 @@ export default function Calendar({ currentUser }: CalendarProps) {
             {/* Days of week header */}
             <div className="grid grid-cols-7 bg-slate-50 border-b border-slate-200">
               {daysOfWeek.map((day) => (
-                <div key={day} className="p-4 text-center font-semibold text-slate-900">
+                <div
+                  key={day}
+                  className="p-4 text-center font-semibold text-slate-900"
+                >
                   {day}
                 </div>
               ))}
@@ -117,18 +141,29 @@ export default function Calendar({ currentUser }: CalendarProps) {
             {/* Calendar days */}
             <div className="grid grid-cols-7 divide-x divide-y divide-slate-200">
               {calendarDays.map((day, idx) => {
-                const date = day ? new Date(currentDate.getFullYear(), currentDate.getMonth(), day) : null;
+                const date = day
+                  ? new Date(
+                      currentDate.getFullYear(),
+                      currentDate.getMonth(),
+                      day,
+                    )
+                  : null;
                 const dayEvents = date ? getEventsForDate(date) : [];
-                const timelineEvents = date ? getTimelineEventsForDate(date) : [];
+                const timelineEvents = date
+                  ? getTimelineEventsForDate(date)
+                  : [];
                 const isToday =
-                  date &&
-                  new Date().toDateString() === date.toDateString();
+                  date && new Date().toDateString() === date.toDateString();
 
                 return (
                   <div
                     key={idx}
                     className={`p-2 min-h-32 ${
-                      day === null ? "bg-slate-50" : isToday ? "bg-blue-50" : "bg-white"
+                      day === null
+                        ? "bg-slate-50"
+                        : isToday
+                          ? "bg-blue-50"
+                          : "bg-white"
                     }`}
                   >
                     {day && (
@@ -176,20 +211,27 @@ export default function Calendar({ currentUser }: CalendarProps) {
           <div className="space-y-4">
             {/* Upcoming Meetings */}
             <div className="bg-white rounded-lg p-6 border border-slate-200">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">Upcoming Meetings</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">
+                Upcoming Meetings
+              </h3>
               {meetings.length === 0 ? (
                 <p className="text-slate-600">No meetings scheduled</p>
               ) : (
                 <div className="space-y-3">
                   {meetings
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                    .sort(
+                      (a, b) =>
+                        new Date(a.date).getTime() - new Date(b.date).getTime(),
+                    )
                     .map((meeting) => (
                       <div
                         key={meeting.id}
                         className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50"
                       >
                         <div className="flex items-start justify-between mb-2">
-                          <p className="font-medium text-slate-900">{meeting.title}</p>
+                          <p className="font-medium text-slate-900">
+                            {meeting.title}
+                          </p>
                           <span className="px-2 py-1 text-xs bg-blue-50 text-blue-700 rounded font-medium">
                             {meeting.date}
                           </span>
@@ -203,7 +245,9 @@ export default function Calendar({ currentUser }: CalendarProps) {
                           </div>
                           <div className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
-                            <span>{meeting.participants.length} participants</span>
+                            <span>
+                              {meeting.participants.length} participants
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -214,7 +258,9 @@ export default function Calendar({ currentUser }: CalendarProps) {
 
             {/* Project Timeline */}
             <div className="bg-white rounded-lg p-6 border border-slate-200">
-              <h3 className="text-lg font-bold text-slate-900 mb-4">Project Timeline</h3>
+              <h3 className="text-lg font-bold text-slate-900 mb-4">
+                Project Timeline
+              </h3>
               <div className="space-y-3">
                 {projects.map((project) => (
                   <div
@@ -222,10 +268,13 @@ export default function Calendar({ currentUser }: CalendarProps) {
                     className="border border-slate-200 rounded-lg p-4 hover:bg-slate-50"
                   >
                     <p className="font-medium text-slate-900">{project.name}</p>
-                    <p className="text-sm text-slate-600 mt-1">Team: {project.teamName}</p>
+                    <p className="text-sm text-slate-600 mt-1">
+                      Team: {project.teamName}
+                    </p>
                     <div className="mt-2 text-sm text-slate-600">
                       <p>
-                        <strong>Start:</strong> {project.startDate} | <strong>End:</strong> {project.endDate}
+                        <strong>Start:</strong> {project.startDate} |{" "}
+                        <strong>End:</strong> {project.endDate}
                       </p>
                       <p className="mt-1">
                         <strong>Progress:</strong> {project.progress}%

@@ -17,7 +17,12 @@ export interface User {
   bio?: string;
 }
 
-export type ProjectStage = "prospecting" | "planning" | "in_progress" | "review" | "signed_off";
+export type ProjectStage =
+  | "prospecting"
+  | "planning"
+  | "in_progress"
+  | "review"
+  | "signed_off";
 export type ProjectStatus = "active" | "on_hold" | "completed" | "archived";
 
 export interface Project {

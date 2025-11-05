@@ -76,18 +76,12 @@ function AppContent() {
           path="/calendar"
           element={<Calendar currentUser={currentUser} />}
         />
-        <Route
-          path="/chat"
-          element={<Chat currentUser={currentUser} />}
-        />
+        <Route path="/chat" element={<Chat currentUser={currentUser} />} />
         <Route
           path="/client-summary"
           element={<ClientSummary currentUser={currentUser} />}
         />
-        <Route
-          path="/audit"
-          element={<AuditLog currentUser={currentUser} />}
-        />
+        <Route path="/audit" element={<AuditLog currentUser={currentUser} />} />
         <Route
           path="/settings"
           element={<Settings currentUser={currentUser} />}

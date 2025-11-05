@@ -11,7 +11,13 @@ export default function Workflow({ currentUser }: WorkflowProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const projects = MOCK_PROJECTS;
 
-  const stages = ["prospecting", "planning", "in_progress", "review", "signed_off"];
+  const stages = [
+    "prospecting",
+    "planning",
+    "in_progress",
+    "review",
+    "signed_off",
+  ];
 
   const getProjectsByStage = (stage: string) => {
     return projects.filter((p) => p.stage === stage);
@@ -38,8 +44,12 @@ export default function Workflow({ currentUser }: WorkflowProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Workflow Tracker</h1>
-          <p className="text-slate-600 mt-1">Manage project stages and progress</p>
+          <h1 className="text-3xl font-bold text-slate-900">
+            Workflow Tracker
+          </h1>
+          <p className="text-slate-600 mt-1">
+            Manage project stages and progress
+          </p>
         </div>
       </div>
 
@@ -59,13 +69,20 @@ export default function Workflow({ currentUser }: WorkflowProps) {
         {stages.map((stage) => {
           const stageProjects = getProjectsByStage(stage);
           return (
-            <div key={stage} className="bg-slate-50 rounded-lg p-4 border border-slate-200 min-h-[600px] flex flex-col">
+            <div
+              key={stage}
+              className="bg-slate-50 rounded-lg p-4 border border-slate-200 min-h-[600px] flex flex-col"
+            >
               {/* Stage Header */}
               <div className="mb-4">
-                <h3 className={`font-bold text-sm mb-1 ${stageTextColors[stage]}`}>
+                <h3
+                  className={`font-bold text-sm mb-1 ${stageTextColors[stage]}`}
+                >
                   {getStageLabel(stage)}
                 </h3>
-                <p className="text-xs text-slate-600">{stageProjects.length} projects</p>
+                <p className="text-xs text-slate-600">
+                  {stageProjects.length} projects
+                </p>
               </div>
 
               {/* Cards */}
@@ -75,7 +92,9 @@ export default function Workflow({ currentUser }: WorkflowProps) {
                     key={project.id}
                     className={`p-3 rounded-lg border-2 cursor-move hover:shadow-md transition-shadow ${stageColors[stage]}`}
                     onClick={() =>
-                      setExpandedId(expandedId === project.id ? null : project.id)
+                      setExpandedId(
+                        expandedId === project.id ? null : project.id,
+                      )
                     }
                   >
                     <div className="flex items-start gap-2">
@@ -84,7 +103,9 @@ export default function Workflow({ currentUser }: WorkflowProps) {
                         <p className="font-medium text-slate-900 text-sm leading-tight">
                           {project.teamName}
                         </p>
-                        <p className="text-xs text-slate-600 mt-1">{project.manager}</p>
+                        <p className="text-xs text-slate-600 mt-1">
+                          {project.manager}
+                        </p>
 
                         {/* Progress Bar */}
                         <div className="mt-2 w-full bg-slate-300 rounded-full h-1.5 overflow-hidden">
@@ -93,7 +114,9 @@ export default function Workflow({ currentUser }: WorkflowProps) {
                             style={{ width: `${project.progress}%` }}
                           />
                         </div>
-                        <p className="text-xs text-slate-600 mt-1">{project.progress}%</p>
+                        <p className="text-xs text-slate-600 mt-1">
+                          {project.progress}%
+                        </p>
 
                         {/* Expanded Details */}
                         {expandedId === project.id && (
@@ -102,7 +125,9 @@ export default function Workflow({ currentUser }: WorkflowProps) {
                               <p className="font-medium text-slate-900">
                                 {project.name}
                               </p>
-                              <p className="text-slate-600 mt-1">{project.description}</p>
+                              <p className="text-slate-600 mt-1">
+                                {project.description}
+                              </p>
                             </div>
                             <div className="flex gap-2">
                               <span className="px-2 py-1 bg-white rounded text-slate-600 font-medium">
@@ -145,22 +170,35 @@ export default function Workflow({ currentUser }: WorkflowProps) {
 
       {/* Summary Stats */}
       <div className="bg-white rounded-lg p-6 border border-slate-200">
-        <h3 className="text-lg font-bold text-slate-900 mb-4">Workflow Summary</h3>
+        <h3 className="text-lg font-bold text-slate-900 mb-4">
+          Workflow Summary
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {stages.map((stage) => {
             const count = getProjectsByStage(stage).length;
-            const avgProgress = count > 0
-              ? Math.round(
-                  getProjectsByStage(stage).reduce((sum, p) => sum + p.progress, 0) / count
-                )
-              : 0;
+            const avgProgress =
+              count > 0
+                ? Math.round(
+                    getProjectsByStage(stage).reduce(
+                      (sum, p) => sum + p.progress,
+                      0,
+                    ) / count,
+                  )
+                : 0;
 
             return (
-              <div key={stage} className="text-center p-4 bg-slate-50 rounded-lg">
-                <p className={`font-medium text-sm mb-2 ${stageTextColors[stage]}`}>
+              <div
+                key={stage}
+                className="text-center p-4 bg-slate-50 rounded-lg"
+              >
+                <p
+                  className={`font-medium text-sm mb-2 ${stageTextColors[stage]}`}
+                >
                   {getStageLabel(stage)}
                 </p>
-                <p className="text-2xl font-bold text-slate-900 mb-1">{count}</p>
+                <p className="text-2xl font-bold text-slate-900 mb-1">
+                  {count}
+                </p>
                 <p className="text-xs text-slate-600">
                   {count > 0 && `Avg: ${avgProgress}% complete`}
                 </p>
@@ -172,19 +210,25 @@ export default function Workflow({ currentUser }: WorkflowProps) {
 
       {/* Workflow Information */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="font-bold text-slate-900 mb-2">💡 About Workflow Stages</h3>
+        <h3 className="font-bold text-slate-900 mb-2">
+          💡 About Workflow Stages
+        </h3>
         <ul className="space-y-2 text-sm text-slate-700">
           <li>
-            <strong>Prospecting:</strong> Initial client outreach and requirements gathering
+            <strong>Prospecting:</strong> Initial client outreach and
+            requirements gathering
           </li>
           <li>
-            <strong>Planning:</strong> Scope definition, timeline creation, and resource allocation
+            <strong>Planning:</strong> Scope definition, timeline creation, and
+            resource allocation
           </li>
           <li>
-            <strong>In Progress:</strong> Active development and implementation work
+            <strong>In Progress:</strong> Active development and implementation
+            work
           </li>
           <li>
-            <strong>Review:</strong> QA testing, client review, and feedback implementation
+            <strong>Review:</strong> QA testing, client review, and feedback
+            implementation
           </li>
           <li>
             <strong>Signed Off:</strong> Client approval and project completion

@@ -29,16 +29,22 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
 
     const matchesAction = actionFilter === "" || log.action === actionFilter;
     const matchesUser = userFilter === "" || log.user === userFilter;
-    const matchesResource = resourceFilter === "" || log.resourceType === resourceFilter;
+    const matchesResource =
+      resourceFilter === "" || log.resourceType === resourceFilter;
 
     return matchesSearch && matchesAction && matchesUser && matchesResource;
   });
 
   const getActionColor = (
-    action: string
-  ): "bg-blue-50 text-blue-700" | "bg-green-50 text-green-700" | "bg-yellow-50 text-yellow-700" | "bg-red-50 text-red-700" => {
+    action: string,
+  ):
+    | "bg-blue-50 text-blue-700"
+    | "bg-green-50 text-green-700"
+    | "bg-yellow-50 text-yellow-700"
+    | "bg-red-50 text-red-700" => {
     if (action.includes("Created")) return "bg-green-50 text-green-700";
-    if (action.includes("Updated") || action.includes("Modified")) return "bg-blue-50 text-blue-700";
+    if (action.includes("Updated") || action.includes("Modified"))
+      return "bg-blue-50 text-blue-700";
     if (action.includes("Deleted")) return "bg-red-50 text-red-700";
     return "bg-yellow-50 text-yellow-700";
   };
@@ -48,13 +54,17 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-slate-900">Audit Log</h1>
-        <p className="text-slate-600 mt-1">Track all user actions and system changes</p>
+        <p className="text-slate-600 mt-1">
+          Track all user actions and system changes
+        </p>
       </div>
 
       {/* Filters */}
       <div className="bg-white rounded-lg p-4 border border-slate-200 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">Search</label>
+          <label className="block text-sm font-medium text-slate-700 mb-2">
+            Search
+          </label>
           <div className="relative">
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
             <input
@@ -69,7 +79,9 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Action Type</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Action Type
+            </label>
             <select
               value={actionFilter}
               onChange={(e) => setActionFilter(e.target.value)}
@@ -85,7 +97,9 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">User</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              User
+            </label>
             <select
               value={userFilter}
               onChange={(e) => setUserFilter(e.target.value)}
@@ -101,7 +115,9 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Resource Type</label>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Resource Type
+            </label>
             <select
               value={resourceFilter}
               onChange={(e) => setResourceFilter(e.target.value)}
@@ -142,17 +158,32 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="px-6 py-3 text-left font-semibold text-slate-900">Timestamp</th>
-                  <th className="px-6 py-3 text-left font-semibold text-slate-900">Action</th>
-                  <th className="px-6 py-3 text-left font-semibold text-slate-900">User</th>
-                  <th className="px-6 py-3 text-left font-semibold text-slate-900">Resource</th>
-                  <th className="px-6 py-3 text-left font-semibold text-slate-900">Project</th>
-                  <th className="px-6 py-3 text-left font-semibold text-slate-900">Details</th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-900">
+                    Timestamp
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-900">
+                    Action
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-900">
+                    User
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-900">
+                    Resource
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-900">
+                    Project
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-900">
+                    Details
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
                 {filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 transition-colors">
+                  <tr
+                    key={log.id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       <span className="text-xs text-slate-600">
                         {new Date(log.timestamp).toLocaleString()}
@@ -161,7 +192,7 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
                     <td className="px-6 py-4">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getActionColor(
-                          log.action
+                          log.action,
                         )}`}
                       >
                         {log.action}
@@ -201,23 +232,37 @@ export default function AuditLog({ currentUser }: AuditLogProps) {
       {/* Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg p-4 border border-slate-200 text-center">
-          <p className="text-xs text-slate-600 uppercase font-medium">Total Logs</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">{filteredLogs.length}</p>
+          <p className="text-xs text-slate-600 uppercase font-medium">
+            Total Logs
+          </p>
+          <p className="text-2xl font-bold text-slate-900 mt-1">
+            {filteredLogs.length}
+          </p>
         </div>
         <div className="bg-white rounded-lg p-4 border border-slate-200 text-center">
-          <p className="text-xs text-slate-600 uppercase font-medium">Unique Users</p>
+          <p className="text-xs text-slate-600 uppercase font-medium">
+            Unique Users
+          </p>
           <p className="text-2xl font-bold text-slate-900 mt-1">
             {new Set(filteredLogs.map((l) => l.userId)).size}
           </p>
         </div>
         <div className="bg-white rounded-lg p-4 border border-slate-200 text-center">
-          <p className="text-xs text-slate-600 uppercase font-medium">Projects Involved</p>
+          <p className="text-xs text-slate-600 uppercase font-medium">
+            Projects Involved
+          </p>
           <p className="text-2xl font-bold text-slate-900 mt-1">
-            {new Set(filteredLogs.filter((l) => l.projectId).map((l) => l.projectId)).size}
+            {
+              new Set(
+                filteredLogs.filter((l) => l.projectId).map((l) => l.projectId),
+              ).size
+            }
           </p>
         </div>
         <div className="bg-white rounded-lg p-4 border border-slate-200 text-center">
-          <p className="text-xs text-slate-600 uppercase font-medium">Date Range</p>
+          <p className="text-xs text-slate-600 uppercase font-medium">
+            Date Range
+          </p>
           <p className="text-xs text-slate-600 mt-1">
             {filteredLogs.length > 0
               ? `${new Date(filteredLogs[filteredLogs.length - 1].timestamp).toLocaleDateString()} - ${new Date(filteredLogs[0].timestamp).toLocaleDateString()}`

@@ -9,7 +9,9 @@ interface ChatProps {
 
 export default function Chat({ currentUser }: ChatProps) {
   const projects = MOCK_PROJECTS;
-  const [selectedProjectId, setSelectedProjectId] = useState(projects[0]?.id || "");
+  const [selectedProjectId, setSelectedProjectId] = useState(
+    projects[0]?.id || "",
+  );
   const [messages, setMessages] = useState([
     {
       id: "msg-1",
@@ -63,8 +65,12 @@ export default function Chat({ currentUser }: ChatProps) {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Team Communication</h1>
-        <p className="text-slate-600 mt-1">Real-time project channels and discussions</p>
+        <h1 className="text-3xl font-bold text-slate-900">
+          Team Communication
+        </h1>
+        <p className="text-slate-600 mt-1">
+          Real-time project channels and discussions
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[600px]">
@@ -84,8 +90,12 @@ export default function Chat({ currentUser }: ChatProps) {
                     : "border-transparent hover:bg-slate-50"
                 }`}
               >
-                <p className="font-medium text-slate-900 text-sm">{project.teamName}</p>
-                <p className="text-xs text-slate-600 mt-0.5">{project.manager}</p>
+                <p className="font-medium text-slate-900 text-sm">
+                  {project.teamName}
+                </p>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  {project.manager}
+                </p>
               </button>
             ))}
           </div>
@@ -95,8 +105,12 @@ export default function Chat({ currentUser }: ChatProps) {
         <div className="lg:col-span-3 bg-white rounded-lg border border-slate-200 overflow-hidden flex flex-col">
           {/* Chat Header */}
           <div className="border-b border-slate-200 p-4 bg-slate-50">
-            <h3 className="font-bold text-slate-900">{selectedProject?.teamName}</h3>
-            <p className="text-sm text-slate-600 mt-0.5">{selectedProject?.description}</p>
+            <h3 className="font-bold text-slate-900">
+              {selectedProject?.teamName}
+            </h3>
+            <p className="text-sm text-slate-600 mt-0.5">
+              {selectedProject?.description}
+            </p>
           </div>
 
           {/* Messages */}

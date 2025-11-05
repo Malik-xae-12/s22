@@ -51,7 +51,8 @@ export const MOCK_PROJECTS: Project[] = [
     clientEmail: "contact@techstartup.com",
     teamName: "TechStartup",
     manager: "Sarah Chen",
-    description: "Build a responsive web platform for SaaS analytics and reporting",
+    description:
+      "Build a responsive web platform for SaaS analytics and reporting",
     stage: "in_progress",
     status: "active",
     estimation: 40,
@@ -182,7 +183,8 @@ export const MOCK_MEETINGS: Meeting[] = [
     endTime: "11:30",
     participants: ["user-2", "user-3", "Alex Johnson"],
     agenda: "Discuss project scope, timeline, and deliverables",
-    notes: "Agreed on MVP scope. Initial timeline: 4 weeks. Need design assets by 2025-01-20.",
+    notes:
+      "Agreed on MVP scope. Initial timeline: 4 weeks. Need design assets by 2025-01-20.",
     decisions: ["MVP scope finalized", "Weekly meetings scheduled"],
     actionItems: ["Prepare design mockups", "Set up development environment"],
     attachments: ["scope-document.pdf"],
@@ -199,7 +201,8 @@ export const MOCK_MEETINGS: Meeting[] = [
     endTime: "14:45",
     participants: ["user-2", "user-3"],
     agenda: "Review current progress and blockers",
-    notes: "Design mockups reviewed and approved. Backend API setup underway. No major blockers.",
+    notes:
+      "Design mockups reviewed and approved. Backend API setup underway. No major blockers.",
     decisions: ["Proceed with frontend development"],
     actionItems: ["Complete API endpoints by 2025-01-25"],
     attachments: [],
@@ -216,7 +219,8 @@ export const MOCK_MEETINGS: Meeting[] = [
     endTime: "10:30",
     participants: ["user-3", "Emma Davis"],
     agenda: "Discuss technical architecture and platform requirements",
-    notes: "Mobile-first approach agreed. Database migration strategy discussed.",
+    notes:
+      "Mobile-first approach agreed. Database migration strategy discussed.",
     decisions: ["Use React + Node.js stack", "Migrate data in phases"],
     actionItems: ["Create detailed technical spec", "Prepare migration plan"],
     attachments: ["requirements.docx"],
@@ -233,7 +237,8 @@ export const MOCK_MEETINGS: Meeting[] = [
     endTime: "14:15",
     participants: ["user-2", "user-3", "James Wilson"],
     agenda: "Final review of tracking dashboard features",
-    notes: "Dashboard tested with sample data. All KPIs showing correctly. Client satisfied.",
+    notes:
+      "Dashboard tested with sample data. All KPIs showing correctly. Client satisfied.",
     decisions: ["Approve for production release"],
     actionItems: ["Deploy to production", "Provide training materials"],
     attachments: ["final-review-notes.pdf"],
@@ -392,7 +397,11 @@ export const MOCK_AUDIT_LOGS: AuditLog[] = [
     projectId: "proj-1",
     resourceType: "project",
     timestamp: "2025-01-21T16:00:00Z",
-    details: { oldProgress: 50, newProgress: 65, phase: "Frontend Development" },
+    details: {
+      oldProgress: 50,
+      newProgress: 65,
+      phase: "Frontend Development",
+    },
   },
   {
     id: "audit-6",
@@ -426,7 +435,10 @@ export const MOCK_AUDIT_LOGS: AuditLog[] = [
   },
 ];
 
-export const STAGE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+export const STAGE_COLORS: Record<
+  string,
+  { bg: string; text: string; border: string }
+> = {
   prospecting: {
     bg: "bg-blue-50",
     text: "text-blue-700",
