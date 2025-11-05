@@ -14,6 +14,7 @@ import {
   AlertCircle,
   Edit,
 } from "lucide-react";
+import ScheduleMeetingModal from "@/components/ScheduleMeetingModal";
 
 interface ProjectDetailProps {
   currentUser: User | null;
@@ -24,6 +25,7 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
   const project = MOCK_PROJECTS.find((p) => p.id === id);
   const [activeTab, setActiveTab] = useState<"overview" | "documents" | "meetings">("overview");
   const [isEditing, setIsEditing] = useState(false);
+  const [isMeetingModalOpen, setIsMeetingModalOpen] = useState(false);
 
   if (!project) {
     return (
@@ -358,7 +360,10 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
         <div className="bg-white rounded-lg p-6 border border-slate-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-slate-900">Meeting History</h3>
-            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm">
+            <button
+              onClick={() => setIsMeetingModalOpen(true)}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm"
+            >
               + Schedule Meeting
             </button>
           </div>
@@ -416,6 +421,14 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
           )}
         </div>
       )}
+
+      {/* Meeting Scheduling Modal */}
+      <ScheduleMeetingModal
+        isOpen={isMeetingModalOpen}
+        onClose={() => setIsMeetingModalOpen(false)}
+        projectId={id}
+        projectName={project?.name}
+      />
     </div>
   );
 }
