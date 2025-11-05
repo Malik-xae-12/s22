@@ -80,18 +80,44 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg p-4 border border-slate-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-medium text-slate-600 uppercase">
-                Stage
+                Client
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
-                {project.stage.replace(/_/g, " ").toUpperCase()}
+              <p className="text-sm font-bold text-slate-900 mt-1 truncate">
+                {project.clientEmail}
               </p>
             </div>
-            <Calendar className="w-6 h-6 text-blue-600" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-4 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-slate-600 uppercase">
+                Manager
+              </p>
+              <p className="text-sm font-bold text-slate-900 mt-1">
+                {project.manager}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg p-4 border border-slate-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs font-medium text-slate-600 uppercase">
+                Estimation
+              </p>
+              <p className="text-sm font-bold text-slate-900 mt-1">
+                {project.estimation}h
+              </p>
+            </div>
+            <Clock className="w-5 h-5 text-blue-600" />
           </div>
         </div>
 
@@ -101,12 +127,11 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
               <p className="text-xs font-medium text-slate-600 uppercase">
                 Status
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
-                {project.status.charAt(0).toUpperCase() +
-                  project.status.slice(1)}
+              <p className="text-sm font-bold text-slate-900 mt-1 capitalize">
+                {project.status}
               </p>
             </div>
-            <CheckCircle className="w-6 h-6 text-green-600" />
+            <CheckCircle className="w-5 h-5 text-green-600" />
           </div>
         </div>
 
@@ -116,11 +141,11 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
               <p className="text-xs font-medium text-slate-600 uppercase">
                 Progress
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
+              <p className="text-sm font-bold text-slate-900 mt-1">
                 {project.progress}%
               </p>
             </div>
-            <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white text-sm font-bold">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold">
               {project.progress}%
             </div>
           </div>
@@ -132,12 +157,11 @@ export default function ProjectDetail({ currentUser }: ProjectDetailProps) {
               <p className="text-xs font-medium text-slate-600 uppercase">
                 Approval
               </p>
-              <p className="text-lg font-bold text-slate-900 mt-1">
-                {project.approvalsStatus.charAt(0).toUpperCase() +
-                  project.approvalsStatus.slice(1)}
+              <p className="text-sm font-bold text-slate-900 mt-1 capitalize">
+                {project.approvalsStatus}
               </p>
             </div>
-            <AlertCircle className="w-6 h-6 text-orange-600" />
+            <AlertCircle className="w-5 h-5 text-orange-600" />
           </div>
         </div>
       </div>
