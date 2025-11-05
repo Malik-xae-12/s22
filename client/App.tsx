@@ -10,6 +10,15 @@ import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Index from "@/pages/Index";
 import ProjectList from "@/pages/ProjectList";
+import ProjectDetail from "@/pages/ProjectDetail";
+import Analytics from "@/pages/Analytics";
+import Documents from "@/pages/Documents";
+import AuditLog from "@/pages/AuditLog";
+import Calendar from "@/pages/Calendar";
+import Chat from "@/pages/Chat";
+import ClientSummary from "@/pages/ClientSummary";
+import Settings from "@/pages/Settings";
+import Workflow from "@/pages/Workflow";
 import Placeholder from "@/pages/Placeholder";
 import NotFound from "@/pages/NotFound";
 import { User, UserRole } from "@shared/api";
@@ -41,7 +50,7 @@ function AppContent() {
         />
         <Route
           path="/projects/:id"
-          element={<Placeholder title="Project Detail" />}
+          element={<ProjectDetail currentUser={currentUser} />}
         />
         <Route
           path="/add-project"
@@ -49,15 +58,15 @@ function AppContent() {
         />
         <Route
           path="/workflow"
-          element={<Placeholder title="Workflow Tracker" />}
+          element={<Workflow currentUser={currentUser} />}
         />
         <Route
           path="/analytics"
-          element={<Placeholder title="Analytics Dashboard" />}
+          element={<Analytics currentUser={currentUser} />}
         />
         <Route
           path="/documents"
-          element={<Placeholder title="Document Repository" />}
+          element={<Documents currentUser={currentUser} />}
         />
         <Route
           path="/search"
@@ -65,18 +74,24 @@ function AppContent() {
         />
         <Route
           path="/calendar"
-          element={<Placeholder title="Calendar & Milestones" />}
+          element={<Calendar currentUser={currentUser} />}
         />
         <Route
           path="/chat"
-          element={<Placeholder title="Team Communication" />}
+          element={<Chat currentUser={currentUser} />}
         />
         <Route
           path="/client-summary"
-          element={<Placeholder title="Client Summary" />}
+          element={<ClientSummary currentUser={currentUser} />}
         />
-        <Route path="/audit" element={<Placeholder title="Audit Log" />} />
-        <Route path="/settings" element={<Placeholder title="Settings" />} />
+        <Route
+          path="/audit"
+          element={<AuditLog currentUser={currentUser} />}
+        />
+        <Route
+          path="/settings"
+          element={<Settings currentUser={currentUser} />}
+        />
         <Route
           path="/test"
           element={<Placeholder title="Test Environment" />}
