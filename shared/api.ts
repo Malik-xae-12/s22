@@ -49,6 +49,11 @@ export interface Project {
   updatedAt: string;
   approvalsStatus: "pending" | "approved" | "rejected";
   progress: number;
+  estimatedHours?: number;
+  estimatedCost?: number;
+  billingType?: string;
+  currency?: string;
+  proposal?: string;
 }
 
 export interface Meeting {
