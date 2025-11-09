@@ -122,67 +122,80 @@ export default function Projects({ currentUser }: ProjectsProps) {
         </div>
 
         {/* Filters */}
-        {showFilters && (
-          <div className="mt-4 p-4 bg-white rounded-lg border border-slate-200 flex flex-wrap gap-4 items-end">
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            showFilters ? "mt-4 max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="p-4 bg-white rounded-lg border border-slate-200 flex flex-wrap gap-4 items-end">
             <div className="flex-1 min-w-48">
               <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                 Status
               </label>
-              <select
-                value={filters.status}
-                onChange={(e) => handleFilterChange("status", e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
-              >
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="on_hold">On Hold</option>
-                <option value="completed">Completed</option>
-                <option value="archived">Archived</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={filters.status}
+                  onChange={(e) => handleFilterChange("status", e.target.value)}
+                  className="w-full appearance-none px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 cursor-pointer transition-all"
+                >
+                  <option value="">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="on_hold">On Hold</option>
+                  <option value="completed">Completed</option>
+                  <option value="archived">Archived</option>
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
             </div>
 
             <div className="flex-1 min-w-48">
               <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                 Priority
               </label>
-              <select
-                value={filters.priority}
-                onChange={(e) => handleFilterChange("priority", e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
-              >
-                <option value="">All Priority</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-                <option value="Critical">Critical</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={filters.priority}
+                  onChange={(e) => handleFilterChange("priority", e.target.value)}
+                  className="w-full appearance-none px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 cursor-pointer transition-all"
+                >
+                  <option value="">All Priority</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                  <option value="Critical">Critical</option>
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
             </div>
 
             <div className="flex-1 min-w-48">
               <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
                 Department
               </label>
-              <select
-                value={filters.department}
-                onChange={(e) => handleFilterChange("department", e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
-              >
-                <option value="">All Departments</option>
-                <option value="Engineering">Engineering</option>
-                <option value="Design">Design</option>
-                <option value="Sales">Sales</option>
-                <option value="Support">Support</option>
-              </select>
+              <div className="relative">
+                <select
+                  value={filters.department}
+                  onChange={(e) => handleFilterChange("department", e.target.value)}
+                  className="w-full appearance-none px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 cursor-pointer transition-all"
+                >
+                  <option value="">All Departments</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Design">Design</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Support">Support</option>
+                </select>
+                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+              </div>
             </div>
 
             <button
               onClick={handleResetFilters}
-              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all text-sm font-medium"
+              className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all text-sm font-medium"
             >
               Clear Filters
             </button>
           </div>
-        )}
+        </div>
       </div>
 
       {/* KPI Cards */}
