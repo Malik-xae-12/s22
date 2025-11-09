@@ -451,58 +451,41 @@ export default function AddProjectModal({
             </div>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Estimation (Hours) *
+                    Current Stage
                   </label>
-                  <input
-                    type="number"
-                    name="estimation"
-                    value={formData.estimation}
+                  <select
+                    name="stage"
+                    value={formData.stage}
                     onChange={handleInputChange}
-                    placeholder="40"
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  >
+                    <option value="prospecting">Prospecting</option>
+                    <option value="planning">Planning</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="review">Review</option>
+                    <option value="signed_off">Signed Off</option>
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Budget ($)
+                    Status
                   </label>
-                  <input
-                    type="number"
-                    name="budget"
-                    value={formData.budget}
+                  <select
+                    name="status"
+                    value={formData.status}
                     onChange={handleInputChange}
-                    placeholder="15000"
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Assign Team Members
-                </label>
-                <div className="space-y-2">
-                  {MOCK_USERS.filter((u) => u.role === "team").map((user) => (
-                    <label
-                      key={user.id}
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.assignedTeam.includes(user.id)}
-                        onChange={() => handleTeamToggle(user.id)}
-                        className="w-4 h-4 rounded border-slate-300"
-                      />
-                      <span className="text-sm text-slate-700">
-                        {user.name}
-                      </span>
-                    </label>
-                  ))}
+                  >
+                    <option value="active">Active</option>
+                    <option value="on_hold">On Hold</option>
+                    <option value="completed">Completed</option>
+                    <option value="archived">Archived</option>
+                  </select>
                 </div>
               </div>
 
@@ -520,6 +503,30 @@ export default function AddProjectModal({
                   <option value="Signed">Signed</option>
                   <option value="Not Required">Not Required</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Assign Team Members
+                </label>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {MOCK_USERS.filter((u) => u.role === "team").map((user) => (
+                    <label
+                      key={user.id}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={formData.assignedTeam.includes(user.id)}
+                        onChange={() => handleTeamToggle(user.id)}
+                        className="w-4 h-4 rounded border-slate-300"
+                      />
+                      <span className="text-sm text-slate-700">
+                        {user.name}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
           )}
