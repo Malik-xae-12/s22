@@ -111,6 +111,17 @@ function isOverdue(dueDate: string, status: string) {
   return due < today && status !== "completed";
 }
 
+function computeTaskCompletion(task: (typeof MOCK_TASKS)[0]) {
+  if (task.status === "completed") return 100;
+  if (task.estimatedHours && task.estimatedHours > 0) {
+    const pct = Math.round((task.actualHours / task.estimatedHours) * 100);
+    return Math.min(100, Math.max(0, isNaN(pct) ? 0 : pct));
+  }
+  // fallback: in_progress ~50, pending 0
+  if (task.status === "in_progress") return 50;
+  return 0;
+}
+
 export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosureProps) {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>("stages");
