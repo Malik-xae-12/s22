@@ -27,6 +27,10 @@ export default function Projects({ currentUser }: ProjectsProps) {
     status: "",
     priority: "",
     department: "",
+    clientName: "",
+    projectName: "",
+    startDateFrom: "",
+    startDateTo: "",
   });
 
   const handleEdit = (project: any) => {
