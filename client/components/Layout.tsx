@@ -188,15 +188,18 @@ export default function Layout({
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
         <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="lg:hidden p-2 hover:bg-slate-100 rounded"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <h1 className="text-xl font-semibold text-slate-900">
-            Sales2Signoff
-          </h1>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="lg:hidden p-2 hover:bg-slate-100 rounded"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <h1 className="text-xl font-semibold text-slate-900">
+              Sales2Signoff
+            </h1>
+          </div>
+
           <div className="flex items-center gap-4">
             <div className="text-sm text-slate-600">{currentUser?.company}</div>
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-100">
