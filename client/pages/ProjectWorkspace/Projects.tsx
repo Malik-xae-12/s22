@@ -67,6 +67,20 @@ export default function Projects({ currentUser }: ProjectsProps) {
     if (filters.priority && project.priority !== filters.priority) return false;
     if (filters.department && project.department !== filters.department)
       return false;
+    if (
+      filters.clientName &&
+      !project.clientName?.toLowerCase().includes(filters.clientName.toLowerCase())
+    )
+      return false;
+    if (
+      filters.projectName &&
+      !project.name.toLowerCase().includes(filters.projectName.toLowerCase())
+    )
+      return false;
+    if (filters.startDateFrom && project.startDate < filters.startDateFrom)
+      return false;
+    if (filters.startDateTo && project.startDate > filters.startDateTo)
+      return false;
     return true;
   });
 
