@@ -488,7 +488,7 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
           setIsModalOpen(false);
           setSelectedItem(null);
         }}
-        item={selectedItem as any}
+        item={selectedItem}
       />
     </div>
   );
