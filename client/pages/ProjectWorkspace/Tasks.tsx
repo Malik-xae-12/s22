@@ -1,6 +1,15 @@
 import React, { useState, useMemo } from "react";
 import { User } from "@shared/api";
-import { Plus, AlertCircle, Circle, CheckCircle2, Filter, X, ChevronDown, Search } from "lucide-react";
+import {
+  Plus,
+  AlertCircle,
+  Circle,
+  CheckCircle2,
+  Filter,
+  X,
+  ChevronDown,
+  Search,
+} from "lucide-react";
 import { MOCK_TASKS, MOCK_PROJECTS, MOCK_STAGES } from "@/utils/mockData";
 import TaskModal from "@/components/TaskModal";
 
@@ -94,8 +103,12 @@ export default function Tasks({ currentUser }: TasksProps) {
         (t) =>
           t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           t.comments.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getProjectName(t.projectId).toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getStageName(t.stageId).toLowerCase().includes(searchQuery.toLowerCase())
+          getProjectName(t.projectId)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          getStageName(t.stageId)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -221,7 +234,9 @@ export default function Tasks({ currentUser }: TasksProps) {
                 <div className="relative">
                   <select
                     value={filters.project}
-                    onChange={(e) => handleFilterChange("project", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("project", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Projects</option>
@@ -243,7 +258,9 @@ export default function Tasks({ currentUser }: TasksProps) {
                 <div className="relative">
                   <select
                     value={filters.stage}
-                    onChange={(e) => handleFilterChange("stage", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("stage", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Stages</option>
@@ -265,7 +282,9 @@ export default function Tasks({ currentUser }: TasksProps) {
                 <div className="relative">
                   <select
                     value={filters.status}
-                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("status", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Statuses</option>
@@ -331,9 +350,7 @@ export default function Tasks({ currentUser }: TasksProps) {
             {filteredAndSortedTasks.length}
           </span>{" "}
           of{" "}
-          <span className="font-semibold text-slate-900">
-            {tasks.length}
-          </span>{" "}
+          <span className="font-semibold text-slate-900">{tasks.length}</span>{" "}
           tasks
         </p>
       </div>
@@ -437,14 +454,15 @@ export default function Tasks({ currentUser }: TasksProps) {
                 })
               ) : (
                 <tr>
-                  <td
-                    colSpan={8}
-                    className="px-6 py-12 text-center"
-                  >
+                  <td colSpan={8} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <AlertCircle className="w-12 h-12 text-slate-300" />
-                      <p className="text-slate-500 font-medium">No tasks found</p>
-                      <p className="text-slate-400 text-sm">Try adjusting your filters or search query</p>
+                      <p className="text-slate-500 font-medium">
+                        No tasks found
+                      </p>
+                      <p className="text-slate-400 text-sm">
+                        Try adjusting your filters or search query
+                      </p>
                     </div>
                   </td>
                 </tr>

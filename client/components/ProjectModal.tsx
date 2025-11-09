@@ -102,7 +102,9 @@ export default function ProjectModal({ isOpen, onClose, project }: any) {
     },
     {
       title: "Description",
-      fields: [{ label: "Project Description", key: "description", type: "textarea" }],
+      fields: [
+        { label: "Project Description", key: "description", type: "textarea" },
+      ],
     },
   ];
 

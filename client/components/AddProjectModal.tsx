@@ -117,7 +117,8 @@ export default function AddProjectModal({
 
   const isStep1Valid = formData.name && formData.clientName && formData.manager;
   const isStep2Valid = formData.projectType && formData.priority;
-  const isStep3Valid = formData.startDate && formData.endDate && formData.estimation > 0;
+  const isStep3Valid =
+    formData.startDate && formData.endDate && formData.estimation > 0;
   const isStep4Valid = true;
 
   const stepTitles = [
@@ -175,11 +176,7 @@ export default function AddProjectModal({
                         : "bg-blue-700/50 text-blue-100"
                   }`}
                 >
-                  {step > stepNum ? (
-                    <Check className="w-5 h-5" />
-                  ) : (
-                    stepNum
-                  )}
+                  {step > stepNum ? <Check className="w-5 h-5" /> : stepNum}
                 </div>
                 {stepNum < 4 && (
                   <div
@@ -514,38 +511,70 @@ export default function AddProjectModal({
           {step === 4 && (
             <div className="space-y-5 animate-fadeIn">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-                <h3 className="font-semibold text-slate-900">Project Summary</h3>
+                <h3 className="font-semibold text-slate-900">
+                  Project Summary
+                </h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">Project Name</p>
-                    <p className="text-slate-900 font-semibold">{formData.name || "—"}</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      Project Name
+                    </p>
+                    <p className="text-slate-900 font-semibold">
+                      {formData.name || "—"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">Client</p>
-                    <p className="text-slate-900 font-semibold">{formData.clientName || "—"}</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      Client
+                    </p>
+                    <p className="text-slate-900 font-semibold">
+                      {formData.clientName || "—"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">Manager</p>
-                    <p className="text-slate-900 font-semibold">{formData.manager || "—"}</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      Manager
+                    </p>
+                    <p className="text-slate-900 font-semibold">
+                      {formData.manager || "—"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">Priority</p>
-                    <p className="text-slate-900 font-semibold">{formData.priority || "—"}</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      Priority
+                    </p>
+                    <p className="text-slate-900 font-semibold">
+                      {formData.priority || "—"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">Start Date</p>
-                    <p className="text-slate-900 font-semibold">{formData.startDate || "—"}</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      Start Date
+                    </p>
+                    <p className="text-slate-900 font-semibold">
+                      {formData.startDate || "—"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">End Date</p>
-                    <p className="text-slate-900 font-semibold">{formData.endDate || "—"}</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      End Date
+                    </p>
+                    <p className="text-slate-900 font-semibold">
+                      {formData.endDate || "—"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">Est. Hours</p>
-                    <p className="text-slate-900 font-semibold">{formData.estimation || "—"}</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      Est. Hours
+                    </p>
+                    <p className="text-slate-900 font-semibold">
+                      {formData.estimation || "—"}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-slate-600 text-xs font-medium uppercase">Est. Cost</p>
+                    <p className="text-slate-600 text-xs font-medium uppercase">
+                      Est. Cost
+                    </p>
                     <p className="text-slate-900 font-semibold">
                       {formData.currency} {formData.budget || "—"}
                     </p>
@@ -569,7 +598,9 @@ export default function AddProjectModal({
                         onChange={() => handleTeamToggle(user.id)}
                         className="w-4 h-4 rounded border-slate-300 cursor-pointer"
                       />
-                      <span className="text-sm text-slate-700">{user.name}</span>
+                      <span className="text-sm text-slate-700">
+                        {user.name}
+                      </span>
                     </label>
                   ))}
                 </div>

@@ -69,7 +69,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
       return false;
     if (
       filters.clientName &&
-      !project.clientName?.toLowerCase().includes(filters.clientName.toLowerCase())
+      !project.clientName
+        ?.toLowerCase()
+        .includes(filters.clientName.toLowerCase())
     )
       return false;
     if (
@@ -159,7 +161,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                 <input
                   type="text"
                   value={filters.clientName}
-                  onChange={(e) => handleFilterChange("clientName", e.target.value)}
+                  onChange={(e) =>
+                    handleFilterChange("clientName", e.target.value)
+                  }
                   placeholder="Search client..."
                   className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 transition-all"
                 />
@@ -172,7 +176,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                 <input
                   type="text"
                   value={filters.projectName}
-                  onChange={(e) => handleFilterChange("projectName", e.target.value)}
+                  onChange={(e) =>
+                    handleFilterChange("projectName", e.target.value)
+                  }
                   placeholder="Search project..."
                   className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 transition-all"
                 />
@@ -188,7 +194,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                 <input
                   type="date"
                   value={filters.startDateFrom}
-                  onChange={(e) => handleFilterChange("startDateFrom", e.target.value)}
+                  onChange={(e) =>
+                    handleFilterChange("startDateFrom", e.target.value)
+                  }
                   className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 transition-all"
                 />
               </div>
@@ -200,7 +208,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                 <input
                   type="date"
                   value={filters.startDateTo}
-                  onChange={(e) => handleFilterChange("startDateTo", e.target.value)}
+                  onChange={(e) =>
+                    handleFilterChange("startDateTo", e.target.value)
+                  }
                   className="w-full px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 transition-all"
                 />
               </div>
@@ -215,7 +225,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                 <div className="relative">
                   <select
                     value={filters.status}
-                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("status", e.target.value)
+                    }
                     className="w-full appearance-none px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 cursor-pointer transition-all"
                   >
                     <option value="">All Status</option>
@@ -235,7 +247,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                 <div className="relative">
                   <select
                     value={filters.priority}
-                    onChange={(e) => handleFilterChange("priority", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("priority", e.target.value)
+                    }
                     className="w-full appearance-none px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 cursor-pointer transition-all"
                   >
                     <option value="">All Priority</option>
@@ -255,7 +269,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                 <div className="relative">
                   <select
                     value={filters.department}
-                    onChange={(e) => handleFilterChange("department", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("department", e.target.value)
+                    }
                     className="w-full appearance-none px-3 py-2.5 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-sm font-medium text-slate-700 cursor-pointer transition-all"
                   >
                     <option value="">All Departments</option>
