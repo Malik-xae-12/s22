@@ -1,20 +1,22 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
+import { MOCK_PROJECTS } from "@/utils/mockData";
 
 interface StageModalProps {
   isOpen: boolean;
   onClose: () => void;
+  stage?: any;
 }
 
-export default function StageModal({ isOpen, onClose }: StageModalProps) {
+export default function StageModal({ isOpen, onClose, stage }: StageModalProps) {
   const [formData, setFormData] = useState({
-    name: "",
-    projectId: "",
-    owner: "",
-    type: "planning",
-    startDate: "",
-    endDate: "",
-    remarks: "",
+    name: stage?.name || "",
+    projectId: stage?.projectId || "",
+    owner: stage?.owner || "",
+    type: stage?.type || "planning",
+    startDate: stage?.startDate || "",
+    endDate: stage?.endDate || "",
+    remarks: stage?.remarks || "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
