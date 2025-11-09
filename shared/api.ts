@@ -28,6 +28,7 @@ export type ProjectStatus = "active" | "on_hold" | "completed" | "archived";
 export interface Project {
   id: string;
   name: string;
+  clientName?: string;
   clientEmail: string;
   teamName: string;
   manager: string;
@@ -54,6 +55,11 @@ export interface Project {
   billingType?: string;
   currency?: string;
   proposal?: string;
+  presalesMode?: string;
+  projectMode?: string;
+  projectType?: string;
+  priority?: string;
+  department?: string;
 }
 
 export interface Meeting {
