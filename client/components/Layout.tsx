@@ -1,25 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { User } from "@shared/api";
 import {
   LayoutDashboard,
   FolderOpen,
-  Plus,
   Zap,
-  BarChart3,
-  Settings,
-  FileText,
-  Search,
-  Calendar,
-  MessageSquare,
-  Users,
-  LogOut,
+  ChevronDown,
   Menu,
   X,
   Moon,
   Sun,
+  Workflow,
 } from "lucide-react";
-import { isAdmin } from "@/utils/auth";
+import { cn } from "@/lib/utils";
 import GlobalSearch from "./GlobalSearch";
 
 interface LayoutProps {
@@ -34,25 +27,26 @@ export default function Layout({
   onUserChange,
 }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [workspaceOpen, setWorkspaceOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
+  const location = useLocation();
 
   const navItems = [
-    { label: "Dashboard", href: "/", icon: LayoutDashboard, admin: false },
-    { label: "Projects", href: "/projects", icon: FolderOpen, admin: false },
-    { label: "Add Project", href: "/add-project", icon: Plus, admin: false },
-    { label: "Workflow", href: "/workflow", icon: Zap, admin: false },
-    { label: "Analytics", href: "/analytics", icon: BarChart3, admin: true },
-    { label: "Documents", href: "/documents", icon: FileText, admin: false },
-    { label: "Search", href: "/search", icon: Search, admin: false },
-    { label: "Calendar", href: "/calendar", icon: Calendar, admin: false },
-    { label: "Audit Log", href: "/audit", icon: FileText, admin: true },
-    { label: "Settings", href: "/settings", icon: Settings, admin: false },
+    { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    {
+      label: "Project Workspace",
+      icon: FolderOpen,
+      submenu: [
+        { label: "Projects", href: "/workspace/projects" },
+        { label: "Stages", href: "/workspace/stages" },
+        { label: "Tasks", href: "/workspace/tasks" },
+      ],
+    },
+    { label: "Workflow & Closure", href: "/workflow", icon: Workflow },
   ];
 
-  const visibleItems = navItems.filter(
-    (item) => !item.admin || isAdmin(currentUser),
-  );
+  const isActiveRoute = (href: string) => location.pathname === href;
+  const isWorkspaceActive = location.pathname.startsWith("/workspace");
 
   return (
     <div className={`flex h-screen ${darkMode ? "dark" : ""}`}>
