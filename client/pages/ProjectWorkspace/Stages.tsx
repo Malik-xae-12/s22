@@ -45,7 +45,11 @@ export default function Stages({ currentUser }: StagesProps) {
     const colors: Record<string, { bg: string; text: string; icon: any }> = {
       not_started: { bg: "bg-gray-100", text: "text-gray-700", icon: null },
       in_progress: { bg: "bg-blue-100", text: "text-blue-700", icon: Zap },
-      completed: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle },
+      completed: {
+        bg: "bg-green-100",
+        text: "text-green-700",
+        icon: CheckCircle,
+      },
     };
     return colors[status] || colors.not_started;
   };
@@ -98,7 +102,7 @@ export default function Stages({ currentUser }: StagesProps) {
       result = result.filter(
         (s) =>
           s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.remarks.toLowerCase().includes(searchQuery.toLowerCase())
+          s.remarks.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -117,9 +121,13 @@ export default function Stages({ currentUser }: StagesProps) {
     result = [...result].sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+          return (
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+          );
         case "oldest":
-          return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+          return (
+            new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+          );
         case "name":
           return a.name.localeCompare(b.name);
         default:
@@ -136,7 +144,9 @@ export default function Stages({ currentUser }: StagesProps) {
       <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Project Stages</h1>
-          <p className="text-slate-600 mt-1 text-sm">Manage and track project execution stages</p>
+          <p className="text-slate-600 mt-1 text-sm">
+            Manage and track project execution stages
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -160,7 +170,11 @@ export default function Stages({ currentUser }: StagesProps) {
       {/* Sorting Controls */}
       <div className="flex justify-between items-center">
         <p className="text-sm text-slate-600">
-          Showing <span className="font-semibold text-slate-900">{filteredAndSortedStages.length}</span> stages
+          Showing{" "}
+          <span className="font-semibold text-slate-900">
+            {filteredAndSortedStages.length}
+          </span>{" "}
+          stages
         </p>
         <select
           value={sortBy}
@@ -208,21 +222,34 @@ export default function Stages({ currentUser }: StagesProps) {
                   const statusColor = getStatusColor(stage.status);
                   const StatusIcon = statusColor.icon;
                   return (
-                    <tr key={stage.id} className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}>
+                    <tr
+                      key={stage.id}
+                      className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}
+                    >
                       <td className="px-6 py-4">
-                        <span className="font-semibold text-slate-900">{stage.name}</span>
+                        <span className="font-semibold text-slate-900">
+                          {stage.name}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{getProjectName(stage.projectId)}</span>
+                        <span className="text-slate-600 text-sm">
+                          {getProjectName(stage.projectId)}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{stage.startDate}</span>
+                        <span className="text-slate-600 text-sm">
+                          {stage.startDate}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{stage.endDate}</span>
+                        <span className="text-slate-600 text-sm">
+                          {stage.endDate}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{stage.approvalDate || "—"}</span>
+                        <span className="text-slate-600 text-sm">
+                          {stage.approvalDate || "—"}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
@@ -242,7 +269,9 @@ export default function Stages({ currentUser }: StagesProps) {
                               style={{ width: `${stage.completion}%` }}
                             />
                           </div>
-                          <span className="text-xs font-bold text-slate-700 w-7 text-right">{stage.completion}%</span>
+                          <span className="text-xs font-bold text-slate-700 w-7 text-right">
+                            {stage.completion}%
+                          </span>
                         </div>
                       </td>
                     </tr>
@@ -250,7 +279,10 @@ export default function Stages({ currentUser }: StagesProps) {
                 })
               ) : (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-slate-500">
+                  <td
+                    colSpan={7}
+                    className="px-6 py-8 text-center text-slate-500"
+                  >
                     No stages found matching your filters
                   </td>
                 </tr>
@@ -261,7 +293,11 @@ export default function Stages({ currentUser }: StagesProps) {
       </div>
 
       {/* Stage Modal */}
-      <StageModal isOpen={isModalOpen} onClose={handleCloseModal} stage={editingStage} />
+      <StageModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        stage={editingStage}
+      />
 
       {/* Floating Action Button (Mobile) */}
       <button

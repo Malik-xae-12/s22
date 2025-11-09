@@ -19,8 +19,14 @@ interface ApprovalModalProps {
   item: WorkflowItem | null;
 }
 
-export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalProps) {
-  const [action, setAction] = useState<"approve" | "reject" | "rework" | null>(null);
+export default function ApprovalModal({
+  isOpen,
+  onClose,
+  item,
+}: ApprovalModalProps) {
+  const [action, setAction] = useState<"approve" | "reject" | "rework" | null>(
+    null,
+  );
   const [formData, setFormData] = useState({
     remarks: "",
     attachments: [] as File[],
@@ -65,7 +71,9 @@ export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalPr
         <div className="flex items-center justify-between p-6 border-b border-slate-200 sticky top-0 bg-white">
           <div>
             <h2 className="text-xl font-bold text-slate-900">
-              {isActionSelected ? `${action.charAt(0).toUpperCase() + action.slice(1)} Item` : "Approval Action"}
+              {isActionSelected
+                ? `${action.charAt(0).toUpperCase() + action.slice(1)} Item`
+                : "Approval Action"}
             </h2>
             <p className="text-sm text-slate-600 mt-1">{item.entityName}</p>
           </div>
@@ -85,15 +93,21 @@ export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalPr
               <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-slate-600 font-medium">Entity Type</p>
+                    <p className="text-xs text-slate-600 font-medium">
+                      Entity Type
+                    </p>
                     <p className="text-sm font-semibold text-slate-900 mt-1">
-                      {item.entityType.charAt(0).toUpperCase() + item.entityType.slice(1)}
+                      {item.entityType.charAt(0).toUpperCase() +
+                        item.entityType.slice(1)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-slate-600 font-medium">Current Status</p>
+                    <p className="text-xs text-slate-600 font-medium">
+                      Current Status
+                    </p>
                     <p className="text-sm font-semibold text-slate-900 mt-1">
-                      {item.approvalStatus.charAt(0).toUpperCase() + item.approvalStatus.slice(1).replace("_", " ")}
+                      {item.approvalStatus.charAt(0).toUpperCase() +
+                        item.approvalStatus.slice(1).replace("_", " ")}
                     </p>
                   </div>
                 </div>
@@ -101,7 +115,9 @@ export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalPr
 
               {/* Action Selection */}
               <div className="space-y-3">
-                <p className="text-sm font-semibold text-slate-900">Select Action</p>
+                <p className="text-sm font-semibold text-slate-900">
+                  Select Action
+                </p>
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
@@ -109,7 +125,9 @@ export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalPr
                     className="p-4 border-2 border-green-200 rounded-lg hover:bg-green-50 hover:border-green-400 transition-colors text-center"
                   >
                     <p className="text-lg font-bold text-green-700">✓</p>
-                    <p className="text-sm font-semibold text-green-700">Approve</p>
+                    <p className="text-sm font-semibold text-green-700">
+                      Approve
+                    </p>
                   </button>
                   <button
                     type="button"
@@ -125,14 +143,18 @@ export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalPr
                     className="p-4 border-2 border-orange-200 rounded-lg hover:bg-orange-50 hover:border-orange-400 transition-colors text-center"
                   >
                     <p className="text-lg font-bold text-orange-700">↻</p>
-                    <p className="text-sm font-semibold text-orange-700">Rework</p>
+                    <p className="text-sm font-semibold text-orange-700">
+                      Rework
+                    </p>
                   </button>
                 </div>
               </div>
 
               {/* Current Item Remarks */}
               <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                <p className="text-sm font-semibold text-slate-900 mb-2">Item Remarks</p>
+                <p className="text-sm font-semibold text-slate-900 mb-2">
+                  Item Remarks
+                </p>
                 <p className="text-sm text-slate-700">{item.remarks}</p>
               </div>
             </>
@@ -140,8 +162,12 @@ export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalPr
             <>
               {/* Action Confirmation Header */}
               <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
-                <p className="text-sm text-slate-600 mb-1">Performing action on:</p>
-                <p className="text-sm font-semibold text-slate-900">{item.entityName}</p>
+                <p className="text-sm text-slate-600 mb-1">
+                  Performing action on:
+                </p>
+                <p className="text-sm font-semibold text-slate-900">
+                  {item.entityName}
+                </p>
               </div>
 
               {/* Remarks Input */}
@@ -177,19 +203,28 @@ export default function ApprovalModal({ isOpen, onClose, item }: ApprovalModalPr
                     className="flex items-center justify-center gap-2 cursor-pointer hover:text-blue-600 transition-colors"
                   >
                     <Upload className="w-5 h-5" />
-                    <span className="text-sm font-medium">Click to upload files</span>
+                    <span className="text-sm font-medium">
+                      Click to upload files
+                    </span>
                   </label>
                   {formData.attachments.length > 0 && (
                     <div className="mt-3 space-y-2">
                       {formData.attachments.map((file, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded">
-                          <span className="text-sm text-slate-700">{file.name}</span>
+                        <div
+                          key={idx}
+                          className="flex items-center justify-between p-2 bg-slate-50 rounded"
+                        >
+                          <span className="text-sm text-slate-700">
+                            {file.name}
+                          </span>
                           <button
                             type="button"
                             onClick={() => {
                               setFormData((prev) => ({
                                 ...prev,
-                                attachments: prev.attachments.filter((_, i) => i !== idx),
+                                attachments: prev.attachments.filter(
+                                  (_, i) => i !== idx,
+                                ),
                               }));
                             }}
                             className="text-red-600 hover:text-red-700"

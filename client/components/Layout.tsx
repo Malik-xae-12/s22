@@ -90,7 +90,7 @@ export default function Layout({
                       "w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-colors",
                       isActive
                         ? "bg-slate-700 text-white"
-                        : "hover:bg-slate-700/50 text-slate-100"
+                        : "hover:bg-slate-700/50 text-slate-100",
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -100,7 +100,7 @@ export default function Layout({
                     <ChevronDown
                       className={cn(
                         "w-4 h-4 transition-transform",
-                        workspaceOpen && "rotate-180"
+                        workspaceOpen && "rotate-180",
                       )}
                     />
                   </button>
@@ -114,7 +114,7 @@ export default function Layout({
                             "block px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                             isActiveRoute(subitem.href)
                               ? "bg-blue-500/20 text-blue-300"
-                              : "hover:bg-slate-700/50 text-slate-300"
+                              : "hover:bg-slate-700/50 text-slate-300",
                           )}
                         >
                           {subitem.label}
@@ -134,7 +134,7 @@ export default function Layout({
                   "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors",
                   isActive
                     ? "bg-slate-700 text-white"
-                    : "hover:bg-slate-700/50 text-slate-100"
+                    : "hover:bg-slate-700/50 text-slate-100",
                 )}
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />

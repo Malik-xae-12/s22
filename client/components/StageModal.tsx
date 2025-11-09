@@ -8,7 +8,11 @@ interface StageModalProps {
   stage?: any;
 }
 
-export default function StageModal({ isOpen, onClose, stage }: StageModalProps) {
+export default function StageModal({
+  isOpen,
+  onClose,
+  stage,
+}: StageModalProps) {
   const [formData, setFormData] = useState({
     name: stage?.name || "",
     projectId: stage?.projectId || "",
@@ -19,7 +23,11 @@ export default function StageModal({ isOpen, onClose, stage }: StageModalProps) 
     remarks: stage?.remarks || "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };

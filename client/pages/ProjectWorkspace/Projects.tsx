@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import { User } from "@shared/api";
-import { Plus, Edit, Trash2, Briefcase, Users, Zap, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Briefcase,
+  Users,
+  Zap,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import { MOCK_PROJECTS } from "@/utils/mockData";
 import ProjectModal from "@/components/ProjectModal";
 
@@ -60,7 +69,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
       <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
-          <p className="text-slate-600 mt-1 text-sm">Manage and track all projects in your portfolio</p>
+          <p className="text-slate-600 mt-1 text-sm">
+            Manage and track all projects in your portfolio
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -76,9 +87,14 @@ export default function Projects({ currentUser }: ProjectsProps) {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <div key={stat.label} className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+            <div
+              key={stat.label}
+              className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300"
+            >
               <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{stat.label}</p>
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+                  {stat.label}
+                </p>
                 <div className={`p-2 rounded-lg ${stat.bgColor}`}>
                   <Icon className="w-4 h-4 text-slate-700" />
                 </div>
@@ -95,20 +111,39 @@ export default function Projects({ currentUser }: ProjectsProps) {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/50">
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Project Name</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Client Name</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Manager</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Start Date</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">End Date</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Progress</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Project Name
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Client Name
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Manager
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Start Date
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  End Date
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Progress
+                </th>
+                <th className="px-6 py-4 text-center text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
               {projects.map((project, idx) => (
-                <tr key={project.id} className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}>
+                <tr
+                  key={project.id}
+                  className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}
+                >
                   <td className="px-6 py-4">
-                    <span className="font-semibold text-slate-900">{project.name}</span>
+                    <span className="font-semibold text-slate-900">
+                      {project.name}
+                    </span>
                   </td>
                   <td className="px-6 py-4">
                     <span className="text-slate-600">{project.teamName}</span>
@@ -120,10 +155,14 @@ export default function Projects({ currentUser }: ProjectsProps) {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-600 text-sm">{project.startDate}</span>
+                    <span className="text-slate-600 text-sm">
+                      {project.startDate}
+                    </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-slate-600 text-sm">{project.endDate}</span>
+                    <span className="text-slate-600 text-sm">
+                      {project.endDate}
+                    </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3 min-w-fit">
@@ -133,7 +172,9 @@ export default function Projects({ currentUser }: ProjectsProps) {
                           style={{ width: `${project.progress}%` }}
                         />
                       </div>
-                      <span className="text-xs font-bold text-slate-700 w-8 text-right">{project.progress}%</span>
+                      <span className="text-xs font-bold text-slate-700 w-8 text-right">
+                        {project.progress}%
+                      </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
@@ -161,7 +202,11 @@ export default function Projects({ currentUser }: ProjectsProps) {
       </div>
 
       {/* Project Modal */}
-      <ProjectModal isOpen={isModalOpen} onClose={handleCloseModal} project={editingProject} />
+      <ProjectModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        project={editingProject}
+      />
 
       {/* Floating Action Button (Mobile) */}
       <button

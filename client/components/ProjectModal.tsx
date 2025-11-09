@@ -32,7 +32,11 @@ const SAMPLE_CLIENTS = [
   "FinTech Solutions",
 ];
 
-export default function ProjectModal({ isOpen, onClose, project }: ProjectModalProps) {
+export default function ProjectModal({
+  isOpen,
+  onClose,
+  project,
+}: ProjectModalProps) {
   const [formData, setFormData] = useState({
     name: project?.name || "",
     clientName: project?.teamName || "",
@@ -49,7 +53,9 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -75,7 +81,9 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
   if (!isOpen) return null;
 
   const currentCurrency = CURRENCIES.find((c) => c.code === formData.currency);
-  const projectManagers = MOCK_USERS.filter((u) => u.role === "team" || u.role === "admin");
+  const projectManagers = MOCK_USERS.filter(
+    (u) => u.role === "team" || u.role === "admin",
+  );
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -87,7 +95,9 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               {project ? "Edit Project" : "Create New Project"}
             </h2>
             <p className="text-blue-100 text-sm mt-1">
-              {project ? "Update project details" : "Add a new project to your portfolio"}
+              {project
+                ? "Update project details"
+                : "Add a new project to your portfolio"}
             </p>
           </div>
           <button
@@ -248,7 +258,9 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
               >
                 Estimated Hours
               </label>
-              <span className="absolute right-4 top-3.5 text-slate-500 font-medium">hrs</span>
+              <span className="absolute right-4 top-3.5 text-slate-500 font-medium">
+                hrs
+              </span>
             </div>
 
             {/* Estimated Cost with Currency */}

@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { User } from "@shared/api";
-import { CheckCircle2, XCircle, Clock, MessageSquare, FileUp } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  Clock,
+  MessageSquare,
+  FileUp,
+} from "lucide-react";
 import { MOCK_WORKFLOW_ITEMS } from "@/utils/mockData";
 import ApprovalModal from "@/components/ApprovalModal";
 
@@ -8,9 +14,13 @@ interface WorkflowAndClosureProps {
   currentUser: User | null;
 }
 
-export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosureProps) {
+export default function WorkflowAndClosure({
+  currentUser,
+}: WorkflowAndClosureProps) {
   const [workflowItems] = useState(MOCK_WORKFLOW_ITEMS);
-  const [selectedItem, setSelectedItem] = useState<(typeof MOCK_WORKFLOW_ITEMS)[0] | null>(null);
+  const [selectedItem, setSelectedItem] = useState<
+    (typeof MOCK_WORKFLOW_ITEMS)[0] | null
+  >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getStatusIcon = (status: string) => {
@@ -66,8 +76,12 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Workflow & Closure</h1>
-        <p className="text-slate-600 mt-1">Monitor and manage project approvals and closure workflows</p>
+        <h1 className="text-3xl font-bold text-slate-900">
+          Workflow & Closure
+        </h1>
+        <p className="text-slate-600 mt-1">
+          Monitor and manage project approvals and closure workflows
+        </p>
       </div>
 
       {/* Timeline Section */}
@@ -84,25 +98,35 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
 
             <div className="flex gap-4">
               {/* Status Icon */}
-              <div className="flex-shrink-0 pt-1">{getStatusIcon(item.approvalStatus)}</div>
+              <div className="flex-shrink-0 pt-1">
+                {getStatusIcon(item.approvalStatus)}
+              </div>
 
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-4 mb-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getEntityTypeBadge(item.entityType)}`}>
-                        {item.entityType.charAt(0).toUpperCase() + item.entityType.slice(1)}
+                      <span
+                        className={`inline-block px-2 py-1 rounded text-xs font-semibold ${getEntityTypeBadge(item.entityType)}`}
+                      >
+                        {item.entityType.charAt(0).toUpperCase() +
+                          item.entityType.slice(1)}
                       </span>
                       <span className="inline-block px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">
                         {getStatusLabel(item.approvalStatus)}
                       </span>
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900">{item.entityName}</h3>
+                    <h3 className="text-lg font-bold text-slate-900">
+                      {item.entityName}
+                    </h3>
                     {item.approvedBy && (
                       <p className="text-sm text-slate-600 mt-1">
-                        Approved by <span className="font-semibold">{item.approvedBy}</span>
-                        {item.approvalDate && <span> on {item.approvalDate}</span>}
+                        Approved by{" "}
+                        <span className="font-semibold">{item.approvedBy}</span>
+                        {item.approvalDate && (
+                          <span> on {item.approvalDate}</span>
+                        )}
                       </p>
                     )}
                   </div>

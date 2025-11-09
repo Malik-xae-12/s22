@@ -36,11 +36,26 @@ function AppContent() {
   return (
     <Layout currentUser={currentUser} onUserChange={handleUserChange}>
       <Routes>
-        <Route path="/dashboard" element={<Dashboard currentUser={currentUser} />} />
-        <Route path="/workspace/projects" element={<Projects currentUser={currentUser} />} />
-        <Route path="/workspace/stages" element={<Stages currentUser={currentUser} />} />
-        <Route path="/workspace/tasks" element={<Tasks currentUser={currentUser} />} />
-        <Route path="/workflow" element={<WorkflowAndClosure currentUser={currentUser} />} />
+        <Route
+          path="/dashboard"
+          element={<Dashboard currentUser={currentUser} />}
+        />
+        <Route
+          path="/workspace/projects"
+          element={<Projects currentUser={currentUser} />}
+        />
+        <Route
+          path="/workspace/stages"
+          element={<Stages currentUser={currentUser} />}
+        />
+        <Route
+          path="/workspace/tasks"
+          element={<Tasks currentUser={currentUser} />}
+        />
+        <Route
+          path="/workflow"
+          element={<WorkflowAndClosure currentUser={currentUser} />}
+        />
         <Route path="/" element={<Dashboard currentUser={currentUser} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

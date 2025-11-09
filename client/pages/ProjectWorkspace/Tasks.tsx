@@ -19,7 +19,9 @@ export default function Tasks({ currentUser }: TasksProps) {
     stage: "",
     status: "",
   });
-  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "name" | "dueDate">("newest");
+  const [sortBy, setSortBy] = useState<
+    "newest" | "oldest" | "name" | "dueDate"
+  >("newest");
 
   const handleEdit = (task: any) => {
     setEditingTask(task);
@@ -117,7 +119,7 @@ export default function Tasks({ currentUser }: TasksProps) {
       result = result.filter(
         (t) =>
           t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          t.comments.toLowerCase().includes(searchQuery.toLowerCase())
+          t.comments.toLowerCase().includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -136,9 +138,13 @@ export default function Tasks({ currentUser }: TasksProps) {
     result = [...result].sort((a, b) => {
       switch (sortBy) {
         case "newest":
-          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+          return (
+            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+          );
         case "oldest":
-          return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+          return (
+            new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+          );
         case "dueDate":
           return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
         case "name":
@@ -157,7 +163,9 @@ export default function Tasks({ currentUser }: TasksProps) {
       <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Tasks</h1>
-          <p className="text-slate-600 mt-1 text-sm">Manage and track all project tasks</p>
+          <p className="text-slate-600 mt-1 text-sm">
+            Manage and track all project tasks
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -181,7 +189,11 @@ export default function Tasks({ currentUser }: TasksProps) {
       {/* Sorting Controls */}
       <div className="flex justify-between items-center">
         <p className="text-sm text-slate-600">
-          Showing <span className="font-semibold text-slate-900">{filteredAndSortedTasks.length}</span> tasks
+          Showing{" "}
+          <span className="font-semibold text-slate-900">
+            {filteredAndSortedTasks.length}
+          </span>{" "}
+          tasks
         </p>
         <select
           value={sortBy}
@@ -232,26 +244,44 @@ export default function Tasks({ currentUser }: TasksProps) {
                 filteredAndSortedTasks.map((task, idx) => {
                   const priorityColor = getPriorityColor(task.priority);
                   const PriorityIcon = priorityColor.icon;
-                  const taskProgress = task.estimatedHours > 0 ? (task.actualHours / task.estimatedHours) * 100 : 0;
+                  const taskProgress =
+                    task.estimatedHours > 0
+                      ? (task.actualHours / task.estimatedHours) * 100
+                      : 0;
                   return (
-                    <tr key={task.id} className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}>
+                    <tr
+                      key={task.id}
+                      className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}
+                    >
                       <td className="px-6 py-4">
-                        <span className="font-semibold text-slate-900">{task.name}</span>
+                        <span className="font-semibold text-slate-900">
+                          {task.name}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{getProjectName(task.projectId)}</span>
+                        <span className="text-slate-600 text-sm">
+                          {getProjectName(task.projectId)}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{getStageName(task.stageId)}</span>
+                        <span className="text-slate-600 text-sm">
+                          {getStageName(task.stageId)}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{task.assignedTo}</span>
+                        <span className="text-slate-600 text-sm">
+                          {task.assignedTo}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">{task.dueDate}</span>
+                        <span className="text-slate-600 text-sm">
+                          {task.dueDate}
+                        </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(task.status)}`}>
+                        <span
+                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(task.status)}`}
+                        >
                           {getStatusLabel(task.status)}
                         </span>
                       </td>
@@ -270,10 +300,14 @@ export default function Tasks({ currentUser }: TasksProps) {
                           <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden">
                             <div
                               className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
-                              style={{ width: `${Math.min(taskProgress, 100)}%` }}
+                              style={{
+                                width: `${Math.min(taskProgress, 100)}%`,
+                              }}
                             />
                           </div>
-                          <span className="text-xs font-bold text-slate-700 w-7 text-right">{Math.round(Math.min(taskProgress, 100))}%</span>
+                          <span className="text-xs font-bold text-slate-700 w-7 text-right">
+                            {Math.round(Math.min(taskProgress, 100))}%
+                          </span>
                         </div>
                       </td>
                     </tr>
@@ -281,7 +315,10 @@ export default function Tasks({ currentUser }: TasksProps) {
                 })
               ) : (
                 <tr>
-                  <td colSpan={8} className="px-6 py-8 text-center text-slate-500">
+                  <td
+                    colSpan={8}
+                    className="px-6 py-8 text-center text-slate-500"
+                  >
                     No tasks found matching your filters
                   </td>
                 </tr>
@@ -292,7 +329,11 @@ export default function Tasks({ currentUser }: TasksProps) {
       </div>
 
       {/* Task Modal */}
-      <TaskModal isOpen={isModalOpen} onClose={handleCloseModal} task={editingTask} />
+      <TaskModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        task={editingTask}
+      />
 
       {/* Floating Action Button (Mobile) */}
       <button
