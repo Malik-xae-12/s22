@@ -164,6 +164,7 @@ export const MOCK_PROJECTS: Project[] = [
   {
     id: "proj-4",
     name: "LogisticsPro Supply Chain",
+    clientName: "LogisticsPro Solutions",
     clientEmail: "ops@logistics.com",
     teamName: "LogisticsPro",
     manager: "Michael Torres",
@@ -190,6 +191,11 @@ export const MOCK_PROJECTS: Project[] = [
     billingType: "Fixed Cost",
     currency: "INR",
     proposal: "LP-2025-004",
+    presalesMode: "Solution Selling",
+    projectMode: "Fixed Price",
+    projectType: "Dashboard",
+    priority: "Critical",
+    department: "Engineering",
   },
   {
     id: "proj-5",
