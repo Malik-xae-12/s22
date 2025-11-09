@@ -520,6 +520,344 @@ export function formatDateTime(dateString: string): string {
   });
 }
 
+// Mock Stages
+export interface Stage {
+  id: string;
+  projectId: string;
+  name: string;
+  owner: string;
+  type: "planning" | "execution" | "testing" | "delivery";
+  startDate: string;
+  endDate: string;
+  completion: number;
+  status: "not_started" | "in_progress" | "completed";
+  approvedBy?: string;
+  approvalDate?: string;
+  remarks: string;
+}
+
+export const MOCK_STAGES: Stage[] = [
+  {
+    id: "stage-1",
+    projectId: "proj-1",
+    name: "Requirements & Planning",
+    owner: "Sarah Chen",
+    type: "planning",
+    startDate: "2025-01-15",
+    endDate: "2025-01-20",
+    completion: 100,
+    status: "completed",
+    approvedBy: "Admin User",
+    approvalDate: "2025-01-20",
+    remarks: "All requirements validated and approved",
+  },
+  {
+    id: "stage-2",
+    projectId: "proj-1",
+    name: "Design & Architecture",
+    owner: "Michael Torres",
+    type: "planning",
+    startDate: "2025-01-20",
+    endDate: "2025-01-28",
+    completion: 85,
+    status: "in_progress",
+    remarks: "Design mockups completed, awaiting final review",
+  },
+  {
+    id: "stage-3",
+    projectId: "proj-1",
+    name: "Backend Development",
+    owner: "Sarah Chen",
+    type: "execution",
+    startDate: "2025-01-28",
+    endDate: "2025-02-10",
+    completion: 60,
+    status: "in_progress",
+    remarks: "API endpoints 70% complete, database setup done",
+  },
+  {
+    id: "stage-4",
+    projectId: "proj-1",
+    name: "Frontend Development",
+    owner: "Michael Torres",
+    type: "execution",
+    startDate: "2025-02-01",
+    endDate: "2025-02-12",
+    completion: 50,
+    status: "in_progress",
+    remarks: "UI components in development",
+  },
+  {
+    id: "stage-5",
+    projectId: "proj-2",
+    name: "Requirements Gathering",
+    owner: "Michael Torres",
+    type: "planning",
+    startDate: "2025-01-10",
+    endDate: "2025-01-25",
+    completion: 100,
+    status: "completed",
+    approvedBy: "Admin User",
+    approvalDate: "2025-01-25",
+    remarks: "Client requirements documented",
+  },
+  {
+    id: "stage-6",
+    projectId: "proj-2",
+    name: "System Design",
+    owner: "Sarah Chen",
+    type: "planning",
+    startDate: "2025-01-25",
+    endDate: "2025-02-08",
+    completion: 40,
+    status: "in_progress",
+    remarks: "Technical architecture in progress",
+  },
+];
+
+// Mock Tasks
+export interface Task {
+  id: string;
+  stageId: string;
+  projectId: string;
+  name: string;
+  assignedTo: string;
+  priority: "low" | "medium" | "high" | "critical";
+  startDate: string;
+  dueDate: string;
+  status: "pending" | "in_progress" | "review" | "completed";
+  estimatedHours: number;
+  actualHours: number;
+  comments: string;
+  attachments: Array<{ id: string; name: string; url: string }>;
+}
+
+export const MOCK_TASKS: Task[] = [
+  {
+    id: "task-1",
+    stageId: "stage-3",
+    projectId: "proj-1",
+    name: "Database Schema Design",
+    assignedTo: "Michael Torres",
+    priority: "high",
+    startDate: "2025-01-28",
+    dueDate: "2025-02-02",
+    status: "completed",
+    estimatedHours: 16,
+    actualHours: 14,
+    comments: "Schema optimized for performance",
+    attachments: [],
+  },
+  {
+    id: "task-2",
+    stageId: "stage-3",
+    projectId: "proj-1",
+    name: "API Endpoints Implementation",
+    assignedTo: "Michael Torres",
+    priority: "high",
+    startDate: "2025-02-02",
+    dueDate: "2025-02-10",
+    status: "in_progress",
+    estimatedHours: 40,
+    actualHours: 28,
+    comments: "70% complete, user endpoints remaining",
+    attachments: [
+      {
+        id: "att-1",
+        name: "API Specification.pdf",
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "task-3",
+    stageId: "stage-4",
+    projectId: "proj-1",
+    name: "Login & Registration UI",
+    assignedTo: "Sarah Chen",
+    priority: "critical",
+    startDate: "2025-02-01",
+    dueDate: "2025-02-05",
+    status: "in_progress",
+    estimatedHours: 12,
+    actualHours: 10,
+    comments: "Form validation in progress",
+    attachments: [],
+  },
+  {
+    id: "task-4",
+    stageId: "stage-4",
+    projectId: "proj-1",
+    name: "Dashboard Components",
+    assignedTo: "Sarah Chen",
+    priority: "high",
+    startDate: "2025-02-05",
+    dueDate: "2025-02-12",
+    status: "pending",
+    estimatedHours: 24,
+    actualHours: 0,
+    comments: "Waiting for backend API completion",
+    attachments: [],
+  },
+  {
+    id: "task-5",
+    stageId: "stage-2",
+    projectId: "proj-1",
+    name: "Wireframe Design",
+    assignedTo: "Michael Torres",
+    priority: "high",
+    startDate: "2025-01-20",
+    dueDate: "2025-01-24",
+    status: "completed",
+    estimatedHours: 20,
+    actualHours: 18,
+    comments: "All wireframes approved by client",
+    attachments: [
+      {
+        id: "att-2",
+        name: "Wireframes.figma",
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "task-6",
+    stageId: "stage-2",
+    projectId: "proj-1",
+    name: "Visual Design Mockups",
+    assignedTo: "Sarah Chen",
+    priority: "high",
+    startDate: "2025-01-24",
+    dueDate: "2025-01-28",
+    status: "in_progress",
+    estimatedHours: 28,
+    actualHours: 24,
+    comments: "Pending final color scheme approval",
+    attachments: [
+      {
+        id: "att-3",
+        name: "Mockups_v2.pdf",
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "task-7",
+    stageId: "stage-6",
+    projectId: "proj-2",
+    name: "System Architecture Planning",
+    assignedTo: "Michael Torres",
+    priority: "critical",
+    startDate: "2025-01-25",
+    dueDate: "2025-02-01",
+    status: "in_progress",
+    estimatedHours: 32,
+    actualHours: 12,
+    comments: "Reviewing cloud infrastructure options",
+    attachments: [
+      {
+        id: "att-4",
+        name: "Architecture_Draft.docx",
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "task-8",
+    stageId: "stage-6",
+    projectId: "proj-2",
+    name: "Database Schema Design",
+    assignedTo: "Sarah Chen",
+    priority: "high",
+    startDate: "2025-02-01",
+    dueDate: "2025-02-08",
+    status: "pending",
+    estimatedHours: 24,
+    actualHours: 0,
+    comments: "Blocked by architecture planning",
+    attachments: [],
+  },
+];
+
+// Mock Workflow Items (Approvals)
+export interface WorkflowItem {
+  id: string;
+  entityType: "project" | "stage" | "task";
+  entityId: string;
+  entityName: string;
+  approvalStatus: "awaiting" | "approved" | "rejected" | "rework";
+  approvedBy?: string;
+  approvalDate?: string;
+  remarks: string;
+  attachments: Array<{ id: string; name: string; url: string }>;
+}
+
+export const MOCK_WORKFLOW_ITEMS: WorkflowItem[] = [
+  {
+    id: "wf-item-1",
+    entityType: "project",
+    entityId: "proj-1",
+    entityName: "TechStartup Web Platform",
+    approvalStatus: "awaiting",
+    remarks: "Pending final sign-off from project sponsor",
+    attachments: [],
+  },
+  {
+    id: "wf-item-2",
+    entityType: "stage",
+    entityId: "stage-1",
+    entityName: "Requirements & Planning",
+    approvalStatus: "approved",
+    approvedBy: "Admin User",
+    approvalDate: "2025-01-20",
+    remarks: "All requirements validated and approved",
+    attachments: [
+      {
+        id: "att-5",
+        name: "Requirements_Approval.pdf",
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "wf-item-3",
+    entityType: "stage",
+    entityId: "stage-2",
+    entityName: "Design & Architecture",
+    approvalStatus: "awaiting",
+    remarks: "Awaiting design review from client",
+    attachments: [
+      {
+        id: "att-6",
+        name: "Design_Mockups.pdf",
+        url: "#",
+      },
+    ],
+  },
+  {
+    id: "wf-item-4",
+    entityType: "task",
+    entityId: "task-1",
+    entityName: "Database Schema Design",
+    approvalStatus: "approved",
+    approvedBy: "Michael Torres",
+    approvalDate: "2025-02-02",
+    remarks: "Schema approved for implementation",
+    attachments: [],
+  },
+  {
+    id: "wf-item-5",
+    entityType: "project",
+    entityId: "proj-2",
+    entityName: "RetailCo Platform Redesign",
+    approvalStatus: "approved",
+    approvedBy: "Admin User",
+    approvalDate: "2025-01-22",
+    remarks: "Project approved for execution phase",
+    attachments: [],
+  },
+];
+
 export const MOCK_WORKFLOW_UPDATES: WorkflowUpdate[] = [
   {
     id: "wf-1",
