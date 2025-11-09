@@ -128,6 +128,7 @@ export const MOCK_PROJECTS: Project[] = [
   {
     id: "proj-3",
     name: "Design Studio Branding",
+    clientName: "Design Studio Co",
     clientEmail: "hello@designstudio.com",
     teamName: "DesignStudio",
     manager: "Sarah Chen",
@@ -154,6 +155,11 @@ export const MOCK_PROJECTS: Project[] = [
     billingType: "Fixed Cost",
     currency: "INR",
     proposal: "DS-2025-003",
+    presalesMode: "Design Thinking",
+    projectMode: "Fixed Price",
+    projectType: "Branding",
+    priority: "Medium",
+    department: "Design",
   },
   {
     id: "proj-4",
