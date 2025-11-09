@@ -63,16 +63,16 @@ export default function Projects({ currentUser }: ProjectsProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative pb-20 md:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-col md:flex-row gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
-          <p className="text-slate-600 mt-1">Manage and track all projects in your portfolio</p>
+          <p className="text-slate-600 mt-1 text-sm md:text-base">Manage and track all projects in your portfolio</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          className="hidden md:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl font-medium"
         >
           <Plus className="w-5 h-5" />
           New Project
