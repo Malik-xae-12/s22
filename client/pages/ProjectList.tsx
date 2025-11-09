@@ -1,334 +1,377 @@
 import { useState } from "react";
-import { User, Project } from "@shared/api";
-import { isAdmin, isTeamMember } from "@/utils/auth";
-import AddProjectModal from "@/components/AddProjectModal";
-import {
-  MOCK_PROJECTS,
-  STAGE_COLORS,
-  getStageLabel,
-  getStatusLabel,
-} from "@/utils/mockData";
-import { Link } from "react-router-dom";
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Plus, X, Calendar, DollarSign, Clock, User, Mail, FileText, TrendingUp, CheckCircle, AlertCircle, Building } from "lucide-react";
 
-interface ProjectListProps {
-  currentUser: User | null;
-}
-
-export default function ProjectList({ currentUser }: ProjectListProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [stageFilter, setStageFilter] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+export default function ProfessionalProjectUI() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [projects, setProjects] = useState(MOCK_PROJECTS);
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  const [formData, setFormData] = useState({
+    projectName: "",
+    clientName: "",
+    manager: "",
+    startDate: "",
+    endDate: "",
+    estimatedHours: "",
+    estimatedCost: "",
+    billingType: "fixed",
+    currency: "USD",
+    proposalId: ""
+  });
 
-  const handleAddProject = (
-    newProject: Omit<Project, "id" | "createdAt" | "updatedAt" | "progress">,
-  ) => {
-    const project: Project = {
-      ...newProject,
-      id: `proj-${Date.now()}`,
-      createdAt: new Date().toISOString().split("T")[0],
-      updatedAt: new Date().toISOString().split("T")[0],
-      progress: 0,
-    };
-    setProjects([...projects, project]);
-  };
-
-  const getRelevantProjects = () => {
-    let filtered = projects;
-
-    // For demo purposes, show all projects to all users
-    // In production, implement proper role-based filtering
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (p) =>
-          p.teamName.toLowerCase().includes(query) ||
-          p.manager.toLowerCase().includes(query) ||
-          p.clientEmail.toLowerCase().includes(query),
-      );
-    }
-
-    if (stageFilter) {
-      filtered = filtered.filter((p) => p.stage === stageFilter);
-    }
-
-    if (statusFilter) {
-      filtered = filtered.filter((p) => p.status === statusFilter);
-    }
-
-    return filtered;
-  };
-
-  const filteredProjects = getRelevantProjects();
-
-  const stages = [
-    { value: "prospecting", label: "Prospecting" },
-    { value: "planning", label: "Planning" },
-    { value: "in_progress", label: "In Progress" },
-    { value: "review", label: "Review" },
-    { value: "signed_off", label: "Signed Off" },
+  const projects = [
+    { id: 1, name: "TechStartup Web Platform", client: "TechStartup", manager: "Sarah Chen", startDate: "2025-01-15", endDate: "2025-02-12", progress: 65, status: "active" },
+    { id: 2, name: "RetailCo Platform Redesign", client: "RetailCo", manager: "Michael Torres", startDate: "2025-01-10", endDate: "2025-03-07", progress: 30, status: "active" },
+    { id: 3, name: "Design Studio Branding", client: "DesignStudio", manager: "Sarah Chen", startDate: "2025-01-22", endDate: "2025-02-05", progress: 10, status: "active" },
+    { id: 4, name: "LogisticsPro Supply Chain", client: "LogisticsPro", manager: "Michael Torres", startDate: "2025-01-05", endDate: "2025-03-16", progress: 85, status: "active" },
+    { id: 5, name: "FinTech Mobile Banking", client: "FinTech Solutions", manager: "Sarah Chen", startDate: "2024-12-01", endDate: "2025-01-15", progress: 100, status: "completed" }
   ];
 
-  const statuses = [
-    { value: "active", label: "Active" },
-    { value: "on_hold", label: "On Hold" },
-    { value: "completed", label: "Completed" },
-    { value: "archived", label: "Archived" },
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    console.log("Creating project:", formData);
+    setIsModalOpen(false);
+  };
+
+  const stats = [
+    { label: "Total Projects", value: "5", icon: FileText, color: "blue", bgColor: "bg-blue-50", iconColor: "text-blue-600" },
+    { label: "Active Projects", value: "4", icon: TrendingUp, color: "green", bgColor: "bg-green-50", iconColor: "text-green-600" },
+    { label: "Completed Projects", value: "1", icon: CheckCircle, color: "purple", bgColor: "bg-purple-50", iconColor: "text-purple-600" },
+    { label: "Pending Approvals", value: "2", icon: AlertCircle, color: "amber", bgColor: "bg-amber-50", iconColor: "text-amber-600" }
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
-          <p className="text-slate-600 mt-1">
-            {isAdmin(currentUser)
-              ? "Manage all projects across your organization"
-              : isTeamMember(currentUser)
-                ? "View and manage your assigned projects"
-                : "Track your project progress"}
-          </p>
-        </div>
-        {(isAdmin(currentUser) || isTeamMember(currentUser)) && (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            New Project
-          </button>
-        )}
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      <div className="max-w-7xl mx-auto p-8">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent mb-2">
+                Projects
+              </h1>
+              <p className="text-slate-600 text-lg">
+                Manage and track all projects in your portfolio
+              </p>
+            </div>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="group relative bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3.5 rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-200 flex items-center gap-2"
+            >
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-200" />
+              New Project
+            </button>
+          </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Search
-            </label>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-200 border border-slate-200/60"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-slate-600 mb-1">{stat.label}</p>
+                    <p className="text-3xl font-bold text-slate-900">{stat.value}</p>
+                  </div>
+                  <div className={`${stat.bgColor} p-3 rounded-xl`}>
+                    <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Search Bar */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-4">
             <div className="relative">
-              <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search projects..."
+                placeholder="Search projects, clients, or managers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
               />
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Stage
-            </label>
-            <select
-              value={stageFilter}
-              onChange={(e) => setStageFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">All Stages</option>
-              {stages.map((stage) => (
-                <option key={stage.value} value={stage.value}>
-                  {stage.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
-              Status
-            </label>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">All Statuses</option>
-              {statuses.map((status) => (
-                <option key={status.value} value={status.value}>
-                  {status.label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-end">
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setStageFilter("");
-                setStatusFilter("");
-              }}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 font-medium transition-colors"
-            >
-              Clear Filters
-            </button>
-          </div>
         </div>
-      </div>
 
-      {/* Projects Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-        {filteredProjects.length === 0 ? (
-          <div className="px-6 py-12 text-center">
-            <p className="text-slate-600">
-              No projects found matching your criteria.
-            </p>
-          </div>
-        ) : (
+        {/* Projects Table */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Team Name
-                  </th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Manager
-                  </th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Stage
-                  </th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Estimation
-                  </th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Timeline
-                  </th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Approval
-                  </th>
-                  <th className="px-6 py-4 text-left font-semibold text-slate-900">
-                    Action
-                  </th>
+                <tr className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Project Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Client Name</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Manager</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Start Date</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">End Date</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Progress</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {filteredProjects.map((project) => {
-                  const stageColor =
-                    STAGE_COLORS[project.stage] || STAGE_COLORS.prospecting;
-                  return (
-                    <tr
-                      key={project.id}
-                      className="hover:bg-slate-50 transition-colors"
-                    >
-                      <td className="px-6 py-4">
-                        <p className="font-medium text-slate-900">
-                          {project.teamName}
-                        </p>
-                        <p className="text-xs text-slate-500">
-                          {project.clientEmail}
-                        </p>
-                      </td>
-                      <td className="px-6 py-4 text-slate-600">
-                        {project.manager}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${stageColor.bg} ${stageColor.text}`}
-                        >
-                          {getStageLabel(project.stage)}
+                {projects.map((project) => (
+                  <tr key={project.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <p className="font-semibold text-slate-900">{project.name}</p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <Building className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-700">{project.client}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-slate-400" />
+                        <span className="text-slate-700">{project.manager}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-slate-700">{project.startDate}</td>
+                    <td className="px-6 py-4 text-slate-700">{project.endDate}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${
+                              project.progress === 100 ? "bg-green-500" : "bg-blue-500"
+                            }`}
+                            style={{ width: `${project.progress}%` }}
+                          />
+                        </div>
+                        <span className="text-sm font-semibold text-slate-700 min-w-[3rem]">
+                          {project.progress}%
                         </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                            project.status === "active"
-                              ? "bg-green-50 text-green-700"
-                              : project.status === "completed"
-                                ? "bg-blue-50 text-blue-700"
-                                : project.status === "on_hold"
-                                  ? "bg-yellow-50 text-yellow-700"
-                                  : "bg-gray-50 text-gray-700"
-                          }`}
-                        >
-                          {getStatusLabel(project.status)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-slate-600">
-                        {project.estimation}
-                      </td>
-                      <td className="px-6 py-4 text-slate-600">
-                        {project.timeline}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                            project.approvalsStatus === "approved"
-                              ? "bg-green-50 text-green-700"
-                              : project.approvalsStatus === "rejected"
-                                ? "bg-red-50 text-red-700"
-                                : "bg-orange-50 text-orange-700"
-                          }`}
-                        >
-                          {project.approvalsStatus.charAt(0).toUpperCase() +
-                            project.approvalsStatus.slice(1)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Link
-                          to={`/projects/${project.id}`}
-                          className="text-blue-600 hover:text-blue-700 font-medium"
-                        >
-                          View Details
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button className="text-blue-600 hover:text-blue-700 font-semibold text-sm hover:underline">
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Create Project Modal */}
+        {isModalOpen && (
+          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+              {/* Modal Header */}
+              <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 rounded-t-3xl">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Create New Project</h2>
+                    <p className="text-blue-100 mt-1">Add a new project to your portfolio</p>
+                  </div>
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="text-white hover:bg-white/20 p-2 rounded-xl transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-8 space-y-8">
+                {/* Basic Information */}
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    Basic Information
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="col-span-2">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Project Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="projectName"
+                        value={formData.projectName}
+                        onChange={handleChange}
+                        placeholder="e.g., E-commerce Platform Redesign"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Client Name *
+                      </label>
+                      <input
+                        type="text"
+                        name="clientName"
+                        value={formData.clientName}
+                        onChange={handleChange}
+                        placeholder="e.g., RetailCo"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Project Manager *
+                      </label>
+                      <select
+                        name="manager"
+                        value={formData.manager}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      >
+                        <option value="">Select Manager</option>
+                        <option value="Sarah Chen">Sarah Chen</option>
+                        <option value="Michael Torres">Michael Torres</option>
+                        <option value="Emily Johnson">Emily Johnson</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Timeline */}
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                    Timeline
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Start Date *
+                      </label>
+                      <input
+                        type="date"
+                        name="startDate"
+                        value={formData.startDate}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        End Date *
+                      </label>
+                      <input
+                        type="date"
+                        name="endDate"
+                        value={formData.endDate}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Budget & Estimation */}
+                <div>
+                  <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                    <DollarSign className="w-5 h-5 text-blue-600" />
+                    Budget & Estimation
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Estimated Hours
+                      </label>
+                      <div className="relative">
+                        <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type="number"
+                          name="estimatedHours"
+                          value={formData.estimatedHours}
+                          onChange={handleChange}
+                          placeholder="120"
+                          className="w-full pl-11 pr-14 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                        />
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm">hrs</span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Estimated Cost
+                      </label>
+                      <div className="relative">
+                        <select
+                          name="currency"
+                          value={formData.currency}
+                          onChange={handleChange}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-slate-600 text-sm focus:outline-none"
+                        >
+                          <option value="USD">$</option>
+                          <option value="EUR">€</option>
+                          <option value="GBP">£</option>
+                        </select>
+                        <input
+                          type="number"
+                          name="estimatedCost"
+                          value={formData.estimatedCost}
+                          onChange={handleChange}
+                          placeholder="15000"
+                          className="w-full pl-14 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Billing Type
+                      </label>
+                      <select
+                        name="billingType"
+                        value={formData.billingType}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      >
+                        <option value="fixed">Fixed Cost</option>
+                        <option value="hourly">Hourly Rate</option>
+                        <option value="milestone">Milestone Based</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Proposal ID
+                      </label>
+                      <input
+                        type="text"
+                        name="proposalId"
+                        value={formData.proposalId}
+                        onChange={handleChange}
+                        placeholder="PROP-2025-001"
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-4 pt-6 border-t border-slate-200">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 px-6 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="flex-1 px-6 py-3.5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-200"
+                  >
+                    Create Project
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
-          <p className="text-sm text-slate-600">Total Projects</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">
-            {filteredProjects.length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
-          <p className="text-sm text-slate-600">Active</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">
-            {filteredProjects.filter((p) => p.status === "active").length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
-          <p className="text-sm text-slate-600">Completed</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">
-            {filteredProjects.filter((p) => p.status === "completed").length}
-          </p>
-        </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200">
-          <p className="text-sm text-slate-600">Pending Approval</p>
-          <p className="text-2xl font-bold text-slate-900 mt-1">
-            {
-              filteredProjects.filter((p) => p.approvalsStatus === "pending")
-                .length
-            }
-          </p>
-        </div>
-      </div>
-
-      {/* Add Project Modal */}
-      <AddProjectModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddProject}
-      />
     </div>
   );
 }

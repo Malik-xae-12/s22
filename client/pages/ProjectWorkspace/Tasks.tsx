@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { User } from "@shared/api";
-import { Plus, AlertCircle, Circle, CheckCircle2 } from "lucide-react";
+import { Plus, AlertCircle, Circle, CheckCircle2, Filter, X, ChevronDown, Search } from "lucide-react";
 import { MOCK_TASKS, MOCK_PROJECTS, MOCK_STAGES } from "@/utils/mockData";
 import TaskModal from "@/components/TaskModal";
-import FilterBar, { FilterConfig } from "@/components/FilterBar";
 
 interface TasksProps {
   currentUser: User | null;
@@ -14,14 +13,13 @@ export default function Tasks({ currentUser }: TasksProps) {
   const [editingTask, setEditingTask] = useState<any>(null);
   const [tasks] = useState(MOCK_TASKS);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     project: "",
     stage: "",
     status: "",
   });
-  const [sortBy, setSortBy] = useState<
-    "newest" | "oldest" | "name" | "dueDate"
-  >("newest");
+  const [sortBy, setSortBy] = useState<"oldest" | "name" | "dueDate">("oldest");
 
   const handleEdit = (task: any) => {
     setEditingTask(task);
@@ -40,7 +38,7 @@ export default function Tasks({ currentUser }: TasksProps) {
   const handleReset = () => {
     setFilters({ project: "", stage: "", status: "" });
     setSearchQuery("");
-    setSortBy("newest");
+    setSortBy("oldest");
   };
 
   const getPriorityColor = (priority: string) => {
@@ -85,31 +83,7 @@ export default function Tasks({ currentUser }: TasksProps) {
     return MOCK_STAGES.find((s) => s.id === stageId)?.name || "Unknown";
   };
 
-  const filterConfigs: FilterConfig[] = [
-    {
-      id: "project",
-      label: "Project Name",
-      placeholder: "Filter by project",
-      options: MOCK_PROJECTS.map((p) => ({ label: p.name, value: p.id })),
-    },
-    {
-      id: "stage",
-      label: "Stage Name",
-      placeholder: "Filter by stage",
-      options: MOCK_STAGES.map((s) => ({ label: s.name, value: s.id })),
-    },
-    {
-      id: "status",
-      label: "Status",
-      placeholder: "Filter by status",
-      options: [
-        { label: "Pending", value: "pending" },
-        { label: "In Progress", value: "in_progress" },
-        { label: "Under Review", value: "review" },
-        { label: "Completed", value: "completed" },
-      ],
-    },
-  ];
+  const activeFiltersCount = Object.values(filters).filter(Boolean).length;
 
   const filteredAndSortedTasks = useMemo(() => {
     let result = tasks;
@@ -119,7 +93,9 @@ export default function Tasks({ currentUser }: TasksProps) {
       result = result.filter(
         (t) =>
           t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          t.comments.toLowerCase().includes(searchQuery.toLowerCase()),
+          t.comments.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          getProjectName(t.projectId).toLowerCase().includes(searchQuery.toLowerCase()) ||
+          getStageName(t.stageId).toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -137,10 +113,6 @@ export default function Tasks({ currentUser }: TasksProps) {
     // Apply sorting
     result = [...result].sort((a, b) => {
       switch (sortBy) {
-        case "newest":
-          return (
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-          );
         case "oldest":
           return (
             new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
@@ -176,35 +148,194 @@ export default function Tasks({ currentUser }: TasksProps) {
         </button>
       </div>
 
-      {/* Filter Bar */}
-      <FilterBar
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        onSearch={setSearchQuery}
-        onReset={handleReset}
-        searchQuery={searchQuery}
-        filterConfigs={filterConfigs}
-      />
+      {/* Search and Filter Bar */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+        <div className="p-4">
+          <div className="flex items-center gap-3">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search tasks, projects, or stages..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+              />
+            </div>
 
-      {/* Sorting Controls */}
+            {/* Filter Toggle Button */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`relative flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                showFilters || activeFiltersCount > 0
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              <Filter className="w-5 h-5" />
+              <span>Filters</span>
+              {activeFiltersCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  {activeFiltersCount}
+                </span>
+              )}
+            </button>
+
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="appearance-none pl-4 pr-10 py-3 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
+              >
+                <option value="oldest">Oldest First</option>
+                <option value="dueDate">Due Date</option>
+                <option value="name">Name (A-Z)</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+
+        {/* Collapsible Filter Section */}
+        {showFilters && (
+          <div className="border-t border-slate-200 bg-slate-50 p-6 animate-slideDown">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-slate-900">Filter Options</h3>
+              <button
+                onClick={handleReset}
+                className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1"
+              >
+                <X className="w-4 h-4" />
+                Clear All
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Project Filter */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Project Name
+                </label>
+                <div className="relative">
+                  <select
+                    value={filters.project}
+                    onChange={(e) => handleFilterChange("project", e.target.value)}
+                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  >
+                    <option value="">All Projects</option>
+                    {MOCK_PROJECTS.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Stage Filter */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Stage Name
+                </label>
+                <div className="relative">
+                  <select
+                    value={filters.stage}
+                    onChange={(e) => handleFilterChange("stage", e.target.value)}
+                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  >
+                    <option value="">All Stages</option>
+                    {MOCK_STAGES.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Status Filter */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Status
+                </label>
+                <div className="relative">
+                  <select
+                    value={filters.status}
+                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="review">Under Review</option>
+                    <option value="completed">Completed</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+
+            {/* Active Filters Display */}
+            {activeFiltersCount > 0 && (
+              <div className="mt-4 pt-4 border-t border-slate-200">
+                <div className="flex flex-wrap gap-2">
+                  {filters.project && (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                      Project: {getProjectName(filters.project)}
+                      <button
+                        onClick={() => handleFilterChange("project", "")}
+                        className="hover:bg-blue-200 rounded-full p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.stage && (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                      Stage: {getStageName(filters.stage)}
+                      <button
+                        onClick={() => handleFilterChange("stage", "")}
+                        className="hover:bg-blue-200 rounded-full p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.status && (
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                      Status: {getStatusLabel(filters.status)}
+                      <button
+                        onClick={() => handleFilterChange("status", "")}
+                        className="hover:bg-blue-200 rounded-full p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Results Count */}
       <div className="flex justify-between items-center">
         <p className="text-sm text-slate-600">
           Showing{" "}
           <span className="font-semibold text-slate-900">
             {filteredAndSortedTasks.length}
           </span>{" "}
+          of{" "}
+          <span className="font-semibold text-slate-900">
+            {tasks.length}
+          </span>{" "}
           tasks
         </p>
-        <select
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value as any)}
-          className="px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-        >
-          <option value="newest">Newest First</option>
-          <option value="oldest">Oldest First</option>
-          <option value="dueDate">Due Date</option>
-          <option value="name">Name (A-Z)</option>
-        </select>
       </div>
 
       {/* Tasks Table */}
@@ -251,7 +382,8 @@ export default function Tasks({ currentUser }: TasksProps) {
                   return (
                     <tr
                       key={task.id}
-                      className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}
+                      className={`hover:bg-slate-50 transition-colors duration-200 cursor-pointer ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}
+                      onClick={() => handleEdit(task)}
                     >
                       <td className="px-6 py-4">
                         <span className="font-semibold text-slate-900">
@@ -317,9 +449,13 @@ export default function Tasks({ currentUser }: TasksProps) {
                 <tr>
                   <td
                     colSpan={8}
-                    className="px-6 py-8 text-center text-slate-500"
+                    className="px-6 py-12 text-center"
                   >
-                    No tasks found matching your filters
+                    <div className="flex flex-col items-center gap-2">
+                      <AlertCircle className="w-12 h-12 text-slate-300" />
+                      <p className="text-slate-500 font-medium">No tasks found</p>
+                      <p className="text-slate-400 text-sm">Try adjusting your filters or search query</p>
+                    </div>
                   </td>
                 </tr>
               )}
@@ -343,6 +479,23 @@ export default function Tasks({ currentUser }: TasksProps) {
       >
         <Plus className="w-6 h-6" />
       </button>
+
+      <style>{`
+        @keyframes slideDown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-slideDown {
+          animation: slideDown 0.2s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
