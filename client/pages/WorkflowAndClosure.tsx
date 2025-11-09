@@ -428,60 +428,98 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
                     )}
                   </motion.div>
                 ) : (
-                  <motion.div key="tab-tasks" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.2 }} className="grid gap-4 md:grid-cols-2">
-                    {projectTasks.map((task) => {
-                      const derived = getDerivedTaskApproval(task, approvalLookup);
-                      const overdue = isOverdue(task.dueDate, task.status);
-                      const ring = overdue ? "border-red-300 bg-red-50" : "border-slate-200 bg-white";
-                      return (
-                        <div key={task.id} className={`rounded-xl border ${ring} p-5 shadow-sm hover:shadow-md transition-all`}>
-                          <div className="flex items-start justify-between gap-3">
-                            <div>
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="px-2 py-1 rounded text-xs font-semibold bg-indigo-100 text-indigo-700">Task</span>
-                                <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">{approvalLabel(derived.state)}</span>
-                              </div>
-                              <h3 className="font-semibold text-slate-900">{task.name}</h3>
-                              <p className="text-sm text-slate-600 mt-1 flex items-center gap-2"><Users className="w-4 h-4" /> Assigned to {task.assignedTo}</p>
-                            </div>
-                            {derived.state === "awaiting" && (
-                              <div className="flex-shrink-0 flex items-center gap-2">
-                                <button onClick={() => openApprovalForTask(task)} className="px-2.5 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">Approve</button>
-                                <button onClick={() => openApprovalForTask(task)} className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold">Reject</button>
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
-                            <InfoPill label="Start" value={formatDate(task.startDate)} icon={<CalendarDays className="w-4 h-4" />} />
-                            <InfoPill label="Due" value={formatDate(task.dueDate)} icon={<CalendarDays className="w-4 h-4" />} />
-                            <InfoPill label="Status" value={task.status.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase())} />
-                          </div>
-
-                          <div className="bg-slate-50 rounded-lg border border-slate-200 p-3 mt-3">
-                            <p className="text-sm text-slate-700">{task.comments}</p>
-                          </div>
-
-                          {task.attachments.length > 0 && (
-                            <div className="mt-3">
-                              <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2"><Paperclip className="w-4 h-4" /> Attachments</h4>
-                              <div className="space-y-2">
-                                {task.attachments.map((att) => (
-                                  <a key={att.id} href={att.url} className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium">
-                                    <FileUp className="w-4 h-4" />
-                                    {att.name}
-                                  </a>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-
-                    {projectTasks.length === 0 && (
+                  <motion.div key="tab-tasks" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.2 }} className="space-y-4">
+                    {projectTasks.length === 0 ? (
                       <div className="md:col-span-2">
                         <EmptyState title="No tasks" subtitle="Tasks for this project will appear here." />
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {(projectStages.length > 0 ? projectStages : []).map((stage) => {
+                          const tasksForStage = projectTasks.filter((t) => t.stageId === stage.id);
+                          // If there are no tasks for this stage, skip showing details
+                          if (tasksForStage.length === 0) return null;
+                          const derivedStage = getDerivedStageApproval(stage, approvalLookup);
+                          return (
+                            <div key={stage.id} className="rounded-xl border border-slate-200 p-5 bg-white shadow-sm">
+                              <div className="flex items-center justify-between gap-4">
+                                <div>
+                                  <h4 className="font-bold text-slate-900">{stage.name}</h4>
+                                  <p className="text-sm text-slate-600">Owner: {stage.owner}</p>
+                                </div>
+                                <div className="w-64">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div className="text-xs text-slate-500">Stage Completion</div>
+                                    <div className="text-xs font-semibold text-slate-700">{stage.completion}%</div>
+                                  </div>
+                                  <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                    <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600" style={{ width: `${stage.completion}%` }} />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                                {tasksForStage.map((task) => {
+                                  const derived = getDerivedTaskApproval(task, approvalLookup);
+                                  const overdue = isOverdue(task.dueDate, task.status);
+                                  const taskCompletion = computeTaskCompletion(task);
+                                  return (
+                                    <div key={task.id} className={`rounded-lg border ${overdue ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} p-4 shadow-sm`}>
+                                      <div className="flex items-start justify-between">
+                                        <div>
+                                          <div className="flex items-center gap-2 mb-1">
+                                            <span className="px-2 py-1 rounded text-xs font-semibold bg-indigo-100 text-indigo-700">Task</span>
+                                            <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">{approvalLabel(derived.state)}</span>
+                                          </div>
+                                          <h5 className="font-semibold text-slate-900">{task.name}</h5>
+                                          <p className="text-sm text-slate-600 mt-1">Assigned: <span className="font-medium">{task.assignedTo}</span></p>
+                                        </div>
+                                        {derived.state === "awaiting" && (
+                                          <div className="flex-shrink-0 flex items-center gap-2">
+                                            <button onClick={() => openApprovalForTask(task)} className="px-2 py-1 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">Approve</button>
+                                            <button onClick={() => openApprovalForTask(task)} className="px-2 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold">Reject</button>
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      <div className="mt-3">
+                                        <div className="flex items-center justify-between mb-1">
+                                          <div className="text-xs text-slate-500">Progress</div>
+                                          <div className="text-xs font-semibold text-slate-700">{taskCompletion}%</div>
+                                        </div>
+                                        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                          <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600" style={{ width: `${taskCompletion}%` }} />
+                                        </div>
+                                      </div>
+
+                                      <div className="grid grid-cols-2 gap-2 mt-3 text-sm text-slate-600">
+                                        <div>Start: {formatDate(task.startDate)}</div>
+                                        <div>Due: {formatDate(task.dueDate)}</div>
+                                        <div className="col-span-2">Status: {task.status.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase())}</div>
+                                      </div>
+
+                                      {task.comments && <div className="mt-3 text-sm text-slate-700">{task.comments}</div>}
+
+                                      {task.attachments.length > 0 && (
+                                        <div className="mt-3">
+                                          <h6 className="text-sm font-semibold text-slate-900 mb-2">Attachments</h6>
+                                          <div className="space-y-2">
+                                            {task.attachments.map((att) => (
+                                              <a key={att.id} href={att.url} className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                                <FileUp className="w-4 h-4" />
+                                                {att.name}
+                                              </a>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </motion.div>
