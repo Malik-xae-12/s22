@@ -96,20 +96,93 @@ export default function Projects({ currentUser }: ProjectsProps) {
   return (
     <div className="space-y-6 relative pb-20 md:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
-          <p className="text-slate-600 mt-1 text-sm">
-            Manage and track all projects in your portfolio
-          </p>
+      <div>
+        <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
+            <p className="text-slate-600 mt-1 text-sm">
+              Manage and track all projects in your portfolio
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="hidden sm:flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 transition-all text-slate-700 font-medium text-sm"
+            >
+              {showFilters ? "Hide Filters" : "Show Filters"}
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
+            >
+              <Plus className="w-5 h-5" />
+              New Project
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
-        >
-          <Plus className="w-5 h-5" />
-          New Project
-        </button>
+
+        {/* Filters */}
+        {showFilters && (
+          <div className="mt-4 p-4 bg-white rounded-lg border border-slate-200 flex flex-wrap gap-4 items-end">
+            <div className="flex-1 min-w-48">
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
+                Status
+              </label>
+              <select
+                value={filters.status}
+                onChange={(e) => handleFilterChange("status", e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
+              >
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="on_hold">On Hold</option>
+                <option value="completed">Completed</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+
+            <div className="flex-1 min-w-48">
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
+                Priority
+              </label>
+              <select
+                value={filters.priority}
+                onChange={(e) => handleFilterChange("priority", e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
+              >
+                <option value="">All Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </div>
+
+            <div className="flex-1 min-w-48">
+              <label className="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-2">
+                Department
+              </label>
+              <select
+                value={filters.department}
+                onChange={(e) => handleFilterChange("department", e.target.value)}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
+              >
+                <option value="">All Departments</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Design">Design</option>
+                <option value="Sales">Sales</option>
+                <option value="Support">Support</option>
+              </select>
+            </div>
+
+            <button
+              onClick={handleResetFilters}
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-all text-sm font-medium"
+            >
+              Clear Filters
+            </button>
+          </div>
+        )}
       </div>
 
       {/* KPI Cards */}
