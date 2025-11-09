@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { User } from "@shared/api";
-import { Plus, MoreHorizontal, Edit, Trash2, Briefcase, Users, Clock, DollarSign } from "lucide-react";
-import { MOCK_PROJECTS, MOCK_STAGES } from "@/utils/mockData";
+import { Plus, Edit, Trash2, Briefcase, Users, Zap, AlertCircle, CheckCircle } from "lucide-react";
+import { MOCK_PROJECTS } from "@/utils/mockData";
 import ProjectModal from "@/components/ProjectModal";
 
 interface ProjectsProps {
@@ -23,44 +23,36 @@ export default function Projects({ currentUser }: ProjectsProps) {
     setEditingProject(null);
   };
 
-  const formatCurrency = (amount: number, currency: string) => {
-    const currencySymbols: Record<string, string> = {
-      INR: "₹",
-      USD: "$",
-      EUR: "€",
-    };
-    const symbol = currencySymbols[currency] || currency;
-    return `${symbol} ${amount.toLocaleString()}`;
-  };
-
-  const summaryCards = [
-    { label: "Total Projects", value: projects.length, color: "blue" },
-    { label: "Active Projects", value: projects.filter((p) => p.status === "active").length, color: "yellow" },
-    { label: "Completed Projects", value: projects.filter((p) => p.status === "completed").length, color: "green" },
-    { label: "Pending Approvals", value: projects.filter((p) => p.approvalsStatus === "pending").length, color: "orange" },
+  const stats = [
+    {
+      label: "Total Projects",
+      value: projects.length,
+      icon: Briefcase,
+      color: "bg-blue-50 text-blue-600",
+      bgColor: "bg-blue-100",
+    },
+    {
+      label: "Active Projects",
+      value: projects.filter((p) => p.status === "active").length,
+      icon: Zap,
+      color: "bg-yellow-50 text-yellow-600",
+      bgColor: "bg-yellow-100",
+    },
+    {
+      label: "Completed Projects",
+      value: projects.filter((p) => p.status === "completed").length,
+      icon: CheckCircle,
+      color: "bg-green-50 text-green-600",
+      bgColor: "bg-green-100",
+    },
+    {
+      label: "Pending Approvals",
+      value: projects.filter((p) => p.approvalsStatus === "pending").length,
+      icon: AlertCircle,
+      color: "bg-orange-50 text-orange-600",
+      bgColor: "bg-orange-100",
+    },
   ];
-
-  const getStageCount = (projectId: string) => {
-    return MOCK_STAGES.filter((s) => s.projectId === projectId).length;
-  };
-
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      active: "bg-yellow-50 text-yellow-700",
-      completed: "bg-green-50 text-green-700",
-      on_hold: "bg-gray-50 text-gray-700",
-    };
-    return colors[status] || "bg-gray-50 text-gray-700";
-  };
-
-  const getApprovalColor = (status: string) => {
-    const colors: Record<string, string> = {
-      pending: "bg-orange-50 text-orange-700",
-      approved: "bg-green-50 text-green-700",
-      rejected: "bg-red-50 text-red-700",
-    };
-    return colors[status] || "bg-gray-50 text-gray-700";
-  };
 
   return (
     <div className="space-y-6 relative pb-20 md:pb-0">
