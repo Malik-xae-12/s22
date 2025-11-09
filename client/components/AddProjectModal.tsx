@@ -531,37 +531,66 @@ export default function AddProjectModal({
             </div>
           )}
 
-          {step === 4 && (
+          {step === 5 && (
             <div className="space-y-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
                 <h3 className="font-semibold text-slate-900">
                   Review Project Details
                 </h3>
-                <div className="text-sm text-slate-700 space-y-1">
-                  <p>
-                    <strong>Name:</strong> {formData.name}
-                  </p>
-                  <p>
-                    <strong>Team:</strong> {formData.teamName}
-                  </p>
-                  <p>
-                    <strong>Manager:</strong> {formData.manager}
-                  </p>
-                  <p>
-                    <strong>Timeline:</strong> {formData.startDate} to{" "}
-                    {formData.endDate}
-                  </p>
-                  <p>
-                    <strong>Estimation:</strong> {formData.estimation} hours
-                  </p>
-                  <p>
-                    <strong>Budget:</strong> ${formData.budget}
-                  </p>
-                  <p>
-                    <strong>Stage:</strong> {formData.stage}
-                  </p>
-                  <p>
-                    <strong>Assigned Team:</strong>{" "}
+                <div className="text-sm text-slate-700 space-y-2 grid grid-cols-2 gap-4">
+                  <div>
+                    <p><strong>Project Name:</strong><br/>{formData.name}</p>
+                  </div>
+                  <div>
+                    <p><strong>Client Name:</strong><br/>{formData.clientName || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p><strong>Manager:</strong><br/>{formData.manager}</p>
+                  </div>
+                  <div>
+                    <p><strong>Team:</strong><br/>{formData.teamName}</p>
+                  </div>
+                  <div>
+                    <p><strong>Project Type:</strong><br/>{formData.projectType || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p><strong>Priority:</strong><br/>{formData.priority}</p>
+                  </div>
+                  <div>
+                    <p><strong>Department:</strong><br/>{formData.department || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p><strong>PreSales Mode:</strong><br/>{formData.presalesMode || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p><strong>Start Date:</strong><br/>{formData.startDate}</p>
+                  </div>
+                  <div>
+                    <p><strong>End Date:</strong><br/>{formData.endDate}</p>
+                  </div>
+                  <div>
+                    <p><strong>Estimated Hours:</strong><br/>{formData.estimation} hrs</p>
+                  </div>
+                  <div>
+                    <p><strong>Estimated Cost:</strong><br/>{formData.currency} {formData.budget}</p>
+                  </div>
+                  <div>
+                    <p><strong>Billing Type:</strong><br/>{formData.billingType || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p><strong>Project Mode:</strong><br/>{formData.projectMode || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <p><strong>Stage:</strong><br/>{formData.stage}</p>
+                  </div>
+                  <div>
+                    <p><strong>Status:</strong><br/>{formData.status}</p>
+                  </div>
+                  <div>
+                    <p><strong>NDA:</strong><br/>{formData.nda}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p><strong>Assigned Team:</strong><br/>
                     {formData.assignedTeam.length > 0
                       ? MOCK_USERS.filter((u) =>
                           formData.assignedTeam.includes(u.id),
@@ -569,7 +598,8 @@ export default function AddProjectModal({
                           .map((u) => u.name)
                           .join(", ")
                       : "None"}
-                  </p>
+                    </p>
+                  </div>
                 </div>
               </div>
 
