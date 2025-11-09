@@ -56,6 +56,7 @@ export default function Layout({
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
+        {/* Brand Section */}
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
@@ -71,14 +72,70 @@ export default function Layout({
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto p-4 space-y-2">
-          {visibleItems.map((item) => {
+        {/* Navigation */}
+        <nav className="flex-1 overflow-y-auto p-4 space-y-1">
+          {navItems.map((item) => {
             const Icon = item.icon;
+            const hasSubmenu = "submenu" in item;
+            const isActive = hasSubmenu
+              ? isWorkspaceActive
+              : isActiveRoute(item.href || "");
+
+            if (hasSubmenu) {
+              return (
+                <div key={item.label}>
+                  <button
+                    onClick={() => setWorkspaceOpen(!workspaceOpen)}
+                    className={cn(
+                      "w-full flex items-center justify-between px-4 py-2.5 rounded-lg transition-colors",
+                      isActive
+                        ? "bg-slate-700 text-white"
+                        : "hover:bg-slate-700/50 text-slate-100"
+                    )}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <span className="text-sm font-medium">{item.label}</span>
+                    </div>
+                    <ChevronDown
+                      className={cn(
+                        "w-4 h-4 transition-transform",
+                        workspaceOpen && "rotate-180"
+                      )}
+                    />
+                  </button>
+                  {workspaceOpen && (
+                    <div className="mt-1 ml-2 space-y-1 border-l border-slate-700 pl-4">
+                      {item.submenu.map((subitem) => (
+                        <Link
+                          key={subitem.href}
+                          to={subitem.href}
+                          className={cn(
+                            "block px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                            isActiveRoute(subitem.href)
+                              ? "bg-blue-500/20 text-blue-300"
+                              : "hover:bg-slate-700/50 text-slate-300"
+                          )}
+                        >
+                          {subitem.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={item.href}
-                to={item.href}
-                className="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-slate-700/50 transition-colors"
+                to={item.href || "/"}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-2.5 rounded-lg transition-colors",
+                  isActive
+                    ? "bg-slate-700 text-white"
+                    : "hover:bg-slate-700/50 text-slate-100"
+                )}
               >
                 <Icon className="w-5 h-5 flex-shrink-0" />
                 <span className="text-sm font-medium">{item.label}</span>
@@ -87,6 +144,7 @@ export default function Layout({
           })}
         </nav>
 
+        {/* User Section */}
         <div className="border-t border-slate-700 p-4">
           <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-lg bg-slate-700/30">
             <img
