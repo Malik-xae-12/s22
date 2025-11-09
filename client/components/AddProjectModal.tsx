@@ -632,13 +632,14 @@ export default function AddProjectModal({
             Back
           </button>
 
-          {step < 4 ? (
+          {step < 5 ? (
             <button
               onClick={() => setStep(step + 1)}
               disabled={
                 (step === 1 && !isStep1Valid) ||
                 (step === 2 && !isStep2Valid) ||
-                (step === 3 && !isStep3Valid)
+                (step === 3 && !isStep3Valid) ||
+                (step === 4 && !isStep4Valid)
               }
               className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
