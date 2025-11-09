@@ -77,6 +77,11 @@ export const MOCK_PROJECTS: Project[] = [
     updatedAt: "2025-01-20",
     approvalsStatus: "pending",
     progress: 65,
+    estimatedHours: 240,
+    estimatedCost: 850000,
+    billingType: "Fixed Cost",
+    currency: "INR",
+    proposal: "TS-2025-001",
   },
   {
     id: "proj-2",
