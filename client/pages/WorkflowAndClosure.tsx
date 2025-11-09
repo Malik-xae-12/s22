@@ -435,8 +435,8 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
                             </div>
                             {derived.state === "awaiting" && (
                               <div className="flex-shrink-0 flex items-center gap-2">
-                                <button onClick={() => openApprovalFor({ kind: "task", data: task })} className="px-2.5 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">Approve</button>
-                                <button onClick={() => openApprovalFor({ kind: "task", data: task })} className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold">Reject</button>
+                                <button onClick={() => openApprovalForTask(task)} className="px-2.5 py-1.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">Approve</button>
+                                <button onClick={() => openApprovalForTask(task)} className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold">Reject</button>
                               </div>
                             )}
                           </div>
