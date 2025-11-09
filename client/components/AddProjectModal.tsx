@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X } from "lucide-react";
 import { Project } from "@shared/api";
 import { MOCK_USERS } from "@/utils/mockData";
 
@@ -16,35 +16,34 @@ export default function AddProjectModal({
   onClose,
   onSubmit,
 }: AddProjectModalProps) {
-  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
-    teamName: "",
     clientName: "",
-    manager: "",
-    description: "",
     clientEmail: "",
-    sponsor: "",
-    startDate: "",
-    endDate: "",
-    stage: "prospecting" as const,
-    status: "active" as const,
-    estimation: 0,
-    budget: 0,
-    billingType: "",
-    currency: "USD",
+    manager: "",
+    teamName: "",
+    description: "",
     presalesMode: "",
     projectMode: "",
     projectType: "",
     priority: "Medium",
     department: "",
-    assignedTeam: [] as string[],
+    startDate: "",
+    endDate: "",
+    estimation: 0,
+    budget: 0,
+    billingType: "",
+    currency: "USD",
     nda: "Pending",
+    stage: "prospecting" as const,
+    status: "active" as const,
+    sponsor: "",
     qpmSummary: "",
     timeline: "",
     meetingNotes: "",
     approvalsStatus: "pending" as const,
     comments: "",
+    assignedTeam: [] as string[],
   });
 
   const managers = MOCK_USERS.filter((u) => u.role === "team");
@@ -81,47 +80,44 @@ export default function AddProjectModal({
     onSubmit(formData);
     setFormData({
       name: "",
-      teamName: "",
       clientName: "",
-      manager: "",
-      description: "",
       clientEmail: "",
-      sponsor: "",
-      startDate: "",
-      endDate: "",
-      stage: "prospecting",
-      status: "active",
-      estimation: 0,
-      budget: 0,
-      billingType: "",
-      currency: "USD",
+      manager: "",
+      teamName: "",
+      description: "",
       presalesMode: "",
       projectMode: "",
       projectType: "",
       priority: "Medium",
       department: "",
-      assignedTeam: [],
+      startDate: "",
+      endDate: "",
+      estimation: 0,
+      budget: 0,
+      billingType: "",
+      currency: "USD",
       nda: "Pending",
+      stage: "prospecting",
+      status: "active",
+      sponsor: "",
       qpmSummary: "",
       timeline: "",
       meetingNotes: "",
       approvalsStatus: "pending",
       comments: "",
+      assignedTeam: [],
     });
-    setStep(1);
     onClose();
   };
 
-  const isStep1Valid = formData.name && formData.teamName && formData.manager;
-  const isStep2Valid = true;
-  const isStep3Valid = formData.startDate && formData.endDate && formData.estimation > 0;
-  const isStep4Valid = true;
+  const isFormValid =
+    formData.name && formData.clientName && formData.manager && formData.startDate && formData.endDate;
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-4xl w-full max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-slate-900">
@@ -135,45 +131,14 @@ export default function AddProjectModal({
           </button>
         </div>
 
-        {/* Steps Indicator */}
-        <div className="px-6 py-4 border-b border-slate-200">
-          <div className="flex items-center gap-4">
-            {[1, 2, 3, 4, 5].map((stepNum) => (
-              <div key={stepNum} className="flex items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
-                    step === stepNum
-                      ? "bg-blue-600 text-white"
-                      : step > stepNum
-                        ? "bg-green-600 text-white"
-                        : "bg-slate-200 text-slate-600"
-                  }`}
-                >
-                  {stepNum}
-                </div>
-                {stepNum < 5 && (
-                  <div
-                    className={`w-12 h-1 mx-2 ${
-                      step > stepNum ? "bg-green-600" : "bg-slate-200"
-                    }`}
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <p className="text-sm text-slate-600 mt-2">
-            {step === 1 && "Basic Information"}
-            {step === 2 && "Project Configuration"}
-            {step === 3 && "Timeline & Budget"}
-            {step === 4 && "Team & Settings"}
-            {step === 5 && "Review & Submit"}
-          </p>
-        </div>
-
         {/* Content */}
-        <div className="px-6 py-6">
-          {step === 1 && (
-            <div className="space-y-4">
+        <div className="px-6 py-6 space-y-6">
+          {/* Basic Information Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+              Basic Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Project Name *
@@ -188,38 +153,37 @@ export default function AddProjectModal({
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Client Name
-                  </label>
-                  <input
-                    type="text"
-                    name="clientName"
-                    value={formData.clientName}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Acme Corp"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Client Email
-                  </label>
-                  <input
-                    type="email"
-                    name="clientEmail"
-                    value={formData.clientEmail}
-                    onChange={handleInputChange}
-                    placeholder="client@example.com"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Client Name *
+                </label>
+                <input
+                  type="text"
+                  name="clientName"
+                  value={formData.clientName}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Acme Corp"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Project Manager *
+                  Client Email
+                </label>
+                <input
+                  type="email"
+                  name="clientEmail"
+                  value={formData.clientEmail}
+                  onChange={handleInputChange}
+                  placeholder="client@example.com"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Manager *
                 </label>
                 <select
                   name="manager"
@@ -238,19 +202,33 @@ export default function AddProjectModal({
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Team Name *
+                  Team Name
                 </label>
                 <input
                   type="text"
                   name="teamName"
                   value={formData.teamName}
                   onChange={handleInputChange}
-                  placeholder="e.g., TechStartup"
+                  placeholder="e.g., Engineering Team"
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Department
+                </label>
+                <input
+                  type="text"
+                  name="department"
+                  value={formData.department}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Engineering"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Project Description
                 </label>
@@ -264,98 +242,85 @@ export default function AddProjectModal({
                 />
               </div>
             </div>
-          )}
+          </div>
 
-          {step === 2 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Project Type
-                  </label>
-                  <input
-                    type="text"
-                    name="projectType"
-                    value={formData.projectType}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Web Development"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Priority
-                  </label>
-                  <select
-                    name="priority"
-                    value={formData.priority}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="Low">Low</option>
-                    <option value="Medium">Medium</option>
-                    <option value="High">High</option>
-                    <option value="Critical">Critical</option>
-                  </select>
-                </div>
+          {/* Project Configuration Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+              Project Configuration
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Project Type
+                </label>
+                <input
+                  type="text"
+                  name="projectType"
+                  value={formData.projectType}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Web Development"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Department
-                  </label>
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Engineering"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    PreSales Mode
-                  </label>
-                  <input
-                    type="text"
-                    name="presalesMode"
-                    value={formData.presalesMode}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Discovery"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Priority
+                </label>
+                <select
+                  name="priority"
+                  value={formData.priority}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                  <option value="Critical">Critical</option>
+                </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Project Mode
-                  </label>
-                  <input
-                    type="text"
-                    name="projectMode"
-                    value={formData.projectMode}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Fixed Price"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Billing Type
-                  </label>
-                  <input
-                    type="text"
-                    name="billingType"
-                    value={formData.billingType}
-                    onChange={handleInputChange}
-                    placeholder="e.g., Monthly"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  PreSales Mode
+                </label>
+                <input
+                  type="text"
+                  name="presalesMode"
+                  value={formData.presalesMode}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Discovery"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Project Mode
+                </label>
+                <input
+                  type="text"
+                  name="projectMode"
+                  value={formData.projectMode}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Fixed Price"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Billing Type
+                </label>
+                <input
+                  type="text"
+                  name="billingType"
+                  value={formData.billingType}
+                  onChange={handleInputChange}
+                  placeholder="e.g., Monthly"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
               <div>
@@ -375,120 +340,6 @@ export default function AddProjectModal({
                   <option value="INR">INR (₹)</option>
                 </select>
               </div>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Start Date *
-                  </label>
-                  <input
-                    type="date"
-                    name="startDate"
-                    value={formData.startDate}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    End Date *
-                  </label>
-                  <input
-                    type="date"
-                    name="endDate"
-                    value={formData.endDate}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Estimated Hours *
-                  </label>
-                  <input
-                    type="number"
-                    name="estimation"
-                    value={formData.estimation}
-                    onChange={handleInputChange}
-                    placeholder="40"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Estimated Cost
-                  </label>
-                  <input
-                    type="number"
-                    name="budget"
-                    value={formData.budget}
-                    onChange={handleInputChange}
-                    placeholder="15000"
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Timeline Summary
-                </label>
-                <input
-                  type="text"
-                  name="timeline"
-                  value={formData.timeline}
-                  onChange={handleInputChange}
-                  placeholder="e.g., 4 weeks"
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Current Stage
-                  </label>
-                  <select
-                    name="stage"
-                    value={formData.stage}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="prospecting">Prospecting</option>
-                    <option value="planning">Planning</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="review">Review</option>
-                    <option value="signed_off">Signed Off</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
-                    Status
-                  </label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="active">Active</option>
-                    <option value="on_hold">On Hold</option>
-                    <option value="completed">Completed</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                </div>
-              </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
@@ -505,163 +356,211 @@ export default function AddProjectModal({
                   <option value="Not Required">Not Required</option>
                 </select>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Assign Team Members
-                </label>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {MOCK_USERS.filter((u) => u.role === "team").map((user) => (
-                    <label
-                      key={user.id}
-                      className="flex items-center gap-2 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={formData.assignedTeam.includes(user.id)}
-                        onChange={() => handleTeamToggle(user.id)}
-                        className="w-4 h-4 rounded border-slate-300"
-                      />
-                      <span className="text-sm text-slate-700">
-                        {user.name}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
             </div>
-          )}
+          </div>
 
-          {step === 5 && (
-            <div className="space-y-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3">
-                <h3 className="font-semibold text-slate-900">
-                  Review Project Details
-                </h3>
-                <div className="text-sm text-slate-700 space-y-2 grid grid-cols-2 gap-4">
-                  <div>
-                    <p><strong>Project Name:</strong><br/>{formData.name}</p>
-                  </div>
-                  <div>
-                    <p><strong>Client Name:</strong><br/>{formData.clientName || "Not specified"}</p>
-                  </div>
-                  <div>
-                    <p><strong>Manager:</strong><br/>{formData.manager}</p>
-                  </div>
-                  <div>
-                    <p><strong>Team:</strong><br/>{formData.teamName}</p>
-                  </div>
-                  <div>
-                    <p><strong>Project Type:</strong><br/>{formData.projectType || "Not specified"}</p>
-                  </div>
-                  <div>
-                    <p><strong>Priority:</strong><br/>{formData.priority}</p>
-                  </div>
-                  <div>
-                    <p><strong>Department:</strong><br/>{formData.department || "Not specified"}</p>
-                  </div>
-                  <div>
-                    <p><strong>PreSales Mode:</strong><br/>{formData.presalesMode || "Not specified"}</p>
-                  </div>
-                  <div>
-                    <p><strong>Start Date:</strong><br/>{formData.startDate}</p>
-                  </div>
-                  <div>
-                    <p><strong>End Date:</strong><br/>{formData.endDate}</p>
-                  </div>
-                  <div>
-                    <p><strong>Estimated Hours:</strong><br/>{formData.estimation} hrs</p>
-                  </div>
-                  <div>
-                    <p><strong>Estimated Cost:</strong><br/>{formData.currency} {formData.budget}</p>
-                  </div>
-                  <div>
-                    <p><strong>Billing Type:</strong><br/>{formData.billingType || "Not specified"}</p>
-                  </div>
-                  <div>
-                    <p><strong>Project Mode:</strong><br/>{formData.projectMode || "Not specified"}</p>
-                  </div>
-                  <div>
-                    <p><strong>Stage:</strong><br/>{formData.stage}</p>
-                  </div>
-                  <div>
-                    <p><strong>Status:</strong><br/>{formData.status}</p>
-                  </div>
-                  <div>
-                    <p><strong>NDA:</strong><br/>{formData.nda}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p><strong>Assigned Team:</strong><br/>
-                    {formData.assignedTeam.length > 0
-                      ? MOCK_USERS.filter((u) =>
-                          formData.assignedTeam.includes(u.id),
-                        )
-                          .map((u) => u.name)
-                          .join(", ")
-                      : "None"}
-                    </p>
-                  </div>
-                </div>
+          {/* Timeline and Budget Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+              Timeline & Budget
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Start Date *
+                </label>
+                <input
+                  type="date"
+                  name="startDate"
+                  value={formData.startDate}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Additional Notes
+                  End Date *
+                </label>
+                <input
+                  type="date"
+                  name="endDate"
+                  value={formData.endDate}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Estimated Hours
+                </label>
+                <input
+                  type="number"
+                  name="estimation"
+                  value={formData.estimation}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 160"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Estimated Cost
+                </label>
+                <input
+                  type="number"
+                  name="budget"
+                  value={formData.budget}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 15000"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Timeline Summary
+                </label>
+                <input
+                  type="text"
+                  name="timeline"
+                  value={formData.timeline}
+                  onChange={handleInputChange}
+                  placeholder="e.g., 4 weeks"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Team Assignment Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+              Team Assignment
+            </h3>
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {MOCK_USERS.filter((u) => u.role === "team").map((user) => (
+                <label
+                  key={user.id}
+                  className="flex items-center gap-3 cursor-pointer p-2 hover:bg-slate-50 rounded-lg"
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.assignedTeam.includes(user.id)}
+                    onChange={() => handleTeamToggle(user.id)}
+                    className="w-4 h-4 rounded border-slate-300"
+                  />
+                  <span className="text-sm text-slate-700">{user.name}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Additional Information Section */}
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 mb-4 pb-2 border-b border-slate-200">
+              Additional Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Stage
+                </label>
+                <select
+                  name="stage"
+                  value={formData.stage}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="prospecting">Prospecting</option>
+                  <option value="planning">Planning</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="review">Review</option>
+                  <option value="signed_off">Signed Off</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Status
+                </label>
+                <select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="active">Active</option>
+                  <option value="on_hold">On Hold</option>
+                  <option value="completed">Completed</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Sponsor
+                </label>
+                <input
+                  type="text"
+                  name="sponsor"
+                  value={formData.sponsor}
+                  onChange={handleInputChange}
+                  placeholder="Project sponsor name"
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Approval Status
+                </label>
+                <select
+                  name="approvalsStatus"
+                  value={formData.approvalsStatus}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Comments
                 </label>
                 <textarea
                   name="comments"
                   value={formData.comments}
                   onChange={handleInputChange}
                   placeholder="Any additional notes or comments"
-                  rows={3}
+                  rows={2}
                   className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
             </div>
-          )}
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="border-t border-slate-200 px-6 py-4 flex items-center justify-between">
+        <div className="border-t border-slate-200 px-6 py-4 flex items-center justify-end gap-3 bg-slate-50">
           <button
-            onClick={() => setStep(Math.max(1, step - 1))}
-            disabled={step === 1}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+            onClick={onClose}
+            className="px-6 py-2 border border-slate-300 rounded-lg hover:bg-slate-100 font-medium text-slate-700 transition-all"
           >
-            <ChevronLeft className="w-4 h-4" />
-            Back
+            Cancel
           </button>
-
-          {step < 5 ? (
-            <button
-              onClick={() => setStep(step + 1)}
-              disabled={
-                (step === 1 && !isStep1Valid) ||
-                (step === 2 && !isStep2Valid) ||
-                (step === 3 && !isStep3Valid) ||
-                (step === 4 && !isStep4Valid)
-              }
-              className="flex items-center gap-2 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-            >
-              Next
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <div className="flex gap-2">
-              <button
-                onClick={onClose}
-                className="px-6 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium"
-              >
-                Create Project
-              </button>
-            </div>
-          )}
+          <button
+            onClick={handleSubmit}
+            disabled={!isFormValid}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            Create Project
+          </button>
         </div>
       </div>
     </div>
