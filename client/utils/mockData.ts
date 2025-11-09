@@ -55,6 +55,7 @@ export const MOCK_PROJECTS: Project[] = [
   {
     id: "proj-1",
     name: "TechStartup Web Platform",
+    clientName: "TechStartup Inc",
     clientEmail: "contact@techstartup.com",
     teamName: "TechStartup",
     manager: "Sarah Chen",
@@ -82,6 +83,11 @@ export const MOCK_PROJECTS: Project[] = [
     billingType: "Fixed Cost",
     currency: "INR",
     proposal: "TS-2025-001",
+    presalesMode: "Discovery",
+    projectMode: "Fixed Price",
+    projectType: "Web Development",
+    priority: "High",
+    department: "Engineering",
   },
   {
     id: "proj-2",
