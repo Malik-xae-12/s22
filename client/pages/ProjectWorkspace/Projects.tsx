@@ -183,6 +183,15 @@ export default function Projects({ currentUser }: ProjectsProps) {
 
       {/* Project Modal */}
       <ProjectModal isOpen={isModalOpen} onClose={handleCloseModal} project={editingProject} />
+
+      {/* Floating Action Button (Mobile) */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-40"
+        title="Create new project"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
     </div>
   );
 }
