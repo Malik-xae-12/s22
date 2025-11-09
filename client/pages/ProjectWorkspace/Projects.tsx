@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { User } from "@shared/api";
-import { Plus, MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react";
+import { Plus, MoreHorizontal, Edit, Trash2, Briefcase, Users, Clock, DollarSign } from "lucide-react";
 import { MOCK_PROJECTS, MOCK_STAGES } from "@/utils/mockData";
 import ProjectModal from "@/components/ProjectModal";
 
@@ -10,7 +10,28 @@ interface ProjectsProps {
 
 export default function Projects({ currentUser }: ProjectsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<any>(null);
   const [projects] = useState(MOCK_PROJECTS);
+
+  const handleEdit = (project: any) => {
+    setEditingProject(project);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingProject(null);
+  };
+
+  const formatCurrency = (amount: number, currency: string) => {
+    const currencySymbols: Record<string, string> = {
+      INR: "₹",
+      USD: "$",
+      EUR: "€",
+    };
+    const symbol = currencySymbols[currency] || currency;
+    return `${symbol} ${amount.toLocaleString()}`;
+  };
 
   const summaryCards = [
     { label: "Total Projects", value: projects.length, color: "blue" },
