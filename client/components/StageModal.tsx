@@ -42,92 +42,112 @@ export default function StageModal({ isOpen, onClose, stage }: StageModalProps) 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200 sticky top-0 bg-white">
-          <h2 className="text-xl font-bold text-slate-900">Create New Stage</h2>
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform transition-all duration-300">
+        {/* Gradient Header */}
+        <div className="sticky top-0 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 p-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              {stage ? "Edit Stage" : "Create New Stage"}
+            </h2>
+            <p className="text-blue-100 text-sm mt-1">
+              {stage ? "Update stage details" : "Add a new project stage"}
+            </p>
+          </div>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6 text-white" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-900 mb-1">
-              Stage Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., Requirements & Planning"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-900 mb-1">
-              Project
-            </label>
-            <select
-              name="projectId"
-              value={formData.projectId}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="">Select a project</option>
-              <option value="proj-1">TechStartup Web Platform</option>
-              <option value="proj-2">RetailCo Platform Redesign</option>
-              <option value="proj-3">Design Studio Branding</option>
-              <option value="proj-4">LogisticsPro Supply Chain</option>
-              <option value="proj-5">FinTech Mobile Banking</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-900 mb-1">
-              Stage Owner
-            </label>
-            <input
-              type="text"
-              name="owner"
-              value={formData.owner}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Owner name"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-slate-900 mb-1">
-              Stage Type
-            </label>
-            <select
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            >
-              <option value="planning">Planning</option>
-              <option value="execution">Execution</option>
-              <option value="testing">Testing</option>
-              <option value="delivery">Delivery</option>
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          {/* Row 1: Stage Name & Project */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-slate-900 mb-1">
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
+                Stage Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-lg transition-all"
+                placeholder="e.g., Requirements & Planning"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
+                Project
+              </label>
+              <div className="relative">
+                <select
+                  name="projectId"
+                  value={formData.projectId}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-lg transition-all appearance-none"
+                  required
+                >
+                  <option value="">Select a project</option>
+                  {MOCK_PROJECTS.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-4 top-3.5 w-5 h-5 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+          </div>
+
+          {/* Row 2: Owner & Stage Type */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
+                Stage Owner
+              </label>
+              <input
+                type="text"
+                name="owner"
+                value={formData.owner}
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-lg transition-all"
+                placeholder="Owner name"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
+                Stage Type
+              </label>
+              <div className="relative">
+                <select
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-lg transition-all appearance-none"
+                  required
+                >
+                  <option value="planning">Planning</option>
+                  <option value="execution">Execution</option>
+                  <option value="testing">Testing</option>
+                  <option value="delivery">Delivery</option>
+                </select>
+                <ChevronDown className="absolute right-4 top-3.5 w-5 h-5 text-slate-400 pointer-events-none" />
+              </div>
+            </div>
+          </div>
+
+          {/* Row 3: Dates */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
                 Start Date
               </label>
               <input
@@ -135,12 +155,12 @@ export default function StageModal({ isOpen, onClose, stage }: StageModalProps) 
                 name="startDate"
                 value={formData.startDate}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-lg transition-all"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-900 mb-1">
+              <label className="block text-sm font-semibold text-slate-900 mb-2">
                 End Date
               </label>
               <input
@@ -148,40 +168,41 @@ export default function StageModal({ isOpen, onClose, stage }: StageModalProps) 
                 name="endDate"
                 value={formData.endDate}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-lg transition-all"
                 required
               />
             </div>
           </div>
 
+          {/* Row 4: Remarks */}
           <div>
-            <label className="block text-sm font-medium text-slate-900 mb-1">
+            <label className="block text-sm font-semibold text-slate-900 mb-2">
               Remarks
             </label>
             <textarea
               name="remarks"
               value={formData.remarks}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white focus:shadow-lg transition-all"
               placeholder="Stage remarks and notes"
-              rows={2}
+              rows={3}
             />
           </div>
 
-          {/* Buttons */}
-          <div className="flex gap-3 pt-4 border-t border-slate-200">
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-6 border-t border-slate-200">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors font-medium"
+              className="flex-1 px-6 py-3 text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-all duration-300 font-semibold"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl"
             >
-              Create Stage
+              {stage ? "Update Stage" : "Create Stage"}
             </button>
           </div>
         </form>
