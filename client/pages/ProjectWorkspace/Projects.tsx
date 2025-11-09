@@ -22,6 +22,12 @@ export default function Projects({ currentUser }: ProjectsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [projects] = useState(MOCK_PROJECTS);
+  const [showFilters, setShowFilters] = useState(true);
+  const [filters, setFilters] = useState({
+    status: "",
+    priority: "",
+    department: "",
+  });
 
   const handleEdit = (project: any) => {
     setEditingProject(project);
@@ -32,6 +38,29 @@ export default function Projects({ currentUser }: ProjectsProps) {
     setIsModalOpen(false);
     setEditingProject(null);
   };
+
+  const handleFilterChange = (key: string, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      status: "",
+      priority: "",
+      department: "",
+    });
+  };
+
+  const filteredProjects = projects.filter((project) => {
+    if (filters.status && project.status !== filters.status) return false;
+    if (filters.priority && project.priority !== filters.priority) return false;
+    if (filters.department && project.department !== filters.department)
+      return false;
+    return true;
+  });
 
   const stats = [
     {
