@@ -113,8 +113,9 @@ export default function AddProjectModal({
   };
 
   const isStep1Valid = formData.name && formData.teamName && formData.manager;
-  const isStep2Valid = formData.startDate && formData.endDate;
-  const isStep3Valid = formData.estimation > 0;
+  const isStep2Valid = true;
+  const isStep3Valid = formData.startDate && formData.endDate && formData.estimation > 0;
+  const isStep4Valid = true;
 
   if (!isOpen) return null;
 
