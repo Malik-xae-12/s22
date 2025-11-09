@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { User } from "@shared/api";
-import { Plus, MoreHorizontal } from "lucide-react";
+import { Plus, Zap, AlertCircle, CheckCircle } from "lucide-react";
 import { MOCK_STAGES, MOCK_PROJECTS } from "@/utils/mockData";
 import StageModal from "@/components/StageModal";
+import FilterBar, { FilterConfig } from "@/components/FilterBar";
 
 interface StagesProps {
   currentUser: User | null;
@@ -10,138 +11,266 @@ interface StagesProps {
 
 export default function Stages({ currentUser }: StagesProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingStage, setEditingStage] = useState<any>(null);
   const [stages] = useState(MOCK_STAGES);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState({
+    project: "",
+    stageName: "",
+    status: "",
+  });
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "name">("newest");
 
-  const getStageTypeColor = (type: string) => {
-    const colors: Record<string, string> = {
-      planning: "bg-purple-50 text-purple-700",
-      execution: "bg-blue-50 text-blue-700",
-      testing: "bg-yellow-50 text-yellow-700",
-      delivery: "bg-green-50 text-green-700",
-    };
-    return colors[type] || "bg-gray-50 text-gray-700";
+  const handleEdit = (stage: any) => {
+    setEditingStage(stage);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingStage(null);
+  };
+
+  const handleFilterChange = (filterId: string, value: string) => {
+    setFilters((prev) => ({ ...prev, [filterId]: value }));
+  };
+
+  const handleReset = () => {
+    setFilters({ project: "", stageName: "", status: "" });
+    setSearchQuery("");
+    setSortBy("newest");
   };
 
   const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      not_started: "bg-gray-50 text-gray-700",
-      in_progress: "bg-yellow-50 text-yellow-700",
-      completed: "bg-green-50 text-green-700",
+    const colors: Record<string, { bg: string; text: string; icon: any }> = {
+      not_started: { bg: "bg-gray-100", text: "text-gray-700", icon: null },
+      in_progress: { bg: "bg-blue-100", text: "text-blue-700", icon: Zap },
+      completed: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle },
     };
-    return colors[status] || "bg-gray-50 text-gray-700";
+    return colors[status] || colors.not_started;
+  };
+
+  const getStatusLabel = (status: string) => {
+    return status === "not_started"
+      ? "Not Started"
+      : status === "in_progress"
+        ? "In Progress"
+        : "Completed";
   };
 
   const getProjectName = (projectId: string) => {
-    return MOCK_PROJECTS.find((p) => p.id === projectId)?.name || "Unknown Project";
+    return MOCK_PROJECTS.find((p) => p.id === projectId)?.name || "Unknown";
   };
 
-  const stageTypeLabels: Record<string, string> = {
-    planning: "Planning",
-    execution: "Execution",
-    testing: "Testing",
-    delivery: "Delivery",
-  };
+  const filterConfigs: FilterConfig[] = [
+    {
+      id: "project",
+      label: "Project Name",
+      placeholder: "Filter by project",
+      options: MOCK_PROJECTS.map((p) => ({ label: p.name, value: p.id })),
+    },
+    {
+      id: "stageName",
+      label: "Stage Name",
+      placeholder: "Filter by stage",
+      options: [...new Set(stages.map((s) => s.name))].map((name) => ({
+        label: name,
+        value: name,
+      })),
+    },
+    {
+      id: "status",
+      label: "Status",
+      placeholder: "Filter by status",
+      options: [
+        { label: "Not Started", value: "not_started" },
+        { label: "In Progress", value: "in_progress" },
+        { label: "Completed", value: "completed" },
+      ],
+    },
+  ];
 
-  const statusLabels: Record<string, string> = {
-    not_started: "Not Started",
-    in_progress: "In Progress",
-    completed: "Completed",
-  };
+  const filteredAndSortedStages = useMemo(() => {
+    let result = stages;
+
+    // Apply search
+    if (searchQuery) {
+      result = result.filter(
+        (s) =>
+          s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.remarks.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Apply filters
+    if (filters.project) {
+      result = result.filter((s) => s.projectId === filters.project);
+    }
+    if (filters.stageName) {
+      result = result.filter((s) => s.name === filters.stageName);
+    }
+    if (filters.status) {
+      result = result.filter((s) => s.status === filters.status);
+    }
+
+    // Apply sorting
+    result = [...result].sort((a, b) => {
+      switch (sortBy) {
+        case "newest":
+          return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+        case "oldest":
+          return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+        case "name":
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [stages, searchQuery, filters, sortBy]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative pb-20 md:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Project Stages</h1>
-          <p className="text-slate-600 mt-1">Manage and monitor project execution stages</p>
+          <p className="text-slate-600 mt-1 text-sm">Manage and track project execution stages</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
         >
           <Plus className="w-5 h-5" />
           New Stage
         </button>
       </div>
 
-      {/* Stages Grid with Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {stages.map((stage) => (
-          <div key={stage.id} className="bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow">
-            {/* Stage Header */}
-            <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  <h3 className="text-lg font-bold text-slate-900">{stage.name}</h3>
-                  <p className="text-sm text-slate-600 mt-1">
-                    Project: <span className="font-medium">{getProjectName(stage.projectId)}</span>
-                  </p>
-                </div>
-                <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                  <MoreHorizontal className="w-5 h-5 text-slate-600" />
-                </button>
-              </div>
-              <div className="flex gap-2 mt-4">
-                <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getStageTypeColor(stage.type)}`}>
-                  {stageTypeLabels[stage.type]}
-                </span>
-                <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getStatusColor(stage.status)}`}>
-                  {statusLabels[stage.status]}
-                </span>
-              </div>
-            </div>
+      {/* Filter Bar */}
+      <FilterBar
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onSearch={setSearchQuery}
+        onReset={handleReset}
+        searchQuery={searchQuery}
+        filterConfigs={filterConfigs}
+      />
 
-            {/* Stage Details */}
-            <div className="p-6 space-y-4">
-              {/* Progress Bar */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-slate-600">Progress</p>
-                  <span className="text-sm font-semibold text-slate-900">{stage.completion}%</span>
-                </div>
-                <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600"
-                    style={{ width: `${stage.completion}%` }}
-                  />
-                </div>
-              </div>
+      {/* Sorting Controls */}
+      <div className="flex justify-between items-center">
+        <p className="text-sm text-slate-600">
+          Showing <span className="font-semibold text-slate-900">{filteredAndSortedStages.length}</span> stages
+        </p>
+        <select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as any)}
+          className="px-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+        >
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="name">Name (A-Z)</option>
+        </select>
+      </div>
 
-              {/* Stage Info Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-xs text-slate-600 font-medium">Stage Owner</p>
-                  <p className="text-sm font-semibold text-slate-900 mt-1">{stage.owner}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-slate-600 font-medium">Timeline</p>
-                  <p className="text-sm font-semibold text-slate-900 mt-1">
-                    {stage.startDate} to {stage.endDate}
-                  </p>
-                </div>
-              </div>
-
-              {/* Approval Info */}
-              {stage.approvedBy && (
-                <div className="p-3 bg-green-50 rounded-lg">
-                  <p className="text-xs text-green-700 font-medium">Approved by {stage.approvedBy}</p>
-                  <p className="text-xs text-green-600">{stage.approvalDate}</p>
-                </div>
+      {/* Stages Table */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/50">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Stage Name
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Project Name
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Start Date
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  End Date
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Actual End
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Progress
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {filteredAndSortedStages.length > 0 ? (
+                filteredAndSortedStages.map((stage, idx) => {
+                  const statusColor = getStatusColor(stage.status);
+                  const StatusIcon = statusColor.icon;
+                  return (
+                    <tr key={stage.id} className={`hover:bg-slate-50 transition-colors duration-200 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}>
+                      <td className="px-6 py-4">
+                        <span className="font-semibold text-slate-900">{stage.name}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-600 text-sm">{getProjectName(stage.projectId)}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-600 text-sm">{stage.startDate}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-600 text-sm">{stage.endDate}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-600 text-sm">{stage.approvalDate || "—"}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${statusColor.bg} ${statusColor.text}`}
+                          >
+                            {StatusIcon && <StatusIcon className="w-3 h-3" />}
+                            {getStatusLabel(stage.status)}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
+                              style={{ width: `${stage.completion}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-bold text-slate-700 w-7 text-right">{stage.completion}%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8 text-center text-slate-500">
+                    No stages found matching your filters
+                  </td>
+                </tr>
               )}
-
-              {/* Remarks */}
-              <div>
-                <p className="text-xs text-slate-600 font-medium mb-2">Remarks</p>
-                <p className="text-sm text-slate-700">{stage.remarks}</p>
-              </div>
-            </div>
-          </div>
-        ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Stage Modal */}
-      <StageModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <StageModal isOpen={isModalOpen} onClose={handleCloseModal} stage={editingStage} />
+
+      {/* Floating Action Button (Mobile) */}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-40"
+        title="Create new stage"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
     </div>
   );
 }
