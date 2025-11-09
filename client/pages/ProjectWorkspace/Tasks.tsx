@@ -1,15 +1,17 @@
 import React, { useState, useMemo } from "react";
-import { User } from "@shared/api";
 import {
+  User as UserIcon,
   Plus,
-  AlertCircle,
-  Circle,
-  CheckCircle2,
   Filter,
+  Calendar,
+  CheckCircle,
+  Zap,
+  Users,
+  Edit2,
+  Trash2,
   X,
-  ChevronDown,
-  Search,
 } from "lucide-react";
+import { User } from "@shared/api";
 import { MOCK_TASKS, MOCK_PROJECTS, MOCK_STAGES } from "@/utils/mockData";
 import TaskModal from "@/components/TaskModal";
 
@@ -21,14 +23,36 @@ export default function Tasks({ currentUser }: TasksProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [tasks] = useState(MOCK_TASKS);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
+
+  // Modal states
+  const [isPeopleModalOpen, setIsPeopleModalOpen] = useState(false);
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<any>(null);
+
+  // Filters
   const [filters, setFilters] = useState({
-    project: "",
-    stage: "",
-    status: "",
+    projectName: "",
+    stageName: "",
+    taskName: "",
+    startDate: "",
+    endDate: "",
   });
-  const [sortBy, setSortBy] = useState<"oldest" | "name" | "dueDate">("oldest");
+  const [showFilters, setShowFilters] = useState(true);
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      projectName: "",
+      stageName: "",
+      taskName: "",
+      startDate: "",
+      endDate: "",
+    });
+  };
 
   const handleEdit = (task: any) => {
     setEditingTask(task);
@@ -40,470 +64,322 @@ export default function Tasks({ currentUser }: TasksProps) {
     setEditingTask(null);
   };
 
-  const handleFilterChange = (filterId: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [filterId]: value }));
+  const openPeopleModal = (task: any) => {
+    setSelectedTask(task);
+    setIsPeopleModalOpen(true);
   };
 
-  const handleReset = () => {
-    setFilters({ project: "", stage: "", status: "" });
-    setSearchQuery("");
-    setSortBy("oldest");
+  const closePeopleModal = () => {
+    setSelectedTask(null);
+    setIsPeopleModalOpen(false);
   };
 
-  const getPriorityColor = (priority: string) => {
-    const colors: Record<string, { bg: string; text: string; icon: any }> = {
-      critical: { bg: "bg-red-100", text: "text-red-700", icon: AlertCircle },
-      high: { bg: "bg-orange-100", text: "text-orange-700", icon: AlertCircle },
-      medium: { bg: "bg-yellow-100", text: "text-yellow-700", icon: Circle },
-      low: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle2 },
-    };
-    return colors[priority] || colors.medium;
+  const openDateModal = (task: any) => {
+    setSelectedTask(task);
+    setIsDateModalOpen(true);
+  };
+
+  const closeDateModal = () => {
+    setSelectedTask(null);
+    setIsDateModalOpen(false);
   };
 
   const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      pending: "bg-slate-100 text-slate-700",
-      in_progress: "bg-blue-100 text-blue-700",
-      review: "bg-purple-100 text-purple-700",
-      completed: "bg-green-100 text-green-700",
+    const colors: Record<string, { bg: string; text: string; icon: any }> = {
+      pending: { bg: "bg-gray-100", text: "text-gray-700", icon: null },
+      in_progress: { bg: "bg-blue-100", text: "text-blue-700", icon: Zap },
+      completed: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle },
     };
-    return colors[status] || "bg-slate-100 text-slate-700";
+    return colors[status] || colors.pending;
   };
 
-  const getStatusLabel = (status: string) => {
-    return status === "in_progress"
-      ? "In Progress"
-      : status === "pending"
-        ? "Pending"
-        : status === "review"
-          ? "Under Review"
-          : "Completed";
-  };
+  const getStatusLabel = (status: string) =>
+    status === "pending" ? "Pending" : status === "in_progress" ? "In Progress" : "Completed";
 
-  const getPriorityLabel = (priority: string) => {
-    return priority.charAt(0).toUpperCase() + priority.slice(1);
-  };
+  const getProjectName = (projectId: string) =>
+    MOCK_PROJECTS.find((p) => p.id === projectId)?.name || "Unknown";
 
-  const getProjectName = (projectId: string) => {
-    return MOCK_PROJECTS.find((p) => p.id === projectId)?.name || "Unknown";
-  };
+  const getStageName = (stageId: string) =>
+    MOCK_STAGES.find((s) => s.id === stageId)?.name || "Unknown";
 
-  const getStageName = (stageId: string) => {
-    return MOCK_STAGES.find((s) => s.id === stageId)?.name || "Unknown";
-  };
-
-  const activeFiltersCount = Object.values(filters).filter(Boolean).length;
-
-  const filteredAndSortedTasks = useMemo(() => {
+  const filteredTasks = useMemo(() => {
     let result = tasks;
 
-    // Apply search
-    if (searchQuery) {
-      result = result.filter(
-        (t) =>
-          t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          t.comments.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getProjectName(t.projectId)
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          getStageName(t.stageId)
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()),
+    if (filters.projectName) {
+      result = result.filter((t) =>
+        getProjectName(t.projectId).toLowerCase().includes(filters.projectName.toLowerCase())
       );
     }
-
-    // Apply filters
-    if (filters.project) {
-      result = result.filter((t) => t.projectId === filters.project);
+    if (filters.stageName) {
+      result = result.filter((t) =>
+        getStageName(t.stageId).toLowerCase().includes(filters.stageName.toLowerCase())
+      );
     }
-    if (filters.stage) {
-      result = result.filter((t) => t.stageId === filters.stage);
+    if (filters.taskName) {
+      result = result.filter((t) => t.name.toLowerCase().includes(filters.taskName.toLowerCase()));
     }
-    if (filters.status) {
-      result = result.filter((t) => t.status === filters.status);
+    if (filters.startDate) {
+      result = result.filter((t) => t.startDate >= filters.startDate);
     }
-
-    // Apply sorting
-    result = [...result].sort((a, b) => {
-      switch (sortBy) {
-        case "oldest":
-          return (
-            new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-          );
-        case "dueDate":
-          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-        case "name":
-          return a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
+    if (filters.endDate) {
+      result = result.filter((t) => t.dueDate <= filters.endDate);
+    }
 
     return result;
-  }, [tasks, searchQuery, filters, sortBy]);
+  }, [tasks, filters]);
 
   return (
     <div className="space-y-6 relative pb-20 md:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Tasks</h1>
-          <p className="text-slate-600 mt-1 text-sm">
-            Manage and track all project tasks
-          </p>
+          <p className="text-slate-600 mt-1 text-sm">Manage and track all project tasks</p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
-        >
-          <Plus className="w-5 h-5" />
-          New Task
-        </button>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowFilters((prev) => !prev)}
+            className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 transition-all duration-300"
+          >
+            <Filter className="w-4 h-4" />
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </button>
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
+          >
+            <Plus className="w-5 h-5" />
+            New Task
+          </button>
+        </div>
       </div>
 
-      {/* Search and Filter Bar */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-        <div className="p-4">
-          <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      {/* Filters */}
+      <div
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          showFilters ? "max-h-[500px] opacity-100 mt-2" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">Project Name</label>
               <input
                 type="text"
-                placeholder="Search tasks, projects, or stages..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                name="projectName"
+                placeholder="Search project..."
+                value={filters.projectName}
+                onChange={handleFilterChange}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
-
-            {/* Filter Toggle Button */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`relative flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all duration-200 ${
-                showFilters || activeFiltersCount > 0
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              <Filter className="w-5 h-5" />
-              <span>Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
-
-            {/* Sort Dropdown */}
-            <div className="relative">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="appearance-none pl-4 pr-10 py-3 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">Stage Name</label>
+              <input
+                type="text"
+                name="stageName"
+                placeholder="Search stage..."
+                value={filters.stageName}
+                onChange={handleFilterChange}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">Task Name</label>
+              <input
+                type="text"
+                name="taskName"
+                placeholder="Search task..."
+                value={filters.taskName}
+                onChange={handleFilterChange}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">Start Date</label>
+              <input
+                type="date"
+                name="startDate"
+                value={filters.startDate}
+                onChange={handleFilterChange}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">End Date</label>
+              <input
+                type="date"
+                name="endDate"
+                value={filters.endDate}
+                onChange={handleFilterChange}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={clearFilters}
+                className="self-end text-xs text-slate-600 hover:text-red-600 px-3 py-2"
               >
-                <option value="oldest">Oldest First</option>
-                <option value="dueDate">Due Date</option>
-                <option value="name">Name (A-Z)</option>
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                Clear Filters
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Collapsible Filter Section */}
-        {showFilters && (
-          <div className="border-t border-slate-200 bg-slate-50 p-6 animate-slideDown">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Filter Options</h3>
-              <button
-                onClick={handleReset}
-                className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1"
-              >
-                <X className="w-4 h-4" />
-                Clear All
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Project Filter */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Project Name
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.project}
-                    onChange={(e) =>
-                      handleFilterChange("project", e.target.value)
-                    }
-                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    <option value="">All Projects</option>
-                    {MOCK_PROJECTS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Stage Filter */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Stage Name
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.stage}
-                    onChange={(e) =>
-                      handleFilterChange("stage", e.target.value)
-                    }
-                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    <option value="">All Stages</option>
-                    {MOCK_STAGES.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Status Filter */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Status
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.status}
-                    onChange={(e) =>
-                      handleFilterChange("status", e.target.value)
-                    }
-                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    <option value="">All Statuses</option>
-                    <option value="pending">Pending</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="review">Under Review</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-
-            {/* Active Filters Display */}
-            {activeFiltersCount > 0 && (
-              <div className="mt-4 pt-4 border-t border-slate-200">
-                <div className="flex flex-wrap gap-2">
-                  {filters.project && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      Project: {getProjectName(filters.project)}
-                      <button
-                        onClick={() => handleFilterChange("project", "")}
-                        className="hover:bg-blue-200 rounded-full p-0.5"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.stage && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      Stage: {getStageName(filters.stage)}
-                      <button
-                        onClick={() => handleFilterChange("stage", "")}
-                        className="hover:bg-blue-200 rounded-full p-0.5"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.status && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      Status: {getStatusLabel(filters.status)}
-                      <button
-                        onClick={() => handleFilterChange("status", "")}
-                        className="hover:bg-blue-200 rounded-full p-0.5"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
-      {/* Results Count */}
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-slate-600">
-          Showing{" "}
-          <span className="font-semibold text-slate-900">
-            {filteredAndSortedTasks.length}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-slate-900">{tasks.length}</span>{" "}
-          tasks
-        </p>
-      </div>
-
-      {/* Tasks Table */}
+      {/* Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/50">
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Task Name
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Project
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Stage
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Assigned To
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Start Date
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Due Date
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Priority
-                </th>
+              <tr className="border-b border-slate-200 bg-slate-50">
+                {[
+                  "Task Name",
+                  "Project Name",
+                  "Stage Name",
+                  "Assigned To",
+                  "Dates",
+                  "Status",
+                  "Actions",
+                ].map((col) => (
+                  <th
+                    key={col}
+                    className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider whitespace-nowrap"
+                  >
+                    {col}
+                  </th>
+                ))}
               </tr>
             </thead>
+
             <tbody className="divide-y divide-slate-200">
-              {filteredAndSortedTasks.length > 0 ? (
-                filteredAndSortedTasks.map((task, idx) => {
-                  const priorityColor = getPriorityColor(task.priority);
-                  const PriorityIcon = priorityColor.icon;
-                  const taskProgress =
-                    task.estimatedHours > 0
-                      ? (task.actualHours / task.estimatedHours) * 100
-                      : 0;
-                  return (
-                    <tr
-                      key={task.id}
-                      className={`hover:bg-slate-50 transition-colors duration-200 cursor-pointer ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}
-                      onClick={() => handleEdit(task)}
-                    >
-                      <td className="px-6 py-4">
-                        <span className="font-semibold text-slate-900">
-                          {task.name}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {getProjectName(task.projectId)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {getStageName(task.stageId)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {task.assignedTo}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {task.startDate || "—"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {task.dueDate}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(task.status)}`}
-                        >
-                          {getStatusLabel(task.status)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${priorityColor.bg} ${priorityColor.text}`}
-                          >
-                            <PriorityIcon className="w-3 h-3" />
-                            {getPriorityLabel(task.priority)}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <AlertCircle className="w-12 h-12 text-slate-300" />
-                      <p className="text-slate-500 font-medium">
-                        No tasks found
-                      </p>
-                      <p className="text-slate-400 text-sm">
-                        Try adjusting your filters or search query
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              )}
+              {filteredTasks.map((task, idx) => {
+                const statusColor = getStatusColor(task.status);
+                const StatusIcon = statusColor.icon;
+                return (
+                  <tr
+                    key={task.id}
+                    className={`hover:bg-slate-50 transition-colors ${
+                      idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"
+                    }`}
+                  >
+                    <td className="px-6 py-3 text-sm font-semibold text-slate-900">
+                      {task.name}
+                    </td>
+                    <td className="px-6 py-3 text-sm text-slate-600">{getProjectName(task.projectId)}</td>
+                    <td className="px-6 py-3 text-sm text-slate-600">{getStageName(task.stageId)}</td>
+
+                    {/* Assigned */}
+                    <td className="px-6 py-3 text-center">
+                      <button
+                        onClick={() => openPeopleModal(task)}
+                        className="p-2 rounded-full hover:bg-slate-100 transition"
+                      >
+                        <Users className="w-5 h-5 text-blue-600" />
+                      </button>
+                    </td>
+
+                    {/* Dates */}
+                    <td className="px-6 py-3 text-center">
+                      <button
+                        onClick={() => openDateModal(task)}
+                        className="p-2 rounded-full hover:bg-slate-100 transition"
+                      >
+                        <Calendar className="w-5 h-5 text-slate-700" />
+                      </button>
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-6 py-3">
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${statusColor.bg} ${statusColor.text}`}
+                      >
+                        {StatusIcon && <StatusIcon className="w-3 h-3" />}
+                        {getStatusLabel(task.status)}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-6 py-3 flex items-center gap-3">
+                      <button
+                        onClick={() => handleEdit(task)}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => alert(`Delete task: ${task.name}`)}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-full transition"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
       </div>
 
+      {/* Assigned Members Modal */}
+      {isPeopleModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+          <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6 relative">
+            <button onClick={closePeopleModal} className="absolute top-3 right-3 text-slate-400 hover:text-slate-700">
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">Assigned Members</h2>
+
+            <div className="space-y-3">
+              {selectedTask?.assignedToList?.length ? (
+                selectedTask.assignedToList.map((person: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-200"
+                  >
+                    <div className="flex items-center gap-2">
+                      <UserIcon className="w-4 h-4 text-blue-500" />
+                      <span className="text-sm font-medium text-slate-700">{person.name}</span>
+                    </div>
+                    <span className="text-xs text-slate-500">{person.role}</span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-slate-500 italic">No members assigned.</p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Task Dates Modal */}
+      {isDateModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+          <div className="bg-white w-full max-w-sm rounded-xl shadow-xl p-6 relative text-sm text-slate-700">
+            <button onClick={closeDateModal} className="absolute top-3 right-3 text-slate-400 hover:text-slate-700">
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">Task Dates</h2>
+
+            <div className="space-y-3">
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-medium">Start Date:</span>
+                <span>{selectedTask?.startDate || "Not Set"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">End Date:</span>
+                <span>{selectedTask?.dueDate || "Not Set"}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Task Modal */}
-      <TaskModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        task={editingTask}
-      />
-
-      {/* Floating Action Button (Mobile) */}
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-40"
-        title="Create new task"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
-
-      <style>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-slideDown {
-          animation: slideDown 0.2s ease-out;
-        }
-      `}</style>
+      <TaskModal isOpen={isModalOpen} onClose={handleCloseModal} task={editingTask} />
     </div>
   );
 }

@@ -1,34 +1,54 @@
 import React, { useState, useMemo } from "react";
-import { User } from "@shared/api";
 import {
   Plus,
   Zap,
-  AlertCircle,
   CheckCircle,
   Filter,
+  Calendar,
+  Upload,
   X,
-  ChevronDown,
-  Search,
+  Edit2,
+  Trash2,
 } from "lucide-react";
 import { MOCK_STAGES, MOCK_PROJECTS } from "@/utils/mockData";
 import StageModal from "@/components/StageModal";
 
-interface StagesProps {
-  currentUser: User | null;
-}
-
-export default function Stages({ currentUser }: StagesProps) {
+export default function Stages() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStage, setEditingStage] = useState<any>(null);
-  const [stages] = useState(MOCK_STAGES);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showFilters, setShowFilters] = useState(false);
+  const [stages, setStages] = useState(MOCK_STAGES);
+
+  // Modals
+  const [selectedStage, setSelectedStage] = useState<any>(null);
+  const [isDateModalOpen, setIsDateModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  // Filters
   const [filters, setFilters] = useState({
-    project: "",
+    projectName: "",
     stageName: "",
+    startDate: "",
+    actualEndDate: "",
     status: "",
   });
-  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "name">("newest");
+  const [showFilters, setShowFilters] = useState(true);
+
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      projectName: "",
+      stageName: "",
+      startDate: "",
+      actualEndDate: "",
+      status: "",
+    });
+  };
 
   const handleEdit = (stage: any) => {
     setEditingStage(stage);
@@ -40,25 +60,37 @@ export default function Stages({ currentUser }: StagesProps) {
     setEditingStage(null);
   };
 
-  const handleFilterChange = (filterId: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [filterId]: value }));
+  const openDateModal = (stage: any) => {
+    setSelectedStage(stage);
+    setIsDateModalOpen(true);
   };
 
-  const handleReset = () => {
-    setFilters({ project: "", stageName: "", status: "" });
-    setSearchQuery("");
-    setSortBy("newest");
+  const closeDateModal = () => {
+    setIsDateModalOpen(false);
+    setSelectedStage(null);
+  };
+
+  const openUploadModal = (stage: any) => {
+    setSelectedStage(stage);
+    setIsUploadModalOpen(true);
+  };
+
+  const closeUploadModal = () => {
+    setIsUploadModalOpen(false);
+    setSelectedStage(null);
+  };
+
+  const deleteStage = (id: string) => {
+    if (confirm("Are you sure you want to delete this stage?")) {
+      setStages((prev) => prev.filter((s) => s.id !== id));
+    }
   };
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, { bg: string; text: string; icon: any }> = {
       not_started: { bg: "bg-gray-100", text: "text-gray-700", icon: null },
       in_progress: { bg: "bg-blue-100", text: "text-blue-700", icon: Zap },
-      completed: {
-        bg: "bg-green-100",
-        text: "text-green-700",
-        icon: CheckCircle,
-      },
+      completed: { bg: "bg-green-100", text: "text-green-700", icon: CheckCircle },
     };
     return colors[status] || colors.not_started;
   };
@@ -67,341 +99,258 @@ export default function Stages({ currentUser }: StagesProps) {
     return status === "not_started"
       ? "Not Started"
       : status === "in_progress"
-        ? "In Progress"
-        : "Completed";
+      ? "In Progress"
+      : "Completed";
   };
 
   const getProjectName = (projectId: string) => {
     return MOCK_PROJECTS.find((p) => p.id === projectId)?.name || "Unknown";
   };
 
-  const activeFiltersCount = Object.values(filters).filter(Boolean).length;
-
-  const filteredAndSortedStages = useMemo(() => {
+  const filteredStages = useMemo(() => {
     let result = stages;
 
-    // Apply search
-    if (searchQuery) {
-      result = result.filter(
-        (s) =>
-          s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.remarks.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getProjectName(s.projectId)
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()),
+    if (filters.projectName) {
+      result = result.filter((s) =>
+        getProjectName(s.projectId)
+          .toLowerCase()
+          .includes(filters.projectName.toLowerCase())
       );
     }
-
-    // Apply filters
-    if (filters.project) {
-      result = result.filter((s) => s.projectId === filters.project);
-    }
     if (filters.stageName) {
-      result = result.filter((s) => s.name === filters.stageName);
+      result = result.filter((s) =>
+        s.name.toLowerCase().includes(filters.stageName.toLowerCase())
+      );
+    }
+    if (filters.startDate) {
+      result = result.filter((s) => s.startDate >= filters.startDate);
+    }
+    if (filters.actualEndDate) {
+      result = result.filter((s) => s.approvalDate >= filters.actualEndDate);
     }
     if (filters.status) {
       result = result.filter((s) => s.status === filters.status);
     }
 
-    // Apply sorting
-    result = [...result].sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return (
-            new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-          );
-        case "oldest":
-          return (
-            new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-          );
-        case "name":
-          return a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
-
     return result;
-  }, [stages, searchQuery, filters, sortBy]);
-
-  const uniqueStageNames = [...new Set(stages.map((s) => s.name))];
+  }, [stages, filters]);
 
   return (
     <div className="space-y-6 relative pb-20 md:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Project Stages</h1>
+          <h1 className="text-3xl font-bold text-slate-900">Stages</h1>
           <p className="text-slate-600 mt-1 text-sm">
             Manage and track project execution stages
           </p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
-        >
-          <Plus className="w-5 h-5" />
-          New Stage
-        </button>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowFilters((prev) => !prev)}
+            className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 transition-all duration-300"
+          >
+            <Filter className="w-4 h-4" />
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </button>
+
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
+          >
+            <Plus className="w-5 h-5" />
+            New Stage
+          </button>
+        </div>
       </div>
 
-      {/* Search and Filter Bar */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-        <div className="p-4">
-          <div className="flex items-center gap-3">
-            {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      {/* Filter Section */}
+      <div
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          showFilters ? "max-h-[500px] opacity-100 mt-2" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-end">
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">
+                Project Name
+              </label>
               <input
                 type="text"
-                placeholder="Search stages or projects..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                name="projectName"
+                placeholder="Search project..."
+                value={filters.projectName}
+                onChange={handleFilterChange}
+                className="px-3 py-2 w-full rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
-            {/* Filter Toggle Button */}
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`relative flex items-center gap-2 px-5 py-3 rounded-xl font-semibold transition-all duration-200 ${
-                showFilters || activeFiltersCount > 0
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-              }`}
-            >
-              <Filter className="w-5 h-5" />
-              <span>Filters</span>
-              {activeFiltersCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </button>
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">
+                Stage Name
+              </label>
+              <input
+                type="text"
+                name="stageName"
+                placeholder="Search stage..."
+                value={filters.stageName}
+                onChange={handleFilterChange}
+                className="px-3 py-2 w-full rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
-            {/* Sort Dropdown */}
-            <div className="relative">
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">
+                Start Date
+              </label>
+              <div className="relative flex items-center">
+                <Calendar className="absolute left-3 w-4 h-4 text-slate-400" />
+                <input
+                  type="date"
+                  name="startDate"
+                  value={filters.startDate}
+                  onChange={handleFilterChange}
+                  className="pl-9 pr-3 py-2 w-full rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">
+                Actual End Date
+              </label>
+              <div className="relative flex items-center">
+                <Calendar className="absolute left-3 w-4 h-4 text-slate-400" />
+                <input
+                  type="date"
+                  name="actualEndDate"
+                  value={filters.actualEndDate}
+                  onChange={handleFilterChange}
+                  className="pl-9 pr-3 py-2 w-full rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-xs font-semibold text-slate-600 mb-1">
+                Status
+              </label>
               <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="appearance-none pl-4 pr-10 py-3 bg-slate-100 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all"
+                name="status"
+                value={filters.status}
+                onChange={handleFilterChange}
+                className="px-3 py-2 w-full rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-blue-500"
               >
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="name">Name (A-Z)</option>
+                <option value="">All</option>
+                <option value="not_started">Not Started</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={clearFilters}
+                className="self-end text-xs text-slate-600 hover:text-red-600 px-3 py-2"
+              >
+                Clear Filters
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Collapsible Filter Section */}
-        {showFilters && (
-          <div className="border-t border-slate-200 bg-slate-50 p-6 animate-slideDown">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Filter Options</h3>
-              <button
-                onClick={handleReset}
-                className="text-sm text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1"
-              >
-                <X className="w-4 h-4" />
-                Clear All
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Project Filter */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Project Name
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.project}
-                    onChange={(e) =>
-                      handleFilterChange("project", e.target.value)
-                    }
-                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    <option value="">All Projects</option>
-                    {MOCK_PROJECTS.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Stage Name Filter */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Stage Name
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.stageName}
-                    onChange={(e) =>
-                      handleFilterChange("stageName", e.target.value)
-                    }
-                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    <option value="">All Stages</option>
-                    {uniqueStageNames.map((name) => (
-                      <option key={name} value={name}>
-                        {name}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Status Filter */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Status
-                </label>
-                <div className="relative">
-                  <select
-                    value={filters.status}
-                    onChange={(e) =>
-                      handleFilterChange("status", e.target.value)
-                    }
-                    className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                  >
-                    <option value="">All Statuses</option>
-                    <option value="not_started">Not Started</option>
-                    <option value="in_progress">In Progress</option>
-                    <option value="completed">Completed</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-
-            {/* Active Filters Display */}
-            {activeFiltersCount > 0 && (
-              <div className="mt-4 pt-4 border-t border-slate-200">
-                <div className="flex flex-wrap gap-2">
-                  {filters.project && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      Project: {getProjectName(filters.project)}
-                      <button
-                        onClick={() => handleFilterChange("project", "")}
-                        className="hover:bg-blue-200 rounded-full p-0.5"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.stageName && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      Stage: {filters.stageName}
-                      <button
-                        onClick={() => handleFilterChange("stageName", "")}
-                        className="hover:bg-blue-200 rounded-full p-0.5"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                  {filters.status && (
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
-                      Status: {getStatusLabel(filters.status)}
-                      <button
-                        onClick={() => handleFilterChange("status", "")}
-                        className="hover:bg-blue-200 rounded-full p-0.5"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
-      {/* Results Count */}
-      <div className="flex justify-between items-center">
-        <p className="text-sm text-slate-600">
-          Showing{" "}
-          <span className="font-semibold text-slate-900">
-            {filteredAndSortedStages.length}
-          </span>{" "}
-          of{" "}
-          <span className="font-semibold text-slate-900">{stages.length}</span>{" "}
-          stages
-        </p>
-      </div>
-
-      {/* Stages Table */}
+      {/* Table */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full border-collapse table-fixed">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50/50">
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Stage Name
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Project Name
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Time Range
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Status
-                </th>
+              <tr className="border-b border-slate-200 bg-slate-50">
+                {[
+                  "Stage Name",
+                  "Project Name",
+                  "Dates",
+                  "Stage Status",
+                  "Upload",
+                  "Actions",
+                ].map((col) => (
+                  <th
+                    key={col}
+                    className={`px-6 py-3 text-xs font-semibold text-slate-700 uppercase tracking-wider ${
+                      ["Dates", "Upload", "Actions"].includes(col)
+                        ? "text-center"
+                        : "text-left"
+                    }`}
+                  >
+                    {col}
+                  </th>
+                ))}
               </tr>
             </thead>
+
             <tbody className="divide-y divide-slate-200">
-              {filteredAndSortedStages.length > 0 ? (
-                filteredAndSortedStages.map((stage, idx) => {
+              {filteredStages.length > 0 ? (
+                filteredStages.map((stage, idx) => {
                   const statusColor = getStatusColor(stage.status);
                   const StatusIcon = statusColor.icon;
                   return (
                     <tr
                       key={stage.id}
-                      className={`hover:bg-slate-50 transition-colors duration-200 cursor-pointer ${idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"}`}
-                      onClick={() => handleEdit(stage)}
+                      className={`hover:bg-slate-50 transition-all duration-300 ${
+                        idx % 2 === 0 ? "bg-white" : "bg-slate-50/30"
+                      }`}
                     >
-                      <td className="px-6 py-4">
-                        <span className="font-semibold text-slate-900">
-                          {stage.name}
+                      <td className="px-6 py-3 text-sm font-semibold text-slate-900 truncate">
+                        {stage.name}
+                      </td>
+
+                      <td className="px-6 py-3 text-sm text-slate-600 truncate">
+                        {getProjectName(stage.projectId)}
+                      </td>
+
+                      <td className="px-6 py-3 text-center">
+                        <button
+                          onClick={() => openDateModal(stage)}
+                          className="p-2 rounded-full hover:bg-slate-100 transition"
+                        >
+                          <Calendar className="w-5 h-5 text-slate-700 mx-auto" />
+                        </button>
+                      </td>
+
+                      <td className="px-6 py-3 text-center">
+                        <span
+                          className={`inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${statusColor.bg} ${statusColor.text}`}
+                        >
+                          {StatusIcon && <StatusIcon className="w-3 h-3" />}
+                          {getStatusLabel(stage.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {getProjectName(stage.projectId)}
-                        </span>
+
+                      <td className="px-6 py-3 text-center">
+                        <button
+                          onClick={() => openUploadModal(stage)}
+                          className="p-2 rounded-full hover:bg-slate-100 transition"
+                        >
+                          <Upload className="w-5 h-5 text-blue-600 mx-auto" />
+                        </button>
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {stage.startDate}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {stage.endDate}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="text-slate-600 text-sm">
-                          {stage.approvalDate || "—"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${statusColor.bg} ${statusColor.text}`}
+
+                      <td className="px-6 py-3 text-center">
+                        <div className="flex justify-center gap-3">
+                          <button
+                            onClick={() => handleEdit(stage)}
+                            className="text-blue-600 hover:bg-blue-50 p-2 rounded-full transition"
                           >
-                            {StatusIcon && <StatusIcon className="w-3 h-3" />}
-                            {getStatusLabel(stage.status)}
-                          </span>
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => deleteStage(stage.id)}
+                            className="text-red-600 hover:bg-red-50 p-2 rounded-full transition"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -409,16 +358,11 @@ export default function Stages({ currentUser }: StagesProps) {
                 })
               ) : (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <AlertCircle className="w-12 h-12 text-slate-300" />
-                      <p className="text-slate-500 font-medium">
-                        No stages found
-                      </p>
-                      <p className="text-slate-400 text-sm">
-                        Try adjusting your filters or search query
-                      </p>
-                    </div>
+                  <td
+                    colSpan={6}
+                    className="px-6 py-12 text-center text-slate-500"
+                  >
+                    No stages found.
                   </td>
                 </tr>
               )}
@@ -434,31 +378,58 @@ export default function Stages({ currentUser }: StagesProps) {
         stage={editingStage}
       />
 
-      {/* Floating Action Button (Mobile) */}
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-300 z-40"
-        title="Create new stage"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
+      {/* Date Modal */}
+      {isDateModalOpen && selectedStage && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+          <div className="bg-white w-full max-w-sm rounded-xl shadow-xl p-6 relative">
+            <button
+              onClick={closeDateModal}
+              className="absolute top-3 right-3 text-slate-400 hover:text-slate-700"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">
+              Stage Dates
+            </h2>
+            <div className="space-y-3 text-sm text-slate-700">
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-medium">Start Date:</span>
+                <span>{selectedStage.startDate || "Not Set"}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">End Date:</span>
+                <span>{selectedStage.endDate || "Not Set"}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <style>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animate-slideDown {
-          animation: slideDown 0.2s ease-out;
-        }
-      `}</style>
+      {/* Upload Modal */}
+      {isUploadModalOpen && selectedStage && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+          <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6 relative">
+            <button
+              onClick={closeUploadModal}
+              className="absolute top-3 right-3 text-slate-400 hover:text-slate-700"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">
+              Upload Files
+            </h2>
+
+            <input
+              type="file"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"
+            />
+
+            <button className="mt-5 w-full py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">
+              Upload
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
