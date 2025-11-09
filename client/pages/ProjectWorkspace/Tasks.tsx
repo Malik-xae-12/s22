@@ -1,6 +1,15 @@
 import React, { useState, useMemo } from "react";
 import { User } from "@shared/api";
-import { Plus, AlertCircle, Circle, CheckCircle2, Filter, X, ChevronDown, Search } from "lucide-react";
+import {
+  Plus,
+  AlertCircle,
+  Circle,
+  CheckCircle2,
+  Filter,
+  X,
+  ChevronDown,
+  Search,
+} from "lucide-react";
 import { MOCK_TASKS, MOCK_PROJECTS, MOCK_STAGES } from "@/utils/mockData";
 import TaskModal from "@/components/TaskModal";
 
@@ -94,8 +103,12 @@ export default function Tasks({ currentUser }: TasksProps) {
         (t) =>
           t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           t.comments.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getProjectName(t.projectId).toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getStageName(t.stageId).toLowerCase().includes(searchQuery.toLowerCase())
+          getProjectName(t.projectId)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          getStageName(t.stageId)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -221,7 +234,9 @@ export default function Tasks({ currentUser }: TasksProps) {
                 <div className="relative">
                   <select
                     value={filters.project}
-                    onChange={(e) => handleFilterChange("project", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("project", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Projects</option>
@@ -243,7 +258,9 @@ export default function Tasks({ currentUser }: TasksProps) {
                 <div className="relative">
                   <select
                     value={filters.stage}
-                    onChange={(e) => handleFilterChange("stage", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("stage", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Stages</option>
@@ -265,7 +282,9 @@ export default function Tasks({ currentUser }: TasksProps) {
                 <div className="relative">
                   <select
                     value={filters.status}
-                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("status", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Statuses</option>
@@ -331,9 +350,7 @@ export default function Tasks({ currentUser }: TasksProps) {
             {filteredAndSortedTasks.length}
           </span>{" "}
           of{" "}
-          <span className="font-semibold text-slate-900">
-            {tasks.length}
-          </span>{" "}
+          <span className="font-semibold text-slate-900">{tasks.length}</span>{" "}
           tasks
         </p>
       </div>
@@ -357,6 +374,9 @@ export default function Tasks({ currentUser }: TasksProps) {
                   Assigned To
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Start Date
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                   Due Date
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
@@ -364,9 +384,6 @@ export default function Tasks({ currentUser }: TasksProps) {
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                   Priority
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Progress
                 </th>
               </tr>
             </thead>
@@ -407,6 +424,11 @@ export default function Tasks({ currentUser }: TasksProps) {
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-slate-600 text-sm">
+                          {task.startDate || "—"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-600 text-sm">
                           {task.dueDate}
                         </span>
                       </td>
@@ -427,34 +449,20 @@ export default function Tasks({ currentUser }: TasksProps) {
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
-                              style={{
-                                width: `${Math.min(taskProgress, 100)}%`,
-                              }}
-                            />
-                          </div>
-                          <span className="text-xs font-bold text-slate-700 w-7 text-right">
-                            {Math.round(Math.min(taskProgress, 100))}%
-                          </span>
-                        </div>
-                      </td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td
-                    colSpan={8}
-                    className="px-6 py-12 text-center"
-                  >
+                  <td colSpan={8} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <AlertCircle className="w-12 h-12 text-slate-300" />
-                      <p className="text-slate-500 font-medium">No tasks found</p>
-                      <p className="text-slate-400 text-sm">Try adjusting your filters or search query</p>
+                      <p className="text-slate-500 font-medium">
+                        No tasks found
+                      </p>
+                      <p className="text-slate-400 text-sm">
+                        Try adjusting your filters or search query
+                      </p>
                     </div>
                   </td>
                 </tr>

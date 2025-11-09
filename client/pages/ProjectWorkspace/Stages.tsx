@@ -1,6 +1,15 @@
 import React, { useState, useMemo } from "react";
 import { User } from "@shared/api";
-import { Plus, Zap, AlertCircle, CheckCircle, Filter, X, ChevronDown, Search } from "lucide-react";
+import {
+  Plus,
+  Zap,
+  AlertCircle,
+  CheckCircle,
+  Filter,
+  X,
+  ChevronDown,
+  Search,
+} from "lucide-react";
 import { MOCK_STAGES, MOCK_PROJECTS } from "@/utils/mockData";
 import StageModal from "@/components/StageModal";
 
@@ -77,7 +86,9 @@ export default function Stages({ currentUser }: StagesProps) {
         (s) =>
           s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           s.remarks.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          getProjectName(s.projectId).toLowerCase().includes(searchQuery.toLowerCase())
+          getProjectName(s.projectId)
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
       );
     }
 
@@ -207,7 +218,9 @@ export default function Stages({ currentUser }: StagesProps) {
                 <div className="relative">
                   <select
                     value={filters.project}
-                    onChange={(e) => handleFilterChange("project", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("project", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Projects</option>
@@ -229,7 +242,9 @@ export default function Stages({ currentUser }: StagesProps) {
                 <div className="relative">
                   <select
                     value={filters.stageName}
-                    onChange={(e) => handleFilterChange("stageName", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("stageName", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Stages</option>
@@ -251,7 +266,9 @@ export default function Stages({ currentUser }: StagesProps) {
                 <div className="relative">
                   <select
                     value={filters.status}
-                    onChange={(e) => handleFilterChange("status", e.target.value)}
+                    onChange={(e) =>
+                      handleFilterChange("status", e.target.value)
+                    }
                     className="w-full appearance-none px-4 py-3 bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   >
                     <option value="">All Statuses</option>
@@ -316,9 +333,7 @@ export default function Stages({ currentUser }: StagesProps) {
             {filteredAndSortedStages.length}
           </span>{" "}
           of{" "}
-          <span className="font-semibold text-slate-900">
-            {stages.length}
-          </span>{" "}
+          <span className="font-semibold text-slate-900">{stages.length}</span>{" "}
           stages
         </p>
       </div>
@@ -336,19 +351,10 @@ export default function Stages({ currentUser }: StagesProps) {
                   Project Name
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Start Date
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  End Date
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Actual End
+                  Time Range
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
                   Status
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                  Progress
                 </th>
               </tr>
             </thead>
@@ -398,32 +404,20 @@ export default function Stages({ currentUser }: StagesProps) {
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
-                              style={{ width: `${stage.completion}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-bold text-slate-700 w-7 text-right">
-                            {stage.completion}%
-                          </span>
-                        </div>
-                      </td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td
-                    colSpan={7}
-                    className="px-6 py-12 text-center"
-                  >
+                  <td colSpan={6} className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-2">
                       <AlertCircle className="w-12 h-12 text-slate-300" />
-                      <p className="text-slate-500 font-medium">No stages found</p>
-                      <p className="text-slate-400 text-sm">Try adjusting your filters or search query</p>
+                      <p className="text-slate-500 font-medium">
+                        No stages found
+                      </p>
+                      <p className="text-slate-400 text-sm">
+                        Try adjusting your filters or search query
+                      </p>
                     </div>
                   </td>
                 </tr>
