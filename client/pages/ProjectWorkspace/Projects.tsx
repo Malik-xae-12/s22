@@ -57,33 +57,33 @@ export default function Projects({ currentUser }: ProjectsProps) {
   return (
     <div className="space-y-6 relative pb-20 md:pb-0">
       {/* Header */}
-      <div className="flex items-center justify-between flex-col md:flex-row gap-4">
+      <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Projects</h1>
-          <p className="text-slate-600 mt-1 text-sm md:text-base">Manage and track all projects in your portfolio</p>
+          <p className="text-slate-600 mt-1 text-sm">Manage and track all projects in your portfolio</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="hidden md:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl font-medium"
+          className="hidden sm:flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg font-semibold"
         >
           <Plus className="w-5 h-5" />
           New Project
         </button>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {summaryCards.map((card) => {
-          const colorClasses: Record<string, string> = {
-            blue: "bg-blue-50 text-blue-700",
-            yellow: "bg-yellow-50 text-yellow-700",
-            green: "bg-green-50 text-green-700",
-            orange: "bg-orange-50 text-orange-700",
-          };
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {stats.map((stat) => {
+          const Icon = stat.icon;
           return (
-            <div key={card.label} className="bg-white rounded-lg p-4 border border-slate-200">
-              <p className="text-sm text-slate-600">{card.label}</p>
-              <p className="text-3xl font-bold text-slate-900 mt-2">{card.value}</p>
+            <div key={stat.label} className="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold text-slate-600 uppercase tracking-wide">{stat.label}</p>
+                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                  <Icon className="w-4 h-4 text-slate-700" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
             </div>
           );
         })}
