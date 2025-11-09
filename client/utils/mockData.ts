@@ -92,6 +92,7 @@ export const MOCK_PROJECTS: Project[] = [
   {
     id: "proj-2",
     name: "RetailCo Platform Redesign",
+    clientName: "RetailCo Ltd",
     clientEmail: "info@retailco.com",
     teamName: "RetailCo",
     manager: "Michael Torres",
@@ -118,6 +119,11 @@ export const MOCK_PROJECTS: Project[] = [
     billingType: "Time & Material",
     currency: "INR",
     proposal: "RC-2025-002",
+    presalesMode: "Proposal",
+    projectMode: "Time & Material",
+    projectType: "E-commerce",
+    priority: "High",
+    department: "Engineering",
   },
   {
     id: "proj-3",
