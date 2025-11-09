@@ -107,6 +107,11 @@ export const MOCK_PROJECTS: Project[] = [
     updatedAt: "2025-01-22",
     approvalsStatus: "approved",
     progress: 30,
+    estimatedHours: 480,
+    estimatedCost: 1750000,
+    billingType: "Time & Material",
+    currency: "INR",
+    proposal: "RC-2025-002",
   },
   {
     id: "proj-3",
@@ -132,6 +137,11 @@ export const MOCK_PROJECTS: Project[] = [
     updatedAt: "2025-01-22",
     approvalsStatus: "pending",
     progress: 10,
+    estimatedHours: 80,
+    estimatedCost: 350000,
+    billingType: "Fixed Cost",
+    currency: "INR",
+    proposal: "DS-2025-003",
   },
   {
     id: "proj-4",
@@ -157,6 +167,11 @@ export const MOCK_PROJECTS: Project[] = [
     updatedAt: "2025-01-20",
     approvalsStatus: "approved",
     progress: 85,
+    estimatedHours: 520,
+    estimatedCost: 2100000,
+    billingType: "Fixed Cost",
+    currency: "INR",
+    proposal: "LP-2025-004",
   },
   {
     id: "proj-5",
@@ -182,6 +197,11 @@ export const MOCK_PROJECTS: Project[] = [
     updatedAt: "2025-01-15",
     approvalsStatus: "approved",
     progress: 100,
+    estimatedHours: 650,
+    estimatedCost: 2750000,
+    billingType: "Fixed Cost",
+    currency: "INR",
+    proposal: "FT-2025-005",
   },
 ];
 
