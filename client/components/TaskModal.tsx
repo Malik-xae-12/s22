@@ -1,21 +1,23 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { X, ChevronDown } from "lucide-react";
+import { MOCK_PROJECTS, MOCK_STAGES } from "@/utils/mockData";
 
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
+  task?: any;
 }
 
-export default function TaskModal({ isOpen, onClose }: TaskModalProps) {
+export default function TaskModal({ isOpen, onClose, task }: TaskModalProps) {
   const [formData, setFormData] = useState({
-    name: "",
-    stageId: "",
-    projectId: "",
-    assignedTo: "",
-    priority: "medium",
-    startDate: "",
-    dueDate: "",
-    estimatedHours: "",
+    name: task?.name || "",
+    stageId: task?.stageId || "",
+    projectId: task?.projectId || "",
+    assignedTo: task?.assignedTo || "",
+    priority: task?.priority || "medium",
+    startDate: task?.startDate || "",
+    dueDate: task?.dueDate || "",
+    estimatedHours: task?.estimatedHours || "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
