@@ -116,11 +116,7 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
   const [activeTab, setActiveTab] = useState<TabKey>("stages");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "completed" | "awaiting">("all");
-  const [selectedItem, setSelectedItem] = useState<
-    | { kind: "stage"; data: (typeof MOCK_STAGES)[0] }
-    | { kind: "task"; data: (typeof MOCK_TASKS)[0] }
-    | null
-  >(null);
+  const [selectedItem, setSelectedItem] = useState<import("@/utils/mockData").WorkflowItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const approvalLookup = useApprovalLookup();
