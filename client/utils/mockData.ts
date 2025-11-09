@@ -200,6 +200,7 @@ export const MOCK_PROJECTS: Project[] = [
   {
     id: "proj-5",
     name: "FinTech Mobile Banking",
+    clientName: "FinTech Corp",
     clientEmail: "contact@fintech.com",
     teamName: "FinTech Solutions",
     manager: "Sarah Chen",
@@ -226,6 +227,11 @@ export const MOCK_PROJECTS: Project[] = [
     billingType: "Fixed Cost",
     currency: "INR",
     proposal: "FT-2025-005",
+    presalesMode: "Consultative Selling",
+    projectMode: "Fixed Price",
+    projectType: "Mobile App",
+    priority: "Critical",
+    department: "Engineering",
   },
 ];
 
