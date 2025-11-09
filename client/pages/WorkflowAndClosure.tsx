@@ -148,9 +148,44 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
     currentProject ? MOCK_TASKS.filter((t) => t.projectId === currentProject.id).sort((a, b) => a.dueDate.localeCompare(b.dueDate)) : [],
   [currentProject]);
 
-  const openApprovalFor = (payload: typeof selectedItem) => {
-    if (!payload) return;
-    setSelectedItem(payload);
+  const buildItemFromStage = (stage: (typeof MOCK_STAGES)[0]): import("@/utils/mockData").WorkflowItem => {
+    const d = getDerivedStageApproval(stage, approvalLookup);
+    const wf = MOCK_WORKFLOW_ITEMS.find((it) => it.entityId === stage.id);
+    return {
+      id: `wf-modal-${stage.id}`,
+      entityType: "stage",
+      entityId: stage.id,
+      entityName: stage.name,
+      approvalStatus: d.state,
+      approvedBy: d.approvedBy,
+      approvalDate: d.approvalDate,
+      remarks: stage.remarks,
+      attachments: wf ? wf.attachments : [],
+    };
+  };
+
+  const buildItemFromTask = (task: (typeof MOCK_TASKS)[0]): import("@/utils/mockData").WorkflowItem => {
+    const d = getDerivedTaskApproval(task, approvalLookup);
+    return {
+      id: `wf-modal-${task.id}`,
+      entityType: "task",
+      entityId: task.id,
+      entityName: task.name,
+      approvalStatus: d.state,
+      approvedBy: d.approvedBy,
+      approvalDate: d.approvalDate,
+      remarks: task.comments,
+      attachments: task.attachments,
+    };
+  };
+
+  const openApprovalForStage = (stage: (typeof MOCK_STAGES)[0]) => {
+    setSelectedItem(buildItemFromStage(stage));
+    setIsModalOpen(true);
+  };
+
+  const openApprovalForTask = (task: (typeof MOCK_TASKS)[0]) => {
+    setSelectedItem(buildItemFromTask(task));
     setIsModalOpen(true);
   };
 
