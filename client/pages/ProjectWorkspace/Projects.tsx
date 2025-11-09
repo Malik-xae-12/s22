@@ -98,57 +98,81 @@ export default function Projects({ currentUser }: ProjectsProps) {
       </div>
 
       {/* Projects Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-200 bg-slate-50">
-                <th className="px-6 py-4 text-left font-semibold text-slate-900">Project Name</th>
+              <tr className="border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100">
+                <th className="px-6 py-4 text-left font-semibold text-slate-900 flex items-center gap-2">
+                  <Briefcase className="w-4 h-4 text-blue-600" />
+                  Project Name
+                </th>
                 <th className="px-6 py-4 text-left font-semibold text-slate-900">Client Name</th>
-                <th className="px-6 py-4 text-left font-semibold text-slate-900">Project Manager</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-900 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-green-600" />
+                  Manager
+                </th>
                 <th className="px-6 py-4 text-left font-semibold text-slate-900">Start Date</th>
                 <th className="px-6 py-4 text-left font-semibold text-slate-900">End Date</th>
-                <th className="px-6 py-4 text-left font-semibold text-slate-900">Status</th>
-                <th className="px-6 py-4 text-left font-semibold text-slate-900">Stages</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-900 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-orange-600" />
+                  Est. Hours
+                </th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-900 flex items-center gap-2">
+                  <DollarSign className="w-4 h-4 text-green-600" />
+                  Est. Cost
+                </th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-900">Billing Type</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-900">Currency</th>
+                <th className="px-6 py-4 text-left font-semibold text-slate-900">Proposal</th>
                 <th className="px-6 py-4 text-left font-semibold text-slate-900">Progress</th>
-                <th className="px-6 py-4 text-left font-semibold text-slate-900">Approval</th>
                 <th className="px-6 py-4 text-left font-semibold text-slate-900">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
               {projects.map((project) => (
-                <tr key={project.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-slate-900">{project.name}</td>
-                  <td className="px-6 py-4 text-slate-600">{project.clientEmail}</td>
+                <tr key={project.id} className="hover:bg-slate-50 transition-all duration-200">
+                  <td className="px-6 py-4 font-semibold text-slate-900">{project.name}</td>
+                  <td className="px-6 py-4 text-slate-600">{project.teamName}</td>
                   <td className="px-6 py-4 text-slate-600">{project.manager}</td>
-                  <td className="px-6 py-4 text-slate-600">{project.startDate}</td>
-                  <td className="px-6 py-4 text-slate-600">{project.endDate}</td>
+                  <td className="px-6 py-4 text-slate-600 text-sm">{project.startDate}</td>
+                  <td className="px-6 py-4 text-slate-600 text-sm">{project.endDate}</td>
+                  <td className="px-6 py-4 text-slate-600 font-medium">{project.estimatedHours}h</td>
+                  <td className="px-6 py-4 text-slate-600 font-medium">{formatCurrency(project.estimatedCost, project.currency)}</td>
                   <td className="px-6 py-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(project.status)}`}>
-                      {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                    <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                      {project.billingType}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-slate-600">{getStageCount(project.id)}</td>
+                  <td className="px-6 py-4 text-slate-600 font-medium">{project.currency}</td>
+                  <td className="px-6 py-4 text-slate-600 font-mono text-xs">{project.proposal}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div className="w-20 h-2 bg-gradient-to-r from-slate-200 to-slate-300 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-blue-600"
+                          className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
                           style={{ width: `${project.progress}%` }}
                         />
                       </div>
-                      <span className="text-xs font-medium text-slate-600">{project.progress}%</span>
+                      <span className="text-xs font-semibold text-slate-600 w-10">{project.progress}%</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getApprovalColor(project.approvalsStatus)}`}>
-                      {project.approvalsStatus.charAt(0).toUpperCase() + project.approvalsStatus.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
-                      <MoreHorizontal className="w-4 h-4 text-slate-600" />
-                    </button>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleEdit(project)}
+                        className="p-2 hover:bg-blue-100 rounded-lg transition-colors group"
+                        title="Edit project"
+                      >
+                        <Edit className="w-4 h-4 text-blue-600 group-hover:text-blue-700" />
+                      </button>
+                      <button
+                        className="p-2 hover:bg-red-100 rounded-lg transition-colors group"
+                        title="Delete project"
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600 group-hover:text-red-700" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -158,7 +182,7 @@ export default function Projects({ currentUser }: ProjectsProps) {
       </div>
 
       {/* Project Modal */}
-      <ProjectModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <ProjectModal isOpen={isModalOpen} onClose={handleCloseModal} project={editingProject} />
     </div>
   );
 }
