@@ -137,7 +137,7 @@ export default function AddProjectModal({
         {/* Steps Indicator */}
         <div className="px-6 py-4 border-b border-slate-200">
           <div className="flex items-center gap-4">
-            {[1, 2, 3, 4].map((stepNum) => (
+            {[1, 2, 3, 4, 5].map((stepNum) => (
               <div key={stepNum} className="flex items-center">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
@@ -150,7 +150,7 @@ export default function AddProjectModal({
                 >
                   {stepNum}
                 </div>
-                {stepNum < 4 && (
+                {stepNum < 5 && (
                   <div
                     className={`w-12 h-1 mx-2 ${
                       step > stepNum ? "bg-green-600" : "bg-slate-200"
@@ -162,9 +162,10 @@ export default function AddProjectModal({
           </div>
           <p className="text-sm text-slate-600 mt-2">
             {step === 1 && "Basic Information"}
-            {step === 2 && "Timeline & Stages"}
-            {step === 3 && "Resources & Budget"}
-            {step === 4 && "Review & Submit"}
+            {step === 2 && "Project Configuration"}
+            {step === 3 && "Timeline & Budget"}
+            {step === 4 && "Team & Settings"}
+            {step === 5 && "Review & Submit"}
           </p>
         </div>
 
