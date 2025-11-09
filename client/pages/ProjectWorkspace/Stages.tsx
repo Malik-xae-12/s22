@@ -395,19 +395,6 @@ export default function Stages({ currentUser }: StagesProps) {
                           </span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
-                              style={{ width: `${stage.completion}%` }}
-                            />
-                          </div>
-                          <span className="text-xs font-bold text-slate-700 w-7 text-right">
-                            {stage.completion}%
-                          </span>
-                        </div>
-                      </td>
                     </tr>
                   );
                 })
