@@ -401,7 +401,7 @@ export default function Stages({ currentUser }: StagesProps) {
               ) : (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={6}
                     className="px-6 py-12 text-center"
                   >
                     <div className="flex flex-col items-center gap-2">
