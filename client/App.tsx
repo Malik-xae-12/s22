@@ -36,53 +36,12 @@ function AppContent() {
   return (
     <Layout currentUser={currentUser} onUserChange={handleUserChange}>
       <Routes>
-        <Route path="/" element={<Index currentUser={currentUser} />} />
-        <Route
-          path="/projects"
-          element={<ProjectList currentUser={currentUser} />}
-        />
-        <Route
-          path="/projects/:id"
-          element={<ProjectDetail currentUser={currentUser} />}
-        />
-        <Route
-          path="/add-project"
-          element={<AddProject currentUser={currentUser} />}
-        />
-        <Route
-          path="/workflow"
-          element={<Workflow currentUser={currentUser} />}
-        />
-        <Route
-          path="/analytics"
-          element={<Analytics currentUser={currentUser} />}
-        />
-        <Route
-          path="/documents"
-          element={<Documents currentUser={currentUser} />}
-        />
-        <Route
-          path="/search"
-          element={<Placeholder title="Advanced Search" />}
-        />
-        <Route
-          path="/calendar"
-          element={<Calendar currentUser={currentUser} />}
-        />
-        <Route path="/chat" element={<Chat currentUser={currentUser} />} />
-        <Route
-          path="/client-summary"
-          element={<ClientSummary currentUser={currentUser} />}
-        />
-        <Route path="/audit" element={<AuditLog currentUser={currentUser} />} />
-        <Route
-          path="/settings"
-          element={<Settings currentUser={currentUser} />}
-        />
-        <Route
-          path="/test"
-          element={<Placeholder title="Test Environment" />}
-        />
+        <Route path="/dashboard" element={<Dashboard currentUser={currentUser} />} />
+        <Route path="/workspace/projects" element={<Projects currentUser={currentUser} />} />
+        <Route path="/workspace/stages" element={<Stages currentUser={currentUser} />} />
+        <Route path="/workspace/tasks" element={<Tasks currentUser={currentUser} />} />
+        <Route path="/workflow" element={<WorkflowAndClosure currentUser={currentUser} />} />
+        <Route path="/" element={<Dashboard currentUser={currentUser} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
