@@ -407,6 +407,11 @@ export default function Tasks({ currentUser }: TasksProps) {
                       </td>
                       <td className="px-6 py-4">
                         <span className="text-slate-600 text-sm">
+                          {task.startDate || "—"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-slate-600 text-sm">
                           {task.dueDate}
                         </span>
                       </td>
@@ -424,21 +429,6 @@ export default function Tasks({ currentUser }: TasksProps) {
                           >
                             <PriorityIcon className="w-3 h-3" />
                             {getPriorityLabel(task.priority)}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-500"
-                              style={{
-                                width: `${Math.min(taskProgress, 100)}%`,
-                              }}
-                            />
-                          </div>
-                          <span className="text-xs font-bold text-slate-700 w-7 text-right">
-                            {Math.round(Math.min(taskProgress, 100))}%
                           </span>
                         </div>
                       </td>
