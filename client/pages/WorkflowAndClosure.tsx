@@ -35,9 +35,20 @@ type TabKey = "stages" | "tasks";
 
 const primaryGradient = "bg-gradient-to-r from-blue-600 to-indigo-600";
 
-const statusStyles: Record<ApprovalState, { border: string; bg: string; text: string }> = {
-  approved: { border: "border-green-300", bg: "bg-green-50", text: "text-green-700" },
-  awaiting: { border: "border-yellow-300", bg: "bg-yellow-50", text: "text-yellow-700" },
+const statusStyles: Record<
+  ApprovalState,
+  { border: string; bg: string; text: string }
+> = {
+  approved: {
+    border: "border-green-300",
+    bg: "bg-green-50",
+    text: "text-green-700",
+  },
+  awaiting: {
+    border: "border-yellow-300",
+    bg: "bg-yellow-50",
+    text: "text-yellow-700",
+  },
   rejected: { border: "border-red-300", bg: "bg-red-50", text: "text-red-700" },
   rework: { border: "border-red-300", bg: "bg-red-50", text: "text-red-700" },
 };
@@ -70,7 +81,10 @@ function statusIcon(v: ApprovalState) {
 
 function useApprovalLookup() {
   const byEntity = useMemo(() => {
-    const map = new Map<string, { status: ApprovalState; approvedBy?: string; approvalDate?: string }>();
+    const map = new Map<
+      string,
+      { status: ApprovalState; approvedBy?: string; approvalDate?: string }
+    >();
     for (const item of MOCK_WORKFLOW_ITEMS) {
       map.set(item.entityId, {
         status: item.approvalStatus as ApprovalState,
@@ -83,24 +97,45 @@ function useApprovalLookup() {
   return byEntity;
 }
 
-function getDerivedStageApproval(stage: (typeof MOCK_STAGES)[0], lookup: ReturnType<typeof useApprovalLookup>): {
+function getDerivedStageApproval(
+  stage: (typeof MOCK_STAGES)[0],
+  lookup: ReturnType<typeof useApprovalLookup>,
+): {
   state: ApprovalState;
   approvedBy?: string;
   approvalDate?: string;
 } {
   const item = lookup.get(stage.id);
-  if (item) return { state: item.status, approvedBy: item.approvedBy, approvalDate: item.approvalDate };
-  if (stage.approvedBy) return { state: "approved", approvedBy: stage.approvedBy, approvalDate: stage.approvalDate };
+  if (item)
+    return {
+      state: item.status,
+      approvedBy: item.approvedBy,
+      approvalDate: item.approvalDate,
+    };
+  if (stage.approvedBy)
+    return {
+      state: "approved",
+      approvedBy: stage.approvedBy,
+      approvalDate: stage.approvalDate,
+    };
   return { state: "awaiting" };
 }
 
-function getDerivedTaskApproval(task: (typeof MOCK_TASKS)[0], lookup: ReturnType<typeof useApprovalLookup>): {
+function getDerivedTaskApproval(
+  task: (typeof MOCK_TASKS)[0],
+  lookup: ReturnType<typeof useApprovalLookup>,
+): {
   state: ApprovalState;
   approvedBy?: string;
   approvalDate?: string;
 } {
   const item = lookup.get(task.id);
-  if (item) return { state: item.status, approvedBy: item.approvedBy, approvalDate: item.approvalDate };
+  if (item)
+    return {
+      state: item.status,
+      approvedBy: item.approvedBy,
+      approvalDate: item.approvalDate,
+    };
   if (task.status === "completed") return { state: "approved" };
   return { state: "awaiting" };
 }
@@ -122,26 +157,39 @@ function computeTaskCompletion(task: (typeof MOCK_TASKS)[0]) {
   return 0;
 }
 
-export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosureProps) {
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+export default function WorkflowAndClosure({
+  currentUser,
+}: WorkflowAndClosureProps) {
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
+    null,
+  );
   const [activeTab, setActiveTab] = useState<TabKey>("stages");
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "completed" | "awaiting">("all");
-  const [selectedItem, setSelectedItem] = useState<import("@/utils/mockData").WorkflowItem | null>(null);
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "active" | "completed" | "awaiting"
+  >("all");
+  const [selectedItem, setSelectedItem] = useState<
+    import("@/utils/mockData").WorkflowItem | null
+  >(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const approvalLookup = useApprovalLookup();
 
   const projects = useMemo(() => {
     return MOCK_PROJECTS.filter((p) => {
-      const matchesQuery = [p.name, p.manager, p.clientName].some((v) => v.toLowerCase().includes(query.toLowerCase()));
+      const matchesQuery = [p.name, p.manager, p.clientName].some((v) =>
+        v.toLowerCase().includes(query.toLowerCase()),
+      );
       if (!matchesQuery) return false;
       if (statusFilter === "all") return true;
       if (statusFilter === "active") return p.status === "active";
       if (statusFilter === "completed") return p.status === "completed";
       if (statusFilter === "awaiting") {
         const hasAwaiting = MOCK_WORKFLOW_ITEMS.some(
-          (it) => it.entityType === "project" && it.entityId === p.id && it.approvalStatus === "awaiting",
+          (it) =>
+            it.entityType === "project" &&
+            it.entityId === p.id &&
+            it.approvalStatus === "awaiting",
         );
         return hasAwaiting || p.approvalsStatus === "pending";
       }
@@ -149,17 +197,34 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
     });
   }, [query, statusFilter]);
 
-  const currentProject = useMemo(() => MOCK_PROJECTS.find((p) => p.id === selectedProjectId) || null, [selectedProjectId]);
+  const currentProject = useMemo(
+    () => MOCK_PROJECTS.find((p) => p.id === selectedProjectId) || null,
+    [selectedProjectId],
+  );
 
-  const projectStages = useMemo(() =>
-    currentProject ? MOCK_STAGES.filter((s) => s.projectId === currentProject.id).sort((a, b) => a.startDate.localeCompare(b.startDate)) : [],
-  [currentProject]);
+  const projectStages = useMemo(
+    () =>
+      currentProject
+        ? MOCK_STAGES.filter((s) => s.projectId === currentProject.id).sort(
+            (a, b) => a.startDate.localeCompare(b.startDate),
+          )
+        : [],
+    [currentProject],
+  );
 
-  const projectTasks = useMemo(() =>
-    currentProject ? MOCK_TASKS.filter((t) => t.projectId === currentProject.id).sort((a, b) => a.dueDate.localeCompare(b.dueDate)) : [],
-  [currentProject]);
+  const projectTasks = useMemo(
+    () =>
+      currentProject
+        ? MOCK_TASKS.filter((t) => t.projectId === currentProject.id).sort(
+            (a, b) => a.dueDate.localeCompare(b.dueDate),
+          )
+        : [],
+    [currentProject],
+  );
 
-  const buildItemFromStage = (stage: (typeof MOCK_STAGES)[0]): import("@/utils/mockData").WorkflowItem => {
+  const buildItemFromStage = (
+    stage: (typeof MOCK_STAGES)[0],
+  ): import("@/utils/mockData").WorkflowItem => {
     const d = getDerivedStageApproval(stage, approvalLookup);
     const wf = MOCK_WORKFLOW_ITEMS.find((it) => it.entityId === stage.id);
     return {
@@ -175,7 +240,9 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
     };
   };
 
-  const buildItemFromTask = (task: (typeof MOCK_TASKS)[0]): import("@/utils/mockData").WorkflowItem => {
+  const buildItemFromTask = (
+    task: (typeof MOCK_TASKS)[0],
+  ): import("@/utils/mockData").WorkflowItem => {
     const d = getDerivedTaskApproval(task, approvalLookup);
     return {
       id: `wf-modal-${task.id}`,
@@ -203,8 +270,12 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Workflow &amp; Closure</h1>
-        <p className="text-slate-600 mt-1">Monitor and manage project approvals and closure workflows</p>
+        <h1 className="text-3xl font-bold text-slate-900">
+          Workflow &amp; Closure
+        </h1>
+        <p className="text-slate-600 mt-1">
+          Monitor and manage project approvals and closure workflows
+        </p>
       </div>
 
       <AnimatePresence mode="wait">
@@ -246,7 +317,10 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {projects.map((p) => {
                 const awaiting = MOCK_WORKFLOW_ITEMS.some(
-                  (it) => it.entityType === "project" && it.entityId === p.id && it.approvalStatus === "awaiting",
+                  (it) =>
+                    it.entityType === "project" &&
+                    it.entityId === p.id &&
+                    it.approvalStatus === "awaiting",
                 );
                 return (
                   <div
@@ -257,32 +331,51 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
                     <div className="p-6 relative">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-lg ${primaryGradient} text-white flex items-center justify-center`}>
-                            {(p.projectType || "").toLowerCase().includes("web") ? (
+                          <div
+                            className={`w-10 h-10 rounded-lg ${primaryGradient} text-white flex items-center justify-center`}
+                          >
+                            {(p.projectType || "")
+                              .toLowerCase()
+                              .includes("web") ? (
                               <FolderOpen className="w-5 h-5" />
                             ) : (
                               <Briefcase className="w-5 h-5" />
                             )}
                           </div>
                           <div>
-                            <h3 className="font-semibold text-slate-900 leading-tight">{p.name}</h3>
-                            <p className="text-xs text-slate-600">Manager: {p.manager}</p>
+                            <h3 className="font-semibold text-slate-900 leading-tight">
+                              {p.name}
+                            </h3>
+                            <p className="text-xs text-slate-600">
+                              Manager: {p.manager}
+                            </p>
                           </div>
                         </div>
                         <span
                           className={`px-2.5 py-1 rounded-full text-xs font-semibold ${awaiting || p.approvalsStatus === "pending" ? "bg-yellow-100 text-yellow-800" : p.status === "completed" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}
                         >
-                          {awaiting || p.approvalsStatus === "pending" ? "Awaiting Approval" : p.status === "completed" ? "Completed" : "Active"}
+                          {awaiting || p.approvalsStatus === "pending"
+                            ? "Awaiting Approval"
+                            : p.status === "completed"
+                              ? "Completed"
+                              : "Active"}
                         </span>
                       </div>
 
-                      <p className="text-sm text-slate-700 mt-3 line-clamp-2">{p.description}</p>
+                      <p className="text-sm text-slate-700 mt-3 line-clamp-2">
+                        {p.description}
+                      </p>
 
                       <div className="mt-4 flex items-center gap-3">
                         <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600" style={{ width: `${p.progress}%` }} />
+                          <div
+                            className="h-full bg-gradient-to-r from-blue-600 to-indigo-600"
+                            style={{ width: `${p.progress}%` }}
+                          />
                         </div>
-                        <span className="text-xs font-medium text-slate-600">{p.progress}%</span>
+                        <span className="text-xs font-medium text-slate-600">
+                          {p.progress}%
+                        </span>
                       </div>
 
                       <button
@@ -321,23 +414,39 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
                   Back to Projects
                 </button>
                 <div>
-                  <h2 className="text-2xl font-bold text-slate-900">{currentProject?.name}</h2>
-                  <p className="text-slate-600 text-sm">Manager: {currentProject?.manager}</p>
+                  <h2 className="text-2xl font-bold text-slate-900">
+                    {currentProject?.name}
+                  </h2>
+                  <p className="text-slate-600 text-sm">
+                    Manager: {currentProject?.manager}
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Tabs */}
             <div className="flex items-center gap-2 bg-white p-1 rounded-xl shadow-sm border border-slate-200 w-full max-w-md">
-              {([
-                { key: "stages", label: "Stage Flow", icon: <WorkflowBadge /> },
-                { key: "tasks", label: "Task Flow", icon: <TaskBadge /> },
-              ] as Array<{ key: TabKey; label: string; icon: React.ReactNode }>).map((t) => (
+              {(
+                [
+                  {
+                    key: "stages",
+                    label: "Stage Flow",
+                    icon: <WorkflowBadge />,
+                  },
+                  { key: "tasks", label: "Task Flow", icon: <TaskBadge /> },
+                ] as Array<{
+                  key: TabKey;
+                  label: string;
+                  icon: React.ReactNode;
+                }>
+              ).map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setActiveTab(t.key)}
                   className={`flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition ${
-                    activeTab === t.key ? `${primaryGradient} text-white shadow` : "text-slate-700 hover:bg-slate-50"
+                    activeTab === t.key
+                      ? `${primaryGradient} text-white shadow`
+                      : "text-slate-700 hover:bg-slate-50"
                   }`}
                 >
                   {t.icon}
@@ -350,65 +459,149 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
             <div className="relative">
               <AnimatePresence mode="wait">
                 {activeTab === "stages" ? (
-                  <motion.div key="tab-stages" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }} className="space-y-4">
+                  <motion.div
+                    key="tab-stages"
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 12 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-4"
+                  >
                     {projectStages.map((stage, idx) => {
-                      const derived = getDerivedStageApproval(stage, approvalLookup);
+                      const derived = getDerivedStageApproval(
+                        stage,
+                        approvalLookup,
+                      );
                       const styles = statusStyles[derived.state];
                       return (
-                        <div key={stage.id} className={`relative rounded-xl border-2 ${styles.border} ${styles.bg} p-6 transition-all hover:shadow-md`}>
+                        <div
+                          key={stage.id}
+                          className={`relative rounded-xl border-2 ${styles.border} ${styles.bg} p-6 transition-all hover:shadow-md`}
+                        >
                           {/* Connector */}
                           {idx < projectStages.length - 1 && (
                             <div className="absolute left-6 top-full w-0.5 h-6 bg-slate-300" />
                           )}
 
                           <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 pt-1">{statusIcon(derived.state)}</div>
+                            <div className="flex-shrink-0 pt-1">
+                              {statusIcon(derived.state)}
+                            </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-start justify-between gap-2">
                                 <div className="flex-1">
                                   <div className="flex items-center gap-2 mb-1">
-                                    <span className="px-2 py-1 rounded text-xs font-semibold bg-purple-100 text-purple-700">Stage</span>
-                                    <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">{approvalLabel(derived.state)}</span>
+                                    <span className="px-2 py-1 rounded text-xs font-semibold bg-purple-100 text-purple-700">
+                                      Stage
+                                    </span>
+                                    <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">
+                                      {approvalLabel(derived.state)}
+                                    </span>
                                   </div>
-                                  <h3 className="text-lg font-bold text-slate-900">{stage.name}</h3>
-                                  <p className="text-sm text-slate-600 mt-1">Owner: <span className="font-medium">{stage.owner}</span></p>
-                                  {(derived.approvedBy || derived.approvalDate) && (
+                                  <h3 className="text-lg font-bold text-slate-900">
+                                    {stage.name}
+                                  </h3>
+                                  <p className="text-sm text-slate-600 mt-1">
+                                    Owner:{" "}
+                                    <span className="font-medium">
+                                      {stage.owner}
+                                    </span>
+                                  </p>
+                                  {(derived.approvedBy ||
+                                    derived.approvalDate) && (
                                     <p className="text-sm text-slate-600 mt-1">
-                                      Approved by <span className="font-semibold">{derived.approvedBy}</span>
-                                      {derived.approvalDate && <span> on {formatDate(derived.approvalDate)}</span>}
+                                      Approved by{" "}
+                                      <span className="font-semibold">
+                                        {derived.approvedBy}
+                                      </span>
+                                      {derived.approvalDate && (
+                                        <span>
+                                          {" "}
+                                          on {formatDate(derived.approvalDate)}
+                                        </span>
+                                      )}
                                     </p>
                                   )}
                                 </div>
                                 {derived.state === "awaiting" && (
                                   <div className="flex-shrink-0 flex items-center gap-2">
-                                    <button onClick={() => openApprovalForStage(stage)} className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">Approve</button>
-                                    <button onClick={() => openApprovalForStage(stage)} className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold">Reject</button>
-                                    <button onClick={() => openApprovalForStage(stage)} className="px-3 py-2 rounded-lg bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold">Rework</button>
+                                    <button
+                                      onClick={() =>
+                                        openApprovalForStage(stage)
+                                      }
+                                      className="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold"
+                                    >
+                                      Approve
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        openApprovalForStage(stage)
+                                      }
+                                      className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold"
+                                    >
+                                      Reject
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        openApprovalForStage(stage)
+                                      }
+                                      className="px-3 py-2 rounded-lg bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold"
+                                    >
+                                      Rework
+                                    </button>
                                   </div>
                                 )}
                               </div>
 
                               <div className="bg-white/60 border border-slate-200/70 rounded-lg p-3 mt-3">
-                                <p className="text-sm text-slate-700">{stage.remarks}</p>
+                                <p className="text-sm text-slate-700">
+                                  {stage.remarks}
+                                </p>
                               </div>
 
                               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
-                                <InfoPill label="Start" value={formatDate(stage.startDate)} icon={<CalendarDays className="w-4 h-4" />} />
-                                <InfoPill label="End" value={formatDate(stage.endDate)} icon={<CalendarDays className="w-4 h-4" />} />
-                                <InfoPill label="Status" value={stage.status.replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase())} />
-                                <InfoPill label="Completion" value={`${stage.completion}%`} />
+                                <InfoPill
+                                  label="Start"
+                                  value={formatDate(stage.startDate)}
+                                  icon={<CalendarDays className="w-4 h-4" />}
+                                />
+                                <InfoPill
+                                  label="End"
+                                  value={formatDate(stage.endDate)}
+                                  icon={<CalendarDays className="w-4 h-4" />}
+                                />
+                                <InfoPill
+                                  label="Status"
+                                  value={stage.status
+                                    .replace(/_/g, " ")
+                                    .replace(/^./, (c) => c.toUpperCase())}
+                                />
+                                <InfoPill
+                                  label="Completion"
+                                  value={`${stage.completion}%`}
+                                />
                               </div>
 
                               {/* Attachments (if any via approvals) */}
                               {(() => {
-                                const wf = MOCK_WORKFLOW_ITEMS.find((it) => it.entityId === stage.id);
-                                if (!wf || wf.attachments.length === 0) return null;
+                                const wf = MOCK_WORKFLOW_ITEMS.find(
+                                  (it) => it.entityId === stage.id,
+                                );
+                                if (!wf || wf.attachments.length === 0)
+                                  return null;
                                 return (
                                   <div className="mt-4">
-                                    <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2"><Paperclip className="w-4 h-4" /> Attachments</h4>
+                                    <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                                      <Paperclip className="w-4 h-4" />{" "}
+                                      Attachments
+                                    </h4>
                                     <div className="space-y-2">
                                       {wf.attachments.map((att) => (
-                                        <a key={att.id} href={att.url} className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                        <a
+                                          key={att.id}
+                                          href={att.url}
+                                          className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                        >
                                           <FileUp className="w-4 h-4" />
                                           {att.name}
                                         </a>
@@ -424,102 +617,203 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
                     })}
 
                     {projectStages.length === 0 && (
-                      <EmptyState title="No stages" subtitle="Stages for this project will appear here." />
+                      <EmptyState
+                        title="No stages"
+                        subtitle="Stages for this project will appear here."
+                      />
                     )}
                   </motion.div>
                 ) : (
-                  <motion.div key="tab-tasks" initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -12 }} transition={{ duration: 0.2 }} className="space-y-4">
+                  <motion.div
+                    key="tab-tasks"
+                    initial={{ opacity: 0, x: 12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -12 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-4"
+                  >
                     {projectTasks.length === 0 ? (
                       <div className="md:col-span-2">
-                        <EmptyState title="No tasks" subtitle="Tasks for this project will appear here." />
+                        <EmptyState
+                          title="No tasks"
+                          subtitle="Tasks for this project will appear here."
+                        />
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {(projectStages.length > 0 ? projectStages : []).map((stage) => {
-                          const tasksForStage = projectTasks.filter((t) => t.stageId === stage.id);
-                          // If there are no tasks for this stage, skip showing details
-                          if (tasksForStage.length === 0) return null;
-                          const derivedStage = getDerivedStageApproval(stage, approvalLookup);
-                          return (
-                            <div key={stage.id} className="rounded-xl border border-slate-200 p-5 bg-white shadow-sm">
-                              <div className="flex items-center justify-between gap-4">
-                                <div>
-                                  <h4 className="font-bold text-slate-900">{stage.name}</h4>
-                                  <p className="text-sm text-slate-600">Owner: {stage.owner}</p>
-                                </div>
-                                <div className="w-64">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <div className="text-xs text-slate-500">Stage Completion</div>
-                                    <div className="text-xs font-semibold text-slate-700">{stage.completion}%</div>
+                        {(projectStages.length > 0 ? projectStages : []).map(
+                          (stage) => {
+                            const tasksForStage = projectTasks.filter(
+                              (t) => t.stageId === stage.id,
+                            );
+                            // If there are no tasks for this stage, skip showing details
+                            if (tasksForStage.length === 0) return null;
+                            const derivedStage = getDerivedStageApproval(
+                              stage,
+                              approvalLookup,
+                            );
+                            return (
+                              <div
+                                key={stage.id}
+                                className="rounded-xl border border-slate-200 p-5 bg-white shadow-sm"
+                              >
+                                <div className="flex items-center justify-between gap-4">
+                                  <div>
+                                    <h4 className="font-bold text-slate-900">
+                                      {stage.name}
+                                    </h4>
+                                    <p className="text-sm text-slate-600">
+                                      Owner: {stage.owner}
+                                    </p>
                                   </div>
-                                  <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                                    <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600" style={{ width: `${stage.completion}%` }} />
+                                  <div className="w-64">
+                                    <div className="flex items-center justify-between mb-2">
+                                      <div className="text-xs text-slate-500">
+                                        Stage Completion
+                                      </div>
+                                      <div className="text-xs font-semibold text-slate-700">
+                                        {stage.completion}%
+                                      </div>
+                                    </div>
+                                    <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                      <div
+                                        className="h-full bg-gradient-to-r from-blue-600 to-indigo-600"
+                                        style={{
+                                          width: `${stage.completion}%`,
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              <div className="mt-4 grid gap-3 md:grid-cols-2">
-                                {tasksForStage.map((task) => {
-                                  const derived = getDerivedTaskApproval(task, approvalLookup);
-                                  const overdue = isOverdue(task.dueDate, task.status);
-                                  const taskCompletion = computeTaskCompletion(task);
-                                  return (
-                                    <div key={task.id} className={`rounded-lg border ${overdue ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} p-4 shadow-sm`}>
-                                      <div className="flex items-start justify-between">
-                                        <div>
-                                          <div className="flex items-center gap-2 mb-1">
-                                            <span className="px-2 py-1 rounded text-xs font-semibold bg-indigo-100 text-indigo-700">Task</span>
-                                            <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">{approvalLabel(derived.state)}</span>
+                                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                                  {tasksForStage.map((task) => {
+                                    const derived = getDerivedTaskApproval(
+                                      task,
+                                      approvalLookup,
+                                    );
+                                    const overdue = isOverdue(
+                                      task.dueDate,
+                                      task.status,
+                                    );
+                                    const taskCompletion =
+                                      computeTaskCompletion(task);
+                                    return (
+                                      <div
+                                        key={task.id}
+                                        className={`rounded-lg border ${overdue ? "border-red-300 bg-red-50" : "border-slate-200 bg-white"} p-4 shadow-sm`}
+                                      >
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                              <span className="px-2 py-1 rounded text-xs font-semibold bg-indigo-100 text-indigo-700">
+                                                Task
+                                              </span>
+                                              <span className="px-2 py-1 rounded text-xs font-semibold bg-slate-100 text-slate-700">
+                                                {approvalLabel(derived.state)}
+                                              </span>
+                                            </div>
+                                            <h5 className="font-semibold text-slate-900">
+                                              {task.name}
+                                            </h5>
+                                            <p className="text-sm text-slate-600 mt-1">
+                                              Assigned:{" "}
+                                              <span className="font-medium">
+                                                {task.assignedTo}
+                                              </span>
+                                            </p>
                                           </div>
-                                          <h5 className="font-semibold text-slate-900">{task.name}</h5>
-                                          <p className="text-sm text-slate-600 mt-1">Assigned: <span className="font-medium">{task.assignedTo}</span></p>
+                                          {derived.state === "awaiting" && (
+                                            <div className="flex-shrink-0 flex items-center gap-2">
+                                              <button
+                                                onClick={() =>
+                                                  openApprovalForTask(task)
+                                                }
+                                                className="px-2 py-1 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold"
+                                              >
+                                                Approve
+                                              </button>
+                                              <button
+                                                onClick={() =>
+                                                  openApprovalForTask(task)
+                                                }
+                                                className="px-2 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold"
+                                              >
+                                                Reject
+                                              </button>
+                                            </div>
+                                          )}
                                         </div>
-                                        {derived.state === "awaiting" && (
-                                          <div className="flex-shrink-0 flex items-center gap-2">
-                                            <button onClick={() => openApprovalForTask(task)} className="px-2 py-1 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-semibold">Approve</button>
-                                            <button onClick={() => openApprovalForTask(task)} className="px-2 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-semibold">Reject</button>
+
+                                        <div className="mt-3">
+                                          <div className="flex items-center justify-between mb-1">
+                                            <div className="text-xs text-slate-500">
+                                              Progress
+                                            </div>
+                                            <div className="text-xs font-semibold text-slate-700">
+                                              {taskCompletion}%
+                                            </div>
+                                          </div>
+                                          <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                            <div
+                                              className="h-full bg-gradient-to-r from-blue-600 to-indigo-600"
+                                              style={{
+                                                width: `${taskCompletion}%`,
+                                              }}
+                                            />
+                                          </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-2 gap-2 mt-3 text-sm text-slate-600">
+                                          <div>
+                                            Start: {formatDate(task.startDate)}
+                                          </div>
+                                          <div>
+                                            Due: {formatDate(task.dueDate)}
+                                          </div>
+                                          <div className="col-span-2">
+                                            Status:{" "}
+                                            {task.status
+                                              .replace(/_/g, " ")
+                                              .replace(/^./, (c) =>
+                                                c.toUpperCase(),
+                                              )}
+                                          </div>
+                                        </div>
+
+                                        {task.comments && (
+                                          <div className="mt-3 text-sm text-slate-700">
+                                            {task.comments}
+                                          </div>
+                                        )}
+
+                                        {task.attachments.length > 0 && (
+                                          <div className="mt-3">
+                                            <h6 className="text-sm font-semibold text-slate-900 mb-2">
+                                              Attachments
+                                            </h6>
+                                            <div className="space-y-2">
+                                              {task.attachments.map((att) => (
+                                                <a
+                                                  key={att.id}
+                                                  href={att.url}
+                                                  className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                                >
+                                                  <FileUp className="w-4 h-4" />
+                                                  {att.name}
+                                                </a>
+                                              ))}
+                                            </div>
                                           </div>
                                         )}
                                       </div>
-
-                                      <div className="mt-3">
-                                        <div className="flex items-center justify-between mb-1">
-                                          <div className="text-xs text-slate-500">Progress</div>
-                                          <div className="text-xs font-semibold text-slate-700">{taskCompletion}%</div>
-                                        </div>
-                                        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                                          <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600" style={{ width: `${taskCompletion}%` }} />
-                                        </div>
-                                      </div>
-
-                                      <div className="grid grid-cols-2 gap-2 mt-3 text-sm text-slate-600">
-                                        <div>Start: {formatDate(task.startDate)}</div>
-                                        <div>Due: {formatDate(task.dueDate)}</div>
-                                        <div className="col-span-2">Status: {task.status.replace(/_/g, ' ').replace(/^./, (c) => c.toUpperCase())}</div>
-                                      </div>
-
-                                      {task.comments && <div className="mt-3 text-sm text-slate-700">{task.comments}</div>}
-
-                                      {task.attachments.length > 0 && (
-                                        <div className="mt-3">
-                                          <h6 className="text-sm font-semibold text-slate-900 mb-2">Attachments</h6>
-                                          <div className="space-y-2">
-                                            {task.attachments.map((att) => (
-                                              <a key={att.id} href={att.url} className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium">
-                                                <FileUp className="w-4 h-4" />
-                                                {att.name}
-                                              </a>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
+                                    );
+                                  })}
+                                </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          },
+                        )}
                       </div>
                     )}
                   </motion.div>
@@ -543,12 +837,22 @@ export default function WorkflowAndClosure({ currentUser }: WorkflowAndClosurePr
   );
 }
 
-function InfoPill({ label, value, icon }: { label: string; value: string; icon?: React.ReactNode }) {
+function InfoPill({
+  label,
+  value,
+  icon,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+}) {
   return (
     <div className="p-2.5 bg-white rounded-lg border border-slate-200 flex items-center gap-2">
       {icon}
       <div>
-        <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">{label}</p>
+        <p className="text-[10px] uppercase tracking-wide text-slate-500 font-semibold">
+          {label}
+        </p>
         <p className="text-sm font-semibold text-slate-900">{value}</p>
       </div>
     </div>
@@ -567,12 +871,16 @@ function EmptyState({ title, subtitle }: { title: string; subtitle: string }) {
 
 function WorkflowBadge() {
   return (
-    <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-purple-100 text-purple-700 text-[10px] font-bold">S</span>
+    <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-purple-100 text-purple-700 text-[10px] font-bold">
+      S
+    </span>
   );
 }
 
 function TaskBadge() {
   return (
-    <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-indigo-100 text-indigo-700 text-[10px] font-bold">T</span>
+    <span className="inline-flex items-center justify-center w-5 h-5 rounded bg-indigo-100 text-indigo-700 text-[10px] font-bold">
+      T
+    </span>
   );
 }
