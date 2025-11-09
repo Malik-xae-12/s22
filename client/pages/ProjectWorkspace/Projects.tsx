@@ -9,6 +9,7 @@ import {
   Zap,
   AlertCircle,
   CheckCircle,
+  ChevronDown,
 } from "lucide-react";
 import { MOCK_PROJECTS } from "@/utils/mockData";
 import ProjectModal from "@/components/ProjectModal";
